@@ -11,6 +11,7 @@ from .items import (
     ItemMaster,
 )
 from .inventory import (
+    QCStatus,
     LotLocation,
     InventoryLot,
     InventorySnapshot,
@@ -34,6 +35,7 @@ __all__ = [
     "BOMComponent",
     "EquivalentItem",
     "ItemMaster",
+    "QCStatus",
     "LotLocation",
     "InventoryLot",
     "InventorySnapshot",
