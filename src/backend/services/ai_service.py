@@ -9,8 +9,8 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from .config import Settings
-from .db import get_connection
+from ..config import Settings
+from ..db import get_connection
 
 
 class AIService:

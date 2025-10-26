@@ -4,8 +4,8 @@ from typing import List, Dict
 from urllib.parse import urljoin
 import requests
 from flask import Blueprint, request
-from src.backend.core.config import Settings
-from src.backend.services.auth.auth import authenticate_request, get_current_user_id
+from ..core.config import Settings
+from ..services.auth.auth import authenticate_request, get_current_user_id
 
 bp = Blueprint("chatbot", __name__, url_prefix="/api")
 _ALLOWED_ROLES = {"user", "assistant", "system"}

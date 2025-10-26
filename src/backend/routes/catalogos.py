@@ -2,8 +2,8 @@ from __future__ import annotations
 import sqlite3
 from flask import Blueprint, request, current_app, jsonify
 from typing import Any, Dict, Optional, Tuple
-from src.backend.core.db import get_connection
-from src.backend.services.auth.auth import auth_required
+from ..core.db import get_connection
+from ..services.auth.auth import auth_required
 from .admin import CATALOG_RESOURCES
 
 bp = Blueprint("catalogos", __name__, url_prefix="/api/catalogos")

@@ -7,10 +7,10 @@ from io import BytesIO
 
 from flask import Blueprint, jsonify, request, send_file
 
-from src.backend.core.db import get_connection
-from src.backend.models.schemas import BudgetIncreaseDecision, SolicitudCreate, SolicitudDraft
-from src.backend.services.auth.auth import authenticate_request, get_current_user_id
-from src.backend.models.roles import has_role
+from ..core.db import get_connection
+from ..models.schemas import BudgetIncreaseDecision, SolicitudCreate, SolicitudDraft
+from ..services.auth.auth import authenticate_request, get_current_user_id
+from ..models.roles import has_role
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment

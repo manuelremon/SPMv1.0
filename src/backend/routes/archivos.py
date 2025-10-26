@@ -8,9 +8,9 @@ from typing import Any
 from flask import Blueprint, jsonify, request, send_file
 from werkzeug.utils import secure_filename
 
-from src.backend.services.auth.auth import auth_required, get_current_user_id
-from src.backend.core.config import Settings
-from src.backend.core.db import get_connection
+from ..services.auth.auth import auth_required, get_current_user_id
+from ..core.config import Settings
+from ..core.db import get_connection
 
 bp = Blueprint("archivos", __name__, url_prefix="/api")
 

@@ -6,7 +6,7 @@ import hmac
 from hashlib import pbkdf2_hmac
 from typing import Any, Dict, Tuple
 
-from src.backend.services.auth.jwt_utils import (
+from ...services.auth.jwt_utils import (
     create_access_token as _create_access_token,
     create_refresh_token as _create_refresh_token,
     verify_access_token as _verify_access_token,

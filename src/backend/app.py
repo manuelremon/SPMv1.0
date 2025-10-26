@@ -26,7 +26,26 @@ from .core.db import get_db
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+# Calcula FRONTEND_DIR de manera robusta
+def _get_frontend_dir() -> Path:
+    """Calcula el directorio frontend de manera robusta para diferentes entornos."""
+    app_py_dir = Path(__file__).resolve().parent  # backend/
+    
+    # Intenta varios patrones para encontrar la carpeta frontend
+    candidates = [
+        app_py_dir.parent / "frontend",           # src/frontend (normal)
+        app_py_dir.parent.parent / "src" / "frontend",  # src/src/frontend (Render bug)
+        app_py_dir.parent.parent / "frontend",   # ../frontend
+    ]
+    
+    for candidate in candidates:
+        if candidate.exists() and candidate.is_dir():
+            return candidate
+    
+    # Fallback al primero
+    return candidates[0]
+
+FRONTEND_DIR = _get_frontend_dir()
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 HTML_DIR = FRONTEND_DIR
 ASSETS_DIR = FRONTEND_DIR / "assets"
@@ -285,6 +304,14 @@ def create_app() -> Flask:
         if not asset_path.is_file():
             abort(404)
         return send_from_directory(ASSETS_DIR, fname)
+
+    @app.route("/favicon.ico")
+    def favicon():
+        """Sirve favicon.ico desde assets."""
+        favicon_path = ASSETS_DIR / "favicon.ico"
+        if favicon_path.is_file():
+            return send_from_directory(ASSETS_DIR, "favicon.ico")
+        abort(404)
 
     @app.errorhandler(404)
     def not_found(e):

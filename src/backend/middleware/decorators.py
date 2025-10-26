@@ -6,7 +6,7 @@ from flask import request, jsonify
 from typing import Any, Callable, TypeVar
 
 from flask import jsonify
-from src.backend.services.auth.jwt_utils import verify_token
+from ..services.auth.jwt_utils import verify_token
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -19,7 +19,7 @@ def require_auth(fn: F) -> F:
         from flask import g
 
         # Import locally to avoid circular imports on module load
-        from src.backend.services.auth.auth import authenticate_request
+        from ..services.auth.auth import authenticate_request
         # Development bypass: if g.user is already populated (e.g. by dev hook)
         # or AUTH_BYPASS=1 we allow the request for local development.
         try:

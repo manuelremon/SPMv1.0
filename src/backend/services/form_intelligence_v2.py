@@ -6,9 +6,9 @@ import sqlite3
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timedelta
 import json
-from src.backend.core.db import get_connection
-from src.backend.services.data_providers import ExcelDataProvider
-from src.backend.services.ollama_llm import OllamaLLM
+from ..core.db import get_connection
+from ..services.data_providers import ExcelDataProvider
+from ..services.ollama_llm import OllamaLLM
 
 
 class FormIntelligenceEngineV2:

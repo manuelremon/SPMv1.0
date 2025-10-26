@@ -188,7 +188,7 @@ class OllamaHelper:
 
 6. **Probar desde Python:**
    ```python
-   from src.backend.services.ollama_llm import OllamaLLM
+   from ..services.ollama_llm import OllamaLLM
    llm = OllamaLLM("mistral")
    print(llm.generate("¿Cuál es 2+2?"))
    ```

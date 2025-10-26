@@ -16,7 +16,7 @@ bp = Blueprint("form_intelligence", __name__, url_prefix="/api/form-intelligence
 
 def get_form_intelligence():
     """Lazy import para evitar circular dependencies."""
-    from src.backend.services.form_intelligence import get_form_intelligence_engine
+    from ..services.form_intelligence import get_form_intelligence_engine
     return get_form_intelligence_engine()
 
 
@@ -92,7 +92,7 @@ def suggest_for_field():
 def _suggest_materials(query: str, centro: str = None, limit: int = 10) -> tuple:
     """Sugiere materiales basado en búsqueda."""
     try:
-        from src.backend.core.db import get_connection
+        from ..core.db import get_connection
 
         con = get_connection()
         sql = """
@@ -161,7 +161,7 @@ def _suggest_cantidad(data: Dict[str, Any]) -> tuple:
 def _suggest_centro(query: str, limit: int = 10) -> tuple:
     """Sugiere centros."""
     try:
-        from src.backend.core.db import get_connection
+        from ..core.db import get_connection
 
         con = get_connection()
         sql = """

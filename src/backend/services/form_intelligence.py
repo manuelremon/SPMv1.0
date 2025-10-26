@@ -14,7 +14,7 @@ import sqlite3
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timedelta
 import json
-from src.backend.core.db import get_connection
+from ..core.db import get_connection
 
 
 class MaterialConsumptionAnalyzer:

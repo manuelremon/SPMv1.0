@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Dict, Iterable, Optional
 from logging import Logger
-from .config import Settings
-from .db import get_connection
+from ..config import Settings
+from ..db import get_connection
 
 CATALOG_TABLES: Dict[str, str] = {
     "catalog_centros": """

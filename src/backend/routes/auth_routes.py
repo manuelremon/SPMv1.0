@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from flask import Blueprint, current_app, g, jsonify, make_response, request
 
-from src.backend.services.auth.auth import (
+from ..services.auth.auth import (
     auth_required,
     authenticate_request,
     authenticate_user,
@@ -16,9 +16,9 @@ from src.backend.services.auth.auth import (
     issue_token,
     set_auth_cookie,
 )
-from src.backend.core.db import get_connection
-from src.backend.models.schemas import AdditionalCentersRequest, RegisterRequest, UpdateMailRequest, UpdatePhoneRequest
-from src.backend.services.db.security import hash_password
+from ..core.db import get_connection
+from ..models.schemas import AdditionalCentersRequest, RegisterRequest, UpdateMailRequest, UpdatePhoneRequest
+from ..services.db.security import hash_password
 
 bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 logger = logging.getLogger(__name__)
@@ -264,7 +264,7 @@ def request_additional_centers():
 def get_dashboard_stats():
     """Obtiene estadísticas del dashboard del usuario autenticado"""
     try:
-        from src.backend.services.dashboard.stats import get_user_stats, get_dashboard_activity, get_chart_data
+        from ..services.dashboard.stats import get_user_stats, get_dashboard_activity, get_chart_data
         
         user_id = get_current_user_id()
         if not user_id:

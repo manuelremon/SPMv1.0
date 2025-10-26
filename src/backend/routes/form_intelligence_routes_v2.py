@@ -14,7 +14,7 @@ bp = Blueprint("form_intelligence_v2", __name__, url_prefix="/api/form-intellige
 
 def get_form_intelligence():
     """Get FormIntelligence engine v2"""
-    from src.backend.services.form_intelligence_v2 import get_form_intelligence_engine
+    from ..services.form_intelligence_v2 import get_form_intelligence_engine
     return get_form_intelligence_engine()
 
 
@@ -24,7 +24,7 @@ def require_auth(f):
     def decorated(*args, **kwargs):
         # Try to get user from JWT token
         try:
-            from src.backend.core.config import Settings
+            from ..core.config import Settings
             token = None
             
             # Try Authorization header
@@ -142,7 +142,7 @@ def analyze_material() -> Tuple[Dict[str, Any], int]:
         if not material_codigo:
             return jsonify({"error": "material_codigo required"}), 400
         
-        from src.backend.services.data_providers import ExcelDataProvider
+        from ..services.data_providers import ExcelDataProvider
         
         # Load all data from Excel
         stock = ExcelDataProvider.load_stock(material_codigo)
@@ -194,7 +194,7 @@ def suggest_field() -> Tuple[Dict[str, Any], int]:
         if not field:
             return jsonify({"error": "field required"}), 400
         
-        from src.backend.services.data_providers import ExcelDataProvider
+        from ..services.data_providers import ExcelDataProvider
         
         suggestions = []
         
@@ -289,10 +289,10 @@ def setup_excel() -> Tuple[Dict[str, Any], int]:
     This is a development endpoint - should be protected in production
     """
     try:
-        from src.backend.services.data_providers import create_sample_excel_files
+        from ..services.data_providers import create_sample_excel_files
         create_sample_excel_files()
         
-        from src.backend.services.data_providers import ExcelDataProvider
+        from ..services.data_providers import ExcelDataProvider
         
         return jsonify({
             "success": True,
@@ -310,7 +310,7 @@ def setup_excel() -> Tuple[Dict[str, Any], int]:
 def get_ollama_setup() -> Tuple[Dict[str, Any], int]:
     """Get Ollama setup instructions"""
     try:
-        from src.backend.services.ollama_llm import OllamaHelper
+        from ..services.ollama_llm import OllamaHelper
         
         return jsonify({
             "instructions": OllamaHelper.setup_instructions(),

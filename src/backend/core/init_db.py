@@ -6,9 +6,9 @@ import sqlite3
 import unicodedata
 from typing import Callable, Iterable, Sequence
 
-from .config import Settings
-from .db import get_connection
-from src.backend.services.db.security import hash_password
+from ..config import Settings
+from ..db import get_connection
+from ..services.db.security import hash_password
 
 MigrationFn = Callable[[sqlite3.Connection], None]
 MIGRATIONS: Sequence[tuple[int, MigrationFn]] = ()

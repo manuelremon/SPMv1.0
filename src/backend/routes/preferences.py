@@ -5,8 +5,8 @@ from typing import Any, Dict
 
 from flask import Blueprint, current_app, jsonify, request
 
-from src.backend.services.auth.auth import auth_required, get_current_user_id
-from src.backend.core.db import get_connection
+from ..services.auth.auth import auth_required, get_current_user_id
+from ..core.db import get_connection
 
 bp = Blueprint("preferences", __name__, url_prefix="/api")
 

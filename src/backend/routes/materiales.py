@@ -1,7 +1,7 @@
 from __future__ import annotations
 from flask import Blueprint, request
-from src.backend.core.db import get_connection
-from src.backend.models.schemas import MaterialSearchQuery
+from ..core.db import get_connection
+from ..models.schemas import MaterialSearchQuery
 
 bp = Blueprint("materiales", __name__, url_prefix="/api")
 

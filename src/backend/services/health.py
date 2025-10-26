@@ -18,8 +18,8 @@ try:
 except Exception:  # pragma: no cover - fallback when requests is unavailable
     requests = None
 
-from src.backend.core.config import Settings
-from src.backend.core.db import get_connection
+from ..core.config import Settings
+from ..core.db import get_connection
 
 try:
     import urllib.request

@@ -8,16 +8,16 @@ import jwt
 from flask import Response, current_app, g, jsonify, request, Blueprint, make_response
 import secrets, json
 from datetime import timedelta, datetime, timezone
-from src.backend.middleware.csrf import issue_csrf
-from src.backend.middleware.ratelimit import limit
+from ...middleware.csrf import issue_csrf
+from ...middleware.ratelimit import limit
 import hmac, hashlib, base64
 
-from src.backend.middleware.auth_helpers import TOKEN_COOKIE_NAME, extract_bearer_token
-from src.backend.core.config import Settings
-from src.backend.middleware.decorators import require_auth
-from src.backend.core.db import get_connection, get_user_by_username, get_db
+from ...middleware.auth_helpers import TOKEN_COOKIE_NAME, extract_bearer_token
+from ...core.config import Settings
+from ...middleware.decorators import require_auth
+from ...core.db import get_connection, get_user_by_username, get_db
 from .jwt_utils import create_access_token, verify_access_token, create_token, verify_token
-from src.backend.services.db.security import hash_password, verify_password
+from ..db.security import hash_password, verify_password
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -363,7 +363,7 @@ def change_password():
 def get_dashboard_stats():
     """Obtiene estadísticas del dashboard del usuario autenticado"""
     try:
-        from src.backend.services.dashboard.stats import get_user_stats, get_dashboard_activity, get_chart_data
+        from ...services.dashboard.stats import get_user_stats, get_dashboard_activity, get_chart_data
         
         user_id = g.user.get("id") if hasattr(g, "user") else "1"
         
@@ -397,7 +397,7 @@ def get_dashboard_stats():
 def get_chart_data_endpoint():
     """Obtiene datos específicos para gráficos"""
     try:
-        from src.backend.services.dashboard.stats import get_chart_data
+        from ...services.dashboard.stats import get_chart_data
         return jsonify(get_chart_data())
     except Exception as e:
         print(f"Error getting chart data: {e}")

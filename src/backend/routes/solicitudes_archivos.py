@@ -5,9 +5,9 @@ from typing import Optional
 from flask import Blueprint, current_app, jsonify, request, send_from_directory
 from werkzeug.utils import secure_filename
 
-from src.backend.services.auth.auth import auth_required, get_current_user, get_current_user_id
-from src.backend.core.db import get_connection
-from src.backend.models.roles import has_role
+from ..services.auth.auth import auth_required, get_current_user, get_current_user_id
+from ..core.db import get_connection
+from ..models.roles import has_role
 
 bp = Blueprint("sol_adjuntos", __name__, url_prefix="/api")
 ALLOWED = {"pdf", "png", "jpg", "jpeg", "xlsx", "csv", "docx", "txt"}

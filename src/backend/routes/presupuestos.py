@@ -3,9 +3,9 @@ from collections import defaultdict
 from datetime import datetime, date
 import unicodedata
 from flask import Blueprint, request
-from src.backend.core.db import get_connection
-from src.backend.services.auth.auth import authenticate_request, get_current_user_id
-from src.backend.models.schemas import BudgetIncreaseCreate, BudgetIncreaseDecision
+from ..core.db import get_connection
+from ..services.auth.auth import authenticate_request, get_current_user_id
+from ..models.schemas import BudgetIncreaseCreate, BudgetIncreaseDecision
 
 bp = Blueprint("presupuestos", __name__, url_prefix="/api")
 

@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 
 import jwt
 
-from src.backend.core.config import Settings
+from ...core.config import Settings
 
 _ALGORITHM = "HS256"
 

@@ -3,8 +3,8 @@ from __future__ import annotations
 import time
 from typing import Any, Dict, Optional, Tuple
 
-from .config import Settings
-from .db import get_connection
+from ..config import Settings
+from ..db import get_connection
 
 
 def init_refresh_token_store() -> None:

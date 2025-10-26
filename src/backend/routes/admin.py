@@ -5,12 +5,12 @@ import sqlite3
 import json
 from flask import Blueprint, request
 from typing import Any, Dict, List, Optional
-from src.backend.core.config import Settings
-from src.backend.core.db import get_connection
-from src.backend.services.auth.auth import authenticate_request, get_current_user, get_current_user_id
-from src.backend.services.db.security import hash_password
-from src.backend.routes.solicitudes import STATUS_PENDING, STATUS_CANCEL_PENDING, STATUS_CANCEL_REJECTED
-from src.backend.services.health import get_system_status
+from ..core.config import Settings
+from ..core.db import get_connection
+from ..services.auth.auth import authenticate_request, get_current_user, get_current_user_id
+from ..services.db.security import hash_password
+from ..routes.solicitudes import STATUS_PENDING, STATUS_CANCEL_PENDING, STATUS_CANCEL_REJECTED
+from ..services.health import get_system_status
 
 bp = Blueprint("admin", __name__, url_prefix="/api/admin")
 

@@ -6,9 +6,9 @@ import re
 
 from flask import Blueprint, current_app, request, jsonify
 
-from src.backend.core.db import get_connection
-from src.backend.services.auth.auth import authenticate_request, get_current_user_id
-from src.backend.services.db.security import hash_password, verify_password
+from ..core.db import get_connection
+from ..services.auth.auth import authenticate_request, get_current_user_id
+from ..services.db.security import hash_password, verify_password
 
 bp = Blueprint("usuarios", __name__, url_prefix="/api/usuarios")
 

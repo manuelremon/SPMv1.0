@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import json
 from flask import Blueprint, request, jsonify
-from src.backend.core.db import get_connection
-from src.backend.services.auth.auth import authenticate_request, get_current_user, get_current_user_id
-from src.backend.models.roles import has_role
-from src.backend.models.schemas import (
+from ..core.db import get_connection
+from ..services.auth.auth import authenticate_request, get_current_user, get_current_user_id
+from ..models.roles import has_role
+from ..models.schemas import (
     TrasladoCreate, TrasladoUpdate, SolpedCreate, SolpedUpdate,
     PurchaseOrderCreate, PurchaseOrderUpdate
 )

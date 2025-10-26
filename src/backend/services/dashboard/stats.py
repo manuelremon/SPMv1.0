@@ -3,7 +3,7 @@ Dashboard Statistics Service
 Proporciona estadísticas y datos para el dashboard
 """
 from datetime import datetime, timedelta
-from src.backend.core.db import get_db
+from ...core.db import get_db
 import json
 
 def _get_json_field(row, data_json_column):
