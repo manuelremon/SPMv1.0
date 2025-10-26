@@ -60,6 +60,14 @@ CATALOG_RESOURCES: Dict[str, Dict[str, Any]] = {
         "order_by": "nombre COLLATE NOCASE",
         "csv": {"filename": "Sectores.csv", "columns": ("nombre", "descripcion", "activo")},
     },
+    "materiales": {
+        "table": "materiales",
+        "fields": ("id", "codigo", "sap", "nombre", "descripcion", "descripcion_larga", "unidad", "precio_usd", "activo"),
+        "required": ("codigo",),
+        "defaults": {"activo": 1},
+        "bools": ("activo",),
+        "order_by": "codigo COLLATE NOCASE",
+    },
 }
 
 
