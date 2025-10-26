@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug Materiales</title>
+  <style>
+    body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+    .console { background: #252526; border: 1px solid #555; padding: 15px; margin: 10px 0; max-height: 600px; overflow: auto; }
+    .log { margin: 5px 0; }
+    .error { color: #f48771; }
+    .success { color: #89d185; }
+    .info { color: #4fc1ff; }
+    button { padding: 10px 20px; margin: 10px 5px 10px 0; background: #007acc; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0098ff; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Debug: Carga de Materiales</h1>
+  
+  <div>
+    <button onclick="testAPI()">🌐 Probar API /catalogos</button>
+    <button onclick="testLoadForm()">📦 Probar loadFormCatalogs()</button>
+    <button onclick="clearLogs()">🗑️ Limpiar logs</button>
+  </div>
+  
+  <div class="console" id="console">
+    <div class="log info">Consola de debug iniciada...</div>
+  </div>
+
+  <script>
+    const consoleDiv = document.getElementById('console');
+    
+    function log(msg, type = 'info') {
+      const logEl = document.createElement('div');
+      logEl.className = `log ${type}`;
+      logEl.textContent = msg;
+      consoleDiv.appendChild(logEl);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+    
+    function clearLogs() {
+      consoleDiv.innerHTML = '<div class="log info">Consola limpiada</div>';
+    }
+    
+    async function testAPI() {
+      log('📍 Probando /api/catalogos...', 'info');
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/catalogos', {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+        log(`Status: ${response.status}`, 'info');
+        
+        const data = await response.json();
+        const catalogs = data.data || data;
+        
+        log(`✅ Centros: ${catalogs.centros?.length || 0}`, 'success');
+        log(`✅ Almacenes: ${catalogs.almacenes?.length || 0}`, 'success');
+        log(`✅ Materiales: ${catalogs.materiales?.length || 0}`, 'success');
+        
+        if (catalogs.materiales && catalogs.materiales.length > 0) {
+          const m = catalogs.materiales[0];
+          log(`Ejemplo material: {id: ${m.id}, nombre: "${m.nombre}", sap: "${m.sap || m.codigo || 'N/A'}", descripcion: "${m.descripcion || 'N/A'}"}`, 'info');
+        }
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+    
+    async function testLoadForm() {
+      log('📍 Probando loadFormCatalogs()...', 'info');
+      
+      // Crear un elemento mock para el select
+      if (!document.getElementById('materialSelect')) {
+        const select = document.createElement('select');
+        select.id = 'materialSelect';
+        document.body.appendChild(select);
+        log('✅ Mock select creado', 'success');
+      }
+      
+      const originalLog = console.log;
+      console.log = function(...args) {
+        log(args.join(' '), 'info');
+        originalLog.apply(console, args);
+      };
+      
+      try {
+        // Copy the function from home.html
+        await window.loadFormCatalogs?.();
+        
+        const materialSelect = document.getElementById('materialSelect');
+        log(`✅ Materiales en select: ${materialSelect?.options.length || 0}`, 'success');
+        
+        if (materialSelect?.options.length > 1) {
+          log('✅ Función funciona correctamente', 'success');
+        } else {
+          log('❌ No se cargaron materiales', 'error');
+        }
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      } finally {
+        console.log = originalLog;
+      }
+    }
+    
+    // Auto-test on load
+    setTimeout(() => {
+      log('🚀 Iniciando pruebas automáticas...', 'info');
+      testAPI();
+    }, 1000);
+  </script>
+</body>
+</html>
