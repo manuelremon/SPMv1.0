@@ -109,11 +109,11 @@ class TestGateEvaluation:
         defaults = {
             "item_id": "MAT001",
             "demand_quantity": 100.0,
-            "required_date": datetime.now() + timedelta(days=5),
+            "required_date": (datetime.now() + timedelta(days=5)).isoformat(),
             "local_stock_available": 50.0,
             "local_assets_available": 0.0,
-            "bom_components": {},
-            "substitutes": [],
+            "bom_components_available": {},
+            "substitutes_available": [],
             "transfer_centers_available": {},
             "intercompany_available": False,
             "vmi_contract_active": False,
@@ -123,7 +123,7 @@ class TestGateEvaluation:
             "expedite_budget_available": 0.0,
             "supplier_available": True,
             "supplier_lead_time_days": 10,
-            "criticality": "medium",
+            "criticality": "MEDIUM",
             "budget_available": 1000.0,
             "max_acceptable_cost": 900.0
         }
@@ -301,11 +301,11 @@ class TestExecutionEngine:
         defaults = {
             "item_id": "MAT001",
             "demand_quantity": 100.0,
-            "required_date": datetime.now() + timedelta(days=5),
+            "required_date": (datetime.now() + timedelta(days=5)).isoformat(),
             "local_stock_available": 50.0,
             "local_assets_available": 0.0,
-            "bom_components": {},
-            "substitutes": [],
+            "bom_components_available": {},
+            "substitutes_available": [],
             "transfer_centers_available": {},
             "intercompany_available": False,
             "vmi_contract_active": False,
@@ -315,7 +315,7 @@ class TestExecutionEngine:
             "expedite_budget_available": 0.0,
             "supplier_available": True,
             "supplier_lead_time_days": 10,
-            "criticality": "medium",
+            "criticality": "MEDIUM",
             "budget_available": 1000.0,
             "max_acceptable_cost": 900.0
         }
@@ -363,7 +363,7 @@ class TestExecutionEngine:
         
         stats = executor.get_execution_statistics(paths)
         
-        assert stats['total'] == 10
+        assert stats['total_executions'] == 10
         assert 'success_rate' in stats
         assert 'avg_lead_time' in stats
         assert 'avg_cost' in stats
@@ -518,11 +518,11 @@ class TestGateManager:
         context = ExecutionContext(
             item_id="MAT001",
             demand_quantity=100.0,
-            required_date=datetime.now() + timedelta(days=5),
+            required_date=(datetime.now() + timedelta(days=5)).isoformat(),
             local_stock_available=50.0,
             local_assets_available=0.0,
-            bom_components={},
-            substitutes=[],
+            bom_components_available={},
+            substitutes_available=[],
             transfer_centers_available={},
             intercompany_available=False,
             vmi_contract_active=False,
@@ -532,7 +532,7 @@ class TestGateManager:
             expedite_budget_available=0.0,
             supplier_available=True,
             supplier_lead_time_days=10,
-            criticality="medium",
+            criticality="MEDIUM",
             budget_available=1000.0,
             max_acceptable_cost=900.0
         )
@@ -579,11 +579,11 @@ class TestIntegration:
             ExecutionContext(
                 item_id=f"MAT{i:03d}",
                 demand_quantity=100.0,
-                required_date=datetime.now() + timedelta(days=5),
+                required_date=(datetime.now() + timedelta(days=5)).isoformat(),
                 local_stock_available=50.0 + i*10,
                 local_assets_available=0.0,
-                bom_components={},
-                substitutes=[],
+                bom_components_available={},
+                substitutes_available=[],
                 transfer_centers_available={},
                 intercompany_available=False,
                 vmi_contract_active=False,
@@ -593,7 +593,7 @@ class TestIntegration:
                 expedite_budget_available=0.0,
                 supplier_available=True,
                 supplier_lead_time_days=10,
-                criticality="medium",
+                criticality="MEDIUM",
                 budget_available=1000.0,
                 max_acceptable_cost=900.0
             )

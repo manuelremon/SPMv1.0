@@ -14,9 +14,9 @@ from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime, timedelta
 
-from .models.sourcing import SourcingOption, SourcingPath
-from .models.items import ItemMaster
-from .models.inventory import InventoryLot, QCStatus
+from ..models.sourcing import SourcingOption, SourcingPath
+from ..models.items import ItemMaster
+from ..models.inventory import InventoryLot, QCStatus
 
 
 class FilterReason(str, Enum):
@@ -201,15 +201,28 @@ class TechnicalLegalFilter:
         
         # 8. SPECIFICATIONS MATCH CHECK (simplificado)
         if item.specifications and len(item.specifications) > 0:
-            # Para opciones equivalentes, verificar match de specs
+            # Para opciones equivalentes, verificar que hay equivalentes registrados
             if option.sourcing_path.value == "EQUIVALENT":
-                # Asumimos que SourcingOption tiene un match_score si es equivalente
-                if hasattr(option, 'technical_specs_match'):
-                    if option.technical_specs_match < 0.85:  # Umbral de 85% match
-                        result.feasible = False
-                        result.reasons.append(FilterReason.SPEC_MISMATCH)
-                        result.rejection_notes = f"Match de specs {option.technical_specs_match*100:.0f}% < 85%"
-                        return result
+                # Si no hay equivalentes definidos en el maestro, rechazamos
+                if not item.equivalent_items or len(item.equivalent_items) == 0:
+                    result.feasible = False
+                    result.reasons.append(FilterReason.SPEC_MISMATCH)
+                    result.rejection_notes = "No hay ítems equivalentes definidos"
+                    return result
+                
+                # Verificar que el equivalente está en la lista con buen match
+                equiv_found = False
+                for equiv in item.equivalent_items:
+                    if equiv.equivalent_id in option.option_id:  # Rough check
+                        if equiv.technical_specs_match >= 0.85:
+                            equiv_found = True
+                            break
+                
+                if not equiv_found:
+                    result.feasible = False
+                    result.reasons.append(FilterReason.SPEC_MISMATCH)
+                    result.rejection_notes = "Equivalente sin suficiente match técnico (< 85%)"
+                    return result
         
         # 9. ITEM OBSOLESCENCE CHECK
         if item.active == False:
@@ -227,7 +240,7 @@ class TechnicalLegalFilter:
         self,
         path: SourcingPath,
         item: ItemMaster,
-        inventory_lots: Dict[str, InventoryLot] = None
+        inventory_lots: Optional[Dict[str, InventoryLot]] = None
     ) -> SourcingPath:
         """
         Filtrar todas las opciones en una ruta de abastecimiento

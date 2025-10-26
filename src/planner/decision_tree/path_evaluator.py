@@ -16,7 +16,7 @@ from enum import Enum
 import json
 from datetime import datetime, timedelta
 
-from decision_tree import ExecutionPath, SourceRoute, DecisionNode
+from .decision_tree import ExecutionPath, SourceRoute, DecisionNode
 
 
 class FeasibilityMetric(Enum):

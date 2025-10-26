@@ -19,7 +19,7 @@ Cada nodo tiene gates (puertas de decisión) que determinan si continuar.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Callable, Tuple
+from typing import Dict, List, Optional, Any, Callable, Tuple, Union
 from enum import Enum
 import logging
 from datetime import datetime
@@ -62,10 +62,10 @@ class Gate:
     gate_id: str
     gate_type: GateType
     description: str
-    condition_func: Optional[Callable[[Dict[str, Any]], bool]] = None
+    condition_func: Optional[Callable[[Union[Dict[str, Any], Any]], bool]] = None
     threshold: Optional[float] = None
     
-    def evaluate(self, context: Dict[str, Any]) -> bool:
+    def evaluate(self, context: Union[Dict[str, Any], Any]) -> bool:
         """Evalúa si el gate se abre (True) o cierra (False)."""
         if self.condition_func:
             return self.condition_func(context)
@@ -107,7 +107,7 @@ class DecisionNode:
         self.next_on_failure = next_node
         return self
     
-    def evaluate_gates(self, context: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def evaluate_gates(self, context: Union[Dict[str, Any], Any]) -> Tuple[bool, List[str]]:
         """
         Evalúa todos los gates del nodo.
         

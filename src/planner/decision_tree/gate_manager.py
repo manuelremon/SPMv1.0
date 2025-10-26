@@ -17,7 +17,8 @@ import json
 from datetime import datetime
 from functools import lru_cache
 
-from decision_tree import Gate, GateType, ExecutionContext
+from .decision_tree import Gate, GateType
+from .execution_engine import ExecutionContext
 
 
 class GateState(Enum):
