@@ -1980,14 +1980,18 @@ async function searchMaterialsByDescription(descripcion) {
  */
 function showMaterialSuggestions(materials, targetDropdown) {
   if (!targetDropdown) return;
-  
+
   targetDropdown.innerHTML = '';
-  
+
   if (!materials || materials.length === 0) {
+    targetDropdown.classList.add('hide');
     targetDropdown.style.display = 'none';
     return;
   }
-  
+
+  targetDropdown.classList.remove('hide');
+  targetDropdown.style.display = 'block';
+
   materials.slice(0, 1000).forEach((material) => {
     const div = document.createElement('div');
     div.style.padding = '8px 12px';
@@ -2010,11 +2014,9 @@ function showMaterialSuggestions(materials, targetDropdown) {
     div.addEventListener('click', () => {
       selectMaterial(material, targetDropdown.id === 'suggestCode' ? 'code' : 'desc');
     });
-    
+
     targetDropdown.appendChild(div);
   });
-  
-  targetDropdown.style.display = 'block';
 }
 
 /**
@@ -2033,14 +2035,20 @@ function selectMaterial(material, source) {
     if (codeInput) {
       codeInput.value = material.codigo;
       const suggestCode = document.getElementById('suggestCode');
-      if (suggestCode) suggestCode.style.display = 'none';
+      if (suggestCode) {
+        suggestCode.classList.add('hide');
+        suggestCode.style.display = 'none';
+      }
     }
   } else {
     const descInput = document.getElementById('descSearch');
     if (descInput) {
       descInput.value = material.descripcion;
       const suggestDesc = document.getElementById('suggestDesc');
-      if (suggestDesc) suggestDesc.style.display = 'none';
+      if (suggestDesc) {
+        suggestDesc.classList.add('hide');
+        suggestDesc.style.display = 'none';
+      }
     }
   }
   
@@ -2123,6 +2131,16 @@ function addMaterialItem() {
   const descInput = $('#descSearch');
   if (codeInput) codeInput.value = '';
   if (descInput) descInput.value = '';
+  const suggestCode = document.getElementById('suggestCode');
+  const suggestDesc = document.getElementById('suggestDesc');
+  if (suggestCode) {
+    suggestCode.classList.add('hide');
+    suggestCode.style.display = 'none';
+  }
+  if (suggestDesc) {
+    suggestDesc.classList.add('hide');
+    suggestDesc.style.display = 'none';
+  }
   
   window.materialPageState.selected = null;
   
@@ -2222,7 +2240,15 @@ function initAddMaterialsPage() {
   const suggestDesc = document.getElementById('suggestDesc');
   const btnAdd = document.getElementById('btnAdd');
   const btnShowMaterialDetail = document.getElementById('btnShowMaterialDetail');
-  
+
+  // Aseguramos que los contenedores permitan posicionar correctamente las sugerencias
+  if (codeSearch && codeSearch.parentElement) {
+    codeSearch.parentElement.classList.add('searchbox');
+  }
+  if (descSearch && descSearch.parentElement) {
+    descSearch.parentElement.classList.add('searchbox');
+  }
+
   console.log('Elementos encontrados:', {
     codeSearch: !!codeSearch,
     descSearch: !!descSearch,
@@ -2237,12 +2263,15 @@ function initAddMaterialsPage() {
     codeSearch.addEventListener('input', async (e) => {
       const value = e.target.value.trim();
       console.log('Búsqueda por código:', value);
-      
+
       if (value.length === 0) {
-        if (suggestCode) suggestCode.style.display = 'none';
+        if (suggestCode) {
+          suggestCode.classList.add('hide');
+          suggestCode.style.display = 'none';
+        }
         return;
       }
-      
+
       if (value.length < 1) return;
       
       const materials = await searchMaterialsByCode(value);
@@ -2256,12 +2285,15 @@ function initAddMaterialsPage() {
     descSearch.addEventListener('input', async (e) => {
       const value = e.target.value.trim();
       console.log('Búsqueda por descripción:', value);
-      
+
       if (value.length === 0) {
-        if (suggestDesc) suggestDesc.style.display = 'none';
+        if (suggestDesc) {
+          suggestDesc.classList.add('hide');
+          suggestDesc.style.display = 'none';
+        }
         return;
       }
-      
+
       if (value.length < 2) return;
       
       const materials = await searchMaterialsByDescription(value);
@@ -3138,4 +3170,3 @@ document.addEventListener('DOMContentLoaded', () => {
 // Integrar boot.js
 const logoutBtn = document.querySelector('#btn-logout');
 if (logoutBtn) logoutBtn.addEventListener('click', async () => { await window.API.logout(); location.href = '/index.html'; });
-
