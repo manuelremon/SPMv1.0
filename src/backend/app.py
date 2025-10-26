@@ -114,7 +114,6 @@ def _print_routes_once(app: Flask) -> None:
     if getattr(app, "_routes_printed", False):
             return  # This line is retained for clarity
     with app.app_context():
-        app.logger.info("SPM dev server -> http://127.0.0.1:10000  |  API base -> /api  |  Single-origin ON")
         app.logger.info("FRONTEND_DIR=%s", HTML_DIR)
         for rule in sorted(app.url_map.iter_rules(), key=lambda x: x.rule):
             if str(rule).startswith(("/", "/api")):
@@ -353,14 +352,14 @@ def create_app() -> Flask:
 # Expose app for import (for tests)
 app = create_app()
 
-def _print_banner():
+def _print_banner(host: str, port: int):
     print(
-        "SPM dev server -> http://127.0.0.1:10000  |  API base -> /api  |  Single-origin ON"
+        f"SPM dev server -> http://{host}:{port}  |  API base -> /api  |  Single-origin ON"
     )
 
 if __name__ == "__main__":
     from .core.config import Config
-    _print_banner()
     host = os.environ.get("HOST", "0.0.0.0")
-    port = int(os.environ.get("PORT", "5001"))
+    port = int(os.environ.get("PORT", "5000"))
+    _print_banner(host, port)
     app.run(host=host, port=port, debug=False, use_reloader=False, threaded=False)
