@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Auth</title>
+</head>
+<body>
+    <h1>Test Authentication</h1>
+    <pre id="output">Cargando...</pre>
+
+    <script src="/utils/api.js"></script>
+    <script>
+        async function test() {
+            try {
+                console.log('window.AuthAPI:', window.AuthAPI);
+                if (!window.AuthAPI) {
+                    throw new Error('window.AuthAPI no existe');
+                }
+                
+                const result = await window.AuthAPI.me();
+                document.getElementById('output').textContent = 'Autenticación exitosa:\n' + JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error de autenticación:\n' + error.message;
+                console.error(error);
+            }
+        }
+        
+        // Ejecutar inmediatamente
+        test();
+    </script>
+</body>
+</html>

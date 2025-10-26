@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Recursos</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .resource {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .resource.ok {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        .resource.fail {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .resource.loading {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+        .status {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status.ok { color: #10b981; }
+        .status.fail { color: #ef4444; }
+        .status.loading { color: #f59e0b; }
+        .url {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .section {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Diagnóstico de Recursos - SPM</h1>
+    
+    <button onclick="testAllResources()">Test Todo</button>
+    <button onclick="location.reload()">Recargar</button>
+    <button onclick="testAppJS()">Test app.js</button>
+    <button onclick="testStylesCSS()">Test styles.css</button>
+    <button onclick="testUtilsAPI()">Test utils/api.js</button>
+
+    <div class="section">
+        <h2>Estado de Recursos</h2>
+        <div id="resources"></div>
+    </div>
+
+    <div class="section">
+        <h2>Detalles de Carga de home.html</h2>
+        <button onclick="testHomeHTML()">Simular Carga de home.html</button>
+        <div id="homeTestResult"></div>
+    </div>
+
+    <script>
+        const resources = [
+            { name: 'styles.css', url: '/styles.css', type: 'css' },
+            { name: 'app.js', url: '/app.js', type: 'js' },
+            { name: 'utils/api.js', url: '/utils/api.js', type: 'js' },
+            { name: 'assets/spm-logo.png', url: '/assets/spm-logo.png', type: 'image' },
+            { name: 'components/auth/auth_guard.js', url: '/components/auth/auth_guard.js', type: 'js' },
+        ];
+
+        function createResourceElement(resource, status, message = '') {
+            const div = document.createElement('div');
+            div.className = `resource ${status}`;
+            div.innerHTML = `
+                <div>
+                    <strong>${resource.name}</strong>
+                    <div class="url">${resource.url}</div>
+                    ${message ? `<div style="color: #666; font-size: 12px; margin-top: 5px;">${message}</div>` : ''}
+                </div>
+                <div class="status ${status}">${status === 'ok' ? '✓' : status === 'fail' ? '✗' : '⏳'}</div>
+            `;
+            return div;
+        }
+
+        async function testResource(resource) {
+            const container = document.getElementById('resources');
+            const element = createResourceElement(resource, 'loading', 'Probando...');
+            container.appendChild(element);
+
+            try {
+                const response = await fetch(resource.url, { method: 'HEAD' });
+                
+                if (response.ok || response.status === 304) {
+                    element.className = `resource ok`;
+                    element.innerHTML = createResourceElement(resource, 'ok', `✓ Cargó correctamente (${response.status})`).innerHTML;
+                } else {
+                    element.className = `resource fail`;
+                    element.innerHTML = createResourceElement(resource, 'fail', `✗ HTTP ${response.status}`).innerHTML;
+                }
+            } catch (error) {
+                element.className = `resource fail`;
+                element.innerHTML = createResourceElement(resource, 'fail', `✗ Error: ${error.message}`).innerHTML;
+            }
+        }
+
+        async function testAllResources() {
+            document.getElementById('resources').innerHTML = '';
+            for (const resource of resources) {
+                await testResource(resource);
+            }
+        }
+
+        async function testAppJS() {
+            console.log('Probando app.js...');
+            try {
+                const response = await fetch('/app.js');
+                const text = await response.text();
+                console.log('app.js cargado, primeras líneas:');
+                console.log(text.substring(0, 200));
+                alert(`app.js cargado:\n${text.substring(0, 100)}...`);
+            } catch (e) {
+                console.error('Error cargando app.js:', e);
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function testStylesCSS() {
+            console.log('Probando styles.css...');
+            try {
+                const response = await fetch('/styles.css');
+                const text = await response.text();
+                console.log('styles.css cargado, primeras líneas:');
+                console.log(text.substring(0, 200));
+                alert(`styles.css cargado:\n${text.substring(0, 100)}...`);
+            } catch (e) {
+                console.error('Error cargando styles.css:', e);
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function testUtilsAPI() {
+            console.log('Probando utils/api.js...');
+            try {
+                const response = await fetch('/utils/api.js');
+                const text = await response.text();
+                console.log('utils/api.js cargado, primeras líneas:');
+                console.log(text.substring(0, 200));
+                alert(`utils/api.js cargado:\n${text.substring(0, 100)}...`);
+            } catch (e) {
+                console.error('Error cargando utils/api.js:', e);
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function testHomeHTML() {
+            const div = document.getElementById('homeTestResult');
+            div.innerHTML = '<p>Cargando home.html...</p>';
+
+            try {
+                const response = await fetch('/home.html');
+                const html = await response.text();
+                
+                // Analizar HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Buscar elementos
+                const styleTags = doc.querySelectorAll('link[rel="stylesheet"]');
+                const scriptTags = doc.querySelectorAll('script');
+                const images = doc.querySelectorAll('img');
+                
+                div.innerHTML = `
+                    <h3>✓ home.html cargado exitosamente</h3>
+                    <p><strong>Tamaño:</strong> ${(html.length / 1024).toFixed(2)} KB</p>
+                    <p><strong>CSS links:</strong> ${styleTags.length}</p>
+                    <ul>
+                        ${Array.from(styleTags).map(s => `<li><code>${s.getAttribute('href')}</code></li>`).join('')}
+                    </ul>
+                    <p><strong>Scripts:</strong> ${scriptTags.length}</p>
+                    <ul>
+                        ${Array.from(scriptTags).filter(s => s.src).map(s => `<li><code>${s.getAttribute('src')}</code></li>`).join('')}
+                    </ul>
+                    <p><strong>Imágenes:</strong> ${images.length}</p>
+                    <ul>
+                        ${Array.from(images).map(i => `<li><code>${i.getAttribute('src')}</code></li>`).join('')}
+                    </ul>
+                `;
+            } catch (e) {
+                div.innerHTML = `<p style="color: red;">✗ Error cargando home.html: ${e.message}</p>`;
+            }
+        }
+
+        // Auto-test al cargar
+        window.addEventListener('load', () => {
+            console.log('Página de diagnóstico cargada');
+            testAllResources();
+        });
+    </script>
+</body>
+</html>

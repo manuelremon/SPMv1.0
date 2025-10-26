@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login Flow</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #999;
+        }
+        .test.pass {
+            border-left-color: green;
+            background: #f0fff0;
+        }
+        .test.fail {
+            border-left-color: red;
+            background: #fff0f0;
+        }
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        #log {
+            height: 300px;
+            overflow-y: auto;
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New';
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Flujo de Login</h1>
+    
+    <div class="test">
+        <h3>1. Verificar AuthAPI</h3>
+        <button onclick="testAuthAPI()">Test AuthAPI</button>
+        <div id="testAuthAPI"></div>
+    </div>
+
+    <div class="test">
+        <h3>2. Test de Cookie</h3>
+        <button onclick="testCookie()">Ver Cookies</button>
+        <div id="testCookie"></div>
+    </div>
+
+    <div class="test">
+        <h3>3. Test de /me endpoint</h3>
+        <button onclick="testMe()">Test /me</button>
+        <div id="testMe"></div>
+    </div>
+
+    <div class="test">
+        <h3>4. Test completo de Login</h3>
+        <p>Usuario: <input type="text" id="username" value="admin" style="width: 150px;"></p>
+        <p>Contraseña: <input type="password" id="password" value="admin" style="width: 150px;"></p>
+        <button onclick="testFullLogin()">Login</button>
+        <div id="testFullLogin"></div>
+    </div>
+
+    <h3>Logs</h3>
+    <div id="log"></div>
+
+    <script src="/utils/api.js"></script>
+    <script>
+        function log(msg) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += new Date().toLocaleTimeString() + ' > ' + msg + '\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function testAuthAPI() {
+            const div = document.getElementById('testAuthAPI');
+            try {
+                log('Verificando window.AuthAPI...');
+                if (!window.AuthAPI) throw new Error('window.AuthAPI no existe');
+                if (!window.AuthAPI.me) throw new Error('window.AuthAPI.me no existe');
+                if (!window.AuthAPI.login) throw new Error('window.AuthAPI.login no existe');
+                div.innerHTML = '<span class="pass">✓ window.AuthAPI está disponible</span>';
+                log('✓ AuthAPI OK');
+            } catch (e) {
+                div.innerHTML = '<span class="fail">✗ Error: ' + e.message + '</span>';
+                log('✗ Error: ' + e.message);
+            }
+        }
+
+        function testCookie() {
+            const div = document.getElementById('testCookie');
+            log('Leyendo cookies...');
+            const cookies = document.cookie;
+            if (cookies) {
+                div.innerHTML = '<span class="pass">Cookies presentes:</span><pre>' + cookies + '</pre>';
+                log('✓ Cookies: ' + cookies);
+            } else {
+                div.innerHTML = '<span class="fail">✗ No hay cookies</span>';
+                log('✗ No hay cookies');
+            }
+        }
+
+        async function testMe() {
+            const div = document.getElementById('testMe');
+            try {
+                log('Llamando a /api/auth/me...');
+                const result = await window.AuthAPI.me();
+                div.innerHTML = '<span class="pass">✓ /me respondió:</span><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                log('✓ /me OK: ' + JSON.stringify(result));
+            } catch (e) {
+                div.innerHTML = '<span class="fail">✗ Error en /me: ' + e.message + '</span>';
+                log('✗ /me Error: ' + e.message);
+            }
+        }
+
+        async function testFullLogin() {
+            const div = document.getElementById('testFullLogin');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            try {
+                log(`Intentando login con ${username}...`);
+                const result = await window.AuthAPI.login({ username, password });
+                div.innerHTML = '<span class="pass">✓ Login exitoso:</span><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                log('✓ Login OK');
+                
+                // Ahora intentar /me
+                log('Llamando a /me después del login...');
+                const meResult = await window.AuthAPI.me();
+                div.innerHTML += '<span class="pass">✓ /me después del login:</span><pre>' + JSON.stringify(meResult, null, 2) + '</pre>';
+                log('✓ /me OK después del login');
+            } catch (e) {
+                div.innerHTML = '<span class="fail">✗ Error: ' + e.message + '</span>';
+                log('✗ Error: ' + e.message);
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            log('Página cargada. TestAuthAPI automáticamente...');
+            testAuthAPI();
+        });
+    </script>
+</body>
+</html>

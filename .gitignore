@@ -1,0 +1,80 @@
+# Environment
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Cache & Testing
+.mypy_cache/
+.pytest_cache/
+.coverage/
+htmlcov/
+.tox/
+.hypothesis/
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+spm.db
+test.db
+ai_assistant.db
+
+# Development
+.tmp.driveupload/
+workdir/
+uploads/
+
+# Frontend
+node_modules/
+dist/
+build/
+.nuxt/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Archive & Temporary
+archive/
+database/backup/
+database/audit/*.json
+scripts/db/*.log
+
+# Specific to project
+cookies.txt
+temp_*.ps1
+build/
