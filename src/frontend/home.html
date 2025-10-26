@@ -3682,7 +3682,13 @@
           materialSelect.innerHTML = '<option value="">Seleccione un Material</option>';
           catalogs.materiales.forEach(m => {
             const opt = document.createElement('option');
-            opt.value = JSON.stringify({ id: m.id, nombre: m.nombre, precio: m.precio || 0 });
+            opt.value = JSON.stringify({ 
+              id: m.id, 
+              nombre: m.nombre, 
+              precio: m.precio || 0,
+              sap: m.sap || m.codigo || '',
+              descripcion: m.descripcion || ''
+            });
             opt.textContent = m.nombre;
             materialSelect.appendChild(opt);
           });
