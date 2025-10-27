@@ -1,209 +1,550 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>SPM — Planificador</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="styles.css" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPM · Planificación</title>
+  <link rel="icon" href="/assets/spm-logo.png" type="image/png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #a78bfa;
+      --primary-dark: #5b21b6;
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --danger-light: #f87171;
+      
+      --bg-primary: #1a1f35;
+      --bg-secondary: #262d48;
+      --bg-tertiary: #37415d;
+      --bg-canvas: #0f1729;
+      
+      --text-primary: #f3f4f6;
+      --text-secondary: #d1d5db;
+      --text-tertiary: #9ca3af;
+      
+      --border-default: #3f4655;
+      --border-muted: #2d3342;
+      
+      --transition: 0.3s ease;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #0f1729 0%, #1a1f35 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar {
+      display: none;
+    }
+
+    .main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+      border-bottom: 1px solid var(--border-muted);
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-content h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 0.25rem 0;
+    }
+
+    .header-content p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      background: rgba(124, 58, 237, 0.2);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 1.25rem;
+    }
+
+    .action-btn:hover {
+      background: rgba(124, 58, 237, 0.3);
+      border-color: rgba(124, 58, 237, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      border: 1px solid var(--border-muted);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, var(--bg-tertiary) 100%);
+    }
+
+    .stat-card-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .stat-info {
+      flex: 1;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      opacity: 0.5;
+    }
+
+    .activity-section {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      border: 1px solid var(--border-muted);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-muted);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .table thead {
+      background: rgba(15, 23, 42, 0.8);
+      border-bottom: 2px solid var(--border-muted);
+    }
+
+    .table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-muted);
+      color: var(--text-primary);
+    }
+
+    .table tbody tr:hover {
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .pager {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(124, 58, 237, 0.2);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: var(--text-primary);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: rgba(124, 58, 237, 0.35);
+      border-color: rgba(124, 58, 237, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn.danger {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .btn.danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.35);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    #detailPanel[hidden] {
+      display: none;
+    }
+
+    #detailPanel:not([hidden]) {
+      display: block;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .info-item {
+      padding: 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-muted);
+    }
+
+    .info-item label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 0.5rem 0;
+      display: block;
+    }
+
+    .info-item div {
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .optimization-results {
+      background: rgba(15, 23, 42, 0.8);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      border-left: 3px solid var(--primary);
+    }
+
+    .optimization-results p {
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .status-badge.in-process {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+    }
+
+    .status-badge.optimized {
+      background: rgba(124, 58, 237, 0.2);
+      color: #a78bfa;
+    }
+
+    .status-badge.completed {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table {
+        font-size: 0.875rem;
+      }
+
+      .table th, .table td {
+        padding: 0.75rem;
+      }
+
+      .content {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
-<body class="layout">
-  <div class="main-container">
+<body data-page="planificador">
+  <script>
+    document.body.classList.add('page-' + (document.body.dataset.page || 'default'));
+  </script>
 
-    <body>
-  <div class="main-container">
+  <aside class="sidebar"></aside>
 
-    <header class="app-header" id="globalNav" data-nav-open="false">
-      <div class="app-header__inner">
-        <a class="app-logo" href="home.html" aria-label="Ir al inicio">
-          <img src="assets/spm-logo.png" alt="Logotipo de SPM"/>
-        </a>
-        <button type="button" class="app-header__toggle" id="navToggle" aria-controls="primaryNav" aria-expanded="false">
-          <span class="sr-only">Alternar navegación</span>
-          <span class="app-header__toggle-bar"></span>
-          <span class="app-header__toggle-bar"></span>
-          <span class="app-header__toggle-bar"></span>
-        </button>
-        <nav class="app-nav" id="primaryNav" aria-label="Navegación principal">
-          <ul class="app-menu" role="menubar">
-            <li class="app-menu__item has-submenu" data-menu="inicio" role="none">
-              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
-                <span>Inicio</span>
-                <span class="app-menu__caret" aria-hidden="true"></span>
-              </button>
-              <div class="app-submenu" role="menu" hidden aria-hidden="true">
-                <a href="mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
-                <a href="preferencias.html" class="app-submenu__link" role="menuitem">Preferencias</a>
-                <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesión</button>
-                <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>
-              </div>
-            </li>
-            <li class="app-menu__item has-submenu" data-menu="solicitudes" role="none">
-              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
-                <span>Solicitudes</span>
-                <span class="app-menu__caret" aria-hidden="true"></span>
-              </button>
-              <div class="app-submenu" role="menu" hidden aria-hidden="true">
-                <a href="mis-solicitudes.html" class="app-submenu__link" role="menuitem">Mis solicitudes</a>
-                <a href="crear-solicitud.html" class="app-submenu__link" role="menuitem">Crear solicitud</a>
-              </div>
-            </li>
-            <li class="app-menu__item" role="none">
-              <a href="notificaciones.html" class="app-menu__link has-badge" role="menuitem">Notificaciones <span class="badge hide" id="navNotificationsBadge">0</span></a>
-            </li>
-            <li class="app-menu__item" role="none">
-              <a href="presupuesto.html" class="app-menu__link hide" id="navPresupuesto" role="menuitem">Presupuesto</a>
-            </li>
-            <li class="app-menu__item has-submenu hide" id="adminMenuItem" data-menu="admin" role="none">
-              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
-                <span>Panel de control</span>
-                <span class="app-menu__caret" aria-hidden="true"></span>
-              </button>
-              <div class="app-submenu" role="menu" hidden aria-hidden="true">
-                <a href="admin-dashboard.html" class="app-submenu__link" role="menuitem">Dashboard</a>
-                <a href="admin-solicitudes.html" class="app-submenu__link" role="menuitem">Solicitudes</a>
-                <a href="admin-usuarios.html" class="app-submenu__link" role="menuitem">Usuarios</a>
-                <a href="admin-materiales.html" class="app-submenu__link" role="menuitem">Materiales</a>
-                <a href="admin-centros.html" class="app-submenu__link" role="menuitem">Centros</a>
-                <a href="admin-almacenes.html" class="app-submenu__link" role="menuitem">Almacenes</a>
-                <div class="app-submenu__divider" role="separator"></div>
-                <div class="app-submenu__section">
-                  <span class="app-submenu__section-title">Reportes y auditoría</span>
-                  <a href="admin-reportes.html" class="app-submenu__link" role="menuitem">Reportes</a>
-                </div>
-              </div>
-            </li>
-            <li class="app-menu__item hide" id="plannerMenuItem" role="none">
-              <a href="planificador.html" class="app-menu__link" role="menuitem">Planificador</a>
-            </li>
-            <li class="app-menu__item hide" id="approverMenuItem" role="none">
-              <a href="mis-solicitudes.html?filter=pending_approval" class="app-menu__link" role="menuitem">Aprobaciones pendientes</a>
-            </li>
-          </ul>
-        </nav>
+  <div class="main-container">
+    <header class="header">
+      <div class="header-content">
+        <h1>Gestión de Planificación</h1>
+        <p>Abastecimiento optimizado de solicitudes de materiales</p>
+      </div>
+      <div class="header-actions">
+        <button class="action-btn" id="btnRefresh" title="Actualizar datos">🔄</button>
       </div>
     </header>
 
-  <main class="content">
-    <section class="panel">
-      <h2>Bandeja</h2>
-      <form id="frmFilters" class="filters">
-        <input id="fCentro" placeholder="Centro" />
-        <input id="fSector" placeholder="Sector" />
-        <input id="fAlmacen" placeholder="Almacén" />
-        <select id="fCriticidad">
-          <option value="">Criticidad (todas)</option>
-          <option value="Alta">Alta</option>
-          <option value="Normal">Normal</option>
-        </select>
-        <input id="fQ" placeholder="Buscar..." />
-        <button class="btn" id="btnBuscar" type="submit">Buscar</button>
-        <button class="btn ghost" id="btnLimpiar" type="button">Limpiar</button>
-      </form>
-
-      <div class="grid-2">
-        <div>
-          <h3>Mis en tratamiento</h3>
-          <table id="tblMias" class="table sortable">
-            <thead>
-              <tr>
-                <th data-sort="number">ID</th>
-                <th>Centro</th>
-                <th>Sector</th>
-                <th>Criticidad</th>
-                <th data-sort="number">Total</th>
-                <th>Actualizado</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <div class="pager">
-            <button class="btn" id="pgPrevMias">◀</button>
-            <span id="pgInfoMias"></span>
-            <button class="btn" id="pgNextMias">▶</button>
+    <div class="content">
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-info">
+              <div class="stat-label">Pendientes</div>
+              <div class="stat-value" id="statPending">0</div>
+            </div>
+            <div class="stat-icon">⏳</div>
           </div>
         </div>
-
-        <div>
-          <h3>Disponibles para tomar</h3>
-          <table id="tblPend" class="table sortable">
-            <thead>
-              <tr>
-                <th data-sort="number">ID</th>
-                <th>Centro</th>
-                <th>Sector</th>
-                <th>Criticidad</th>
-                <th data-sort="number">Total</th>
-                <th>Actualizado</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <div class="pager">
-            <button class="btn" id="pgPrevPend">◀</button>
-            <span id="pgInfoPend"></span>
-            <button class="btn" id="pgNextPend">▶</button>
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-info">
+              <div class="stat-label">En Proceso</div>
+              <div class="stat-value" id="statInProcess">0</div>
+            </div>
+            <div class="stat-icon">⚙️</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-info">
+              <div class="stat-label">Optimizadas</div>
+              <div class="stat-value" id="statOptimized">0</div>
+            </div>
+            <div class="stat-icon">✨</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-info">
+              <div class="stat-label">Completadas</div>
+              <div class="stat-value" id="statCompleted">0</div>
+            </div>
+            <div class="stat-icon">✅</div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="panel">
-      <h2>Estadísticas</h2>
-      <form id="frmStats" class="filters">
-        <input id="sDesde" type="date" />
-        <input id="sHasta" type="date" />
-        <button class="btn" id="btnStats" type="submit">Actualizar</button>
-      </form>
-      <div id="statsCards" class="cards"></div>
-      <table id="tblTopCentros" class="table">
-        <thead><tr><th>Centro</th><th>Solicitudes</th><th>Monto</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </section>
-  </main>
+      <div class="activity-section">
+        <h2 class="section-title">📋 Solicitudes por Procesar</h2>
+        
+        <div class="table-wrapper">
+          <table class="table" id="solicitudesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Centro</th>
+                <th>Sector</th>
+                <th>Criticidad</th>
+                <th>Items</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                  Cargando solicitudes...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-  <div id="dlgDetalle" class="modal hide" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
-    <div class="modal-content">
-      <h3 id="dlgTitle">Solicitud <span id="detId"></span></h3>
-      <div id="detMeta" class="meta"></div>
-
-      <table id="tblItems" class="table">
-        <thead>
-          <tr>
-            <th>#</th><th>Código</th><th>Descripción</th><th>UM</th>
-            <th>Solicitada</th><th>Precio</th>
-            <th>Decisión</th><th>Aprobada</th><th>Eqv</th><th>Prov.</th><th>$ Est.</th><th>Comentario</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-
-      <div class="actions">
-        <button class="btn" id="btnAISuggestions">Sugerencias IA</button>
+        <div class="pager">
+          <button class="btn" id="btnPrevPage" disabled>◀ Anterior</button>
+          <span id="pageInfo" style="color: var(--text-secondary); font-size: 0.9rem;">Página 1</span>
+          <button class="btn" id="btnNextPage" disabled>Siguiente ▶</button>
+        </div>
       </div>
 
-      <div id="aiPanel" class="ai-panel hide">
-        <h4>Sugerencias IA</h4>
-        <div id="aiSuggestions" class="ai-suggestions"></div>
-      </div>
+      <div id="detailPanel" class="activity-section" hidden>
+        <div class="flex-between">
+          <h2 class="section-title">📄 Detalles de Solicitud <span id="detailSolicitudId"></span></h2>
+          <button class="btn" id="btnCloseDetail">✕ Cerrar</button>
+        </div>
 
-      <div class="actions end">
-        <button class="btn" id="btnGuardarItems">Guardar cambios</button>
-        <button class="btn success" id="btnFinalizar">Finalizar</button>
-        <button class="btn danger" id="btnRechazar">Rechazar</button>
-        <button class="btn ghost" id="btnLiberar">Liberar</button>
-        <button class="btn" id="btnCerrar">Cerrar</button>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Centro</label>
+            <div id="detailCentro">—</div>
+          </div>
+          <div class="info-item">
+            <label>Sector</label>
+            <div id="detailSector">—</div>
+          </div>
+          <div class="info-item">
+            <label>Criticidad</label>
+            <div id="detailCriticidad">—</div>
+          </div>
+          <div class="info-item">
+            <label>Estado</label>
+            <div id="detailEstado">—</div>
+          </div>
+          <div class="info-item">
+            <label>Total</label>
+            <div id="detailTotal">—</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">📊 Análisis de Optimización</h3>
+        <div class="optimization-results" id="optimizationResults">
+          <p>Cargando análisis...</p>
+        </div>
+
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">📦 Materiales</h3>
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Unidad</th>
+                <th>Precio Unit.</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="materialsTable">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 1rem; color: var(--text-secondary);">
+                  Cargando materiales...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn" id="btnOptimize">✨ Optimizar Solicitud</button>
+        </div>
       </div>
-      <p id="detMsg" class="msg"></p>
     </div>
   </div>
 
-  </main>
-  </div>
-
-  <div class="toasts" id="toasts"></div>
-  <script src="/app.js" defer></script>
+  <script src="/utils/api.js"></script>
+  <script src="/app.js"></script>
+  <script src="./planificador.js" defer></script>
 </body>
 </html>

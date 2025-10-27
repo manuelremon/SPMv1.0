@@ -67,7 +67,7 @@ async function me() {
 }
 
 async function updateMe(data) {
-  const r = await fetch(`${BASE}/api/auth/me`, {
+  const r = await fetch(`${BASE}/api/users/me`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ..._csrfHeaders() },
     body: JSON.stringify(data),
@@ -78,10 +78,10 @@ async function updateMe(data) {
 }
 
 async function changePassword(current, newPw) {
-  const r = await fetch(`${BASE}/api/auth/change-password`, {
+  const r = await fetch(`${BASE}/api/auth/me/cambiar-password`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ..._csrfHeaders() },
-    body: JSON.stringify({ current, new: newPw }),
+    body: JSON.stringify({ current_password: current, new_password: newPw }),
     credentials: 'include',
   });
   if (!r.ok) throw new Error('change_failed');

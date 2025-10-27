@@ -171,5 +171,13 @@
       results.style.display = 'block';
     }
   </script>
+
+  <script>
+    // Convertir data-page a clase de body inmediatamente
+    const pageName = document.body.dataset.page;
+    if (pageName) {
+      document.body.classList.add('page-' + pageName);
+    }
+  </script>
 </body>
 </html>

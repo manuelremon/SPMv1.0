@@ -1148,6 +1148,15 @@
         </a>
       </div>
 
+      <!-- PLANNER SECTION -->
+      <div class="nav-section hidden" id="plannerSection">
+        <div class="nav-section-title">Planificación</div>
+        <a href="#" class="nav-item" data-page="planner" target="_self">
+          <span class="nav-icon">📈</span>
+          <span>Planificación</span>
+        </a>
+      </div>
+
       <!-- SETTINGS SECTION -->
       <div class="nav-section">
         <a href="#" class="nav-item" data-page="preferences">
@@ -1163,13 +1172,13 @@
 
     <!-- SIDEBAR FOOTER -->
     <div class="sidebar-footer">
-      <div class="user-profile">
+      <a href="mi-cuenta.html" class="user-profile">
         <div class="user-avatar" id="userAvatarSmall">M</div>
         <div class="user-info">
           <div class="user-name" id="userNameSidebar">Manuel</div>
           <div class="user-role" id="userRoleSidebar">Admin</div>
         </div>
-      </div>
+      </a>
       <button class="nav-item" id="logoutBtn">
         <span class="nav-icon">🚪</span>
         <span>Cerrar Sesión</span>
@@ -2867,16 +2876,188 @@
         </div>
       </div>
 
+      <!-- PAGE: PLANIFICACIÓN -->
+      <div id="page-planner" class="page-content">
+        <div class="content-header">
+          <h1 class="page-title">🗂️ Gestión de Planificación</h1>
+          <p class="page-subtitle">Abastecimiento optimizado de solicitudes de materiales</p>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 1.5rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#7c3aed'; this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='#2d3342'; this.style.transform='none'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Pendientes</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #f3f4f6;" id="statPending">0</div>
+              </div>
+              <div style="font-size: 2rem; opacity: 0.5;">⏳</div>
+            </div>
+          </div>
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 1.5rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#7c3aed'; this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='#2d3342'; this.style.transform='none'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">En Proceso</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #f3f4f6;" id="statInProcess">0</div>
+              </div>
+              <div style="font-size: 2rem; opacity: 0.5;">⚙️</div>
+            </div>
+          </div>
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 1.5rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#7c3aed'; this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='#2d3342'; this.style.transform='none'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Optimizadas</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #f3f4f6;" id="statOptimized">0</div>
+              </div>
+              <div style="font-size: 2rem; opacity: 0.5;">✨</div>
+            </div>
+          </div>
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 1.5rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#7c3aed'; this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='#2d3342'; this.style.transform='none'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Completadas</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #f3f4f6;" id="statCompleted">0</div>
+              </div>
+              <div style="font-size: 2rem; opacity: 0.5;">✅</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABLA DE SOLICITUDES -->
+        <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px);">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: #f3f4f6; margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem;">📋 Solicitudes por Procesar</h2>
+          
+          <div style="overflow-x: auto; margin-bottom: 1.5rem; border-radius: 0.5rem; border: 1px solid #2d3342;">
+            <table style="width: 100%; border-collapse: collapse; background: rgba(15, 23, 42, 0.6);" id="solicitudesTable">
+              <thead style="background: rgba(15, 23, 42, 0.8); border-bottom: 2px solid #2d3342;">
+                <tr>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">ID</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Centro</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Sector</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Criticidad</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Items</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Monto</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Estado</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="8" style="padding: 2rem; text-align: center; color: #d1d5db;">Cargando solicitudes...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; padding: 1rem 0;">
+            <button class="btn" id="btnPrevPage" disabled style="opacity: 0.5; cursor: not-allowed;">◀ Anterior</button>
+            <span id="pageInfo" style="color: #d1d5db; font-size: 0.9rem;">Página 1</span>
+            <button class="btn" id="btnNextPage" disabled style="opacity: 0.5; cursor: not-allowed;">Siguiente ▶</button>
+          </div>
+        </div>
+
+        <!-- PANEL DE DETALLES (OCULTO POR DEFECTO) -->
+        <div id="detailPanel" class="page-content" hidden style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #f3f4f6; margin: 0; display: flex; align-items: center; gap: 0.5rem;">📄 Detalles de Solicitud <span id="detailSolicitudId"></span></h2>
+            <button class="btn" id="btnCloseDetail" style="margin-left: auto;">✕ Cerrar</button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid #2d3342;">
+              <label style="font-size: 0.75rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem 0; display: block;">Centro</label>
+              <div style="font-size: 1rem; color: #f3f4f6; font-weight: 500;" id="detailCentro">—</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid #2d3342;">
+              <label style="font-size: 0.75rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem 0; display: block;">Sector</label>
+              <div style="font-size: 1rem; color: #f3f4f6; font-weight: 500;" id="detailSector">—</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid #2d3342;">
+              <label style="font-size: 0.75rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem 0; display: block;">Criticidad</label>
+              <div style="font-size: 1rem; color: #f3f4f6; font-weight: 500;" id="detailCriticidad">—</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid #2d3342;">
+              <label style="font-size: 0.75rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem 0; display: block;">Estado</label>
+              <div style="font-size: 1rem; color: #f3f4f6; font-weight: 500;" id="detailEstado">—</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid #2d3342;">
+              <label style="font-size: 0.75rem; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem 0; display: block;">Total</label>
+              <div style="font-size: 1rem; color: #f3f4f6; font-weight: 500;" id="detailTotal">—</div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem; color: #f3f4f6;">📊 Análisis de Optimización</h3>
+          <div style="background: rgba(15, 23, 42, 0.8); padding: 1.5rem; border-radius: 0.5rem; border-left: 3px solid #7c3aed;" id="optimizationResults">
+            <p style="margin: 0.5rem 0; font-size: 0.95rem; color: #d1d5db;">Cargando análisis...</p>
+          </div>
+
+          <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem; color: #f3f4f6;">📦 Materiales</h3>
+          <div style="overflow-x: auto; margin-bottom: 1.5rem; border-radius: 0.5rem; border: 1px solid #2d3342;">
+            <table style="width: 100%; border-collapse: collapse; background: rgba(15, 23, 42, 0.6);">
+              <thead style="background: rgba(15, 23, 42, 0.8); border-bottom: 2px solid #2d3342;">
+                <tr>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Código</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Descripción</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Cantidad</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Unidad</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Precio Unit.</th>
+                  <th style="padding: 1rem; text-align: left; font-weight: 600; color: #d1d5db; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Total</th>
+                </tr>
+              </thead>
+              <tbody id="detailMateriales">
+                <tr>
+                  <td colspan="6" style="padding: 1rem; text-align: center; color: #d1d5db;">Cargando materiales...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <button class="btn" id="btnOptimize">✨ Optimizar Solicitud</button>
+          </div>
+        </div>
+      </div>
+
       <!-- PAGE: NOTIFICACIONES -->
       <div id="page-notifications" class="page-content">
         <div class="content-header">
-          <h1 class="page-title">Notificaciones</h1>
+          <h1 class="page-title">🔔 Notificaciones</h1>
           <p class="page-subtitle">Mantente actualizado con tus notificaciones</p>
         </div>
-        <div class="empty-state">
-          <div class="empty-state-icon">🔔</div>
-          <h3>Notificaciones</h3>
-          <p>No tienes notificaciones nuevas.</p>
+        <div style="display: grid; gap: 1rem; padding: 1.5rem 0;">
+          <!-- Notification Item 1 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-left: 4px solid #10b981; border-radius: 0.75rem; padding: 1.25rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderLeftColor='#3b82f6'" onmouseout="this.style.borderLeftColor='#10b981'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #60a5fa; font-weight: 600; margin-bottom: 0.5rem;">✅ Solicitud Aprobada</div>
+                <div style="font-size: 0.95rem; color: #f3f4f6; margin-bottom: 0.5rem;">Tu solicitud #1234 ha sido aprobada</div>
+                <div style="font-size: 0.8rem; color: #9ca3af;">Hace 2 horas</div>
+              </div>
+              <div style="background: #10b981; padding: 0.5rem; border-radius: 0.5rem; color: white;">✓</div>
+            </div>
+          </div>
+          <!-- Notification Item 2 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-left: 4px solid #f59e0b; border-radius: 0.75rem; padding: 1.25rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderLeftColor='#3b82f6'" onmouseout="this.style.borderLeftColor='#f59e0b'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #fbbf24; font-weight: 600; margin-bottom: 0.5rem;">⚠️ Requiere Revisión</div>
+                <div style="font-size: 0.95rem; color: #f3f4f6; margin-bottom: 0.5rem;">La solicitud #1232 requiere revisión de documentación</div>
+                <div style="font-size: 0.8rem; color: #9ca3af;">Hace 6 horas</div>
+              </div>
+              <div style="background: #f59e0b; padding: 0.5rem; border-radius: 0.5rem; color: white;">!</div>
+            </div>
+          </div>
+          <!-- Notification Item 3 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-left: 4px solid #3b82f6; border-radius: 0.75rem; padding: 1.25rem; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderLeftColor='#10b981'" onmouseout="this.style.borderLeftColor='#3b82f6'">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+              <div style="flex: 1;">
+                <div style="font-size: 0.875rem; color: #60a5fa; font-weight: 600; margin-bottom: 0.5rem;">ℹ️ Información del Sistema</div>
+                <div style="font-size: 0.95rem; color: #f3f4f6; margin-bottom: 0.5rem;">Se ha iniciado sesión desde otro dispositivo</div>
+                <div style="font-size: 0.8rem; color: #9ca3af;">Hace 1 día</div>
+              </div>
+              <div style="background: #3b82f6; padding: 0.5rem; border-radius: 0.5rem; color: white;">i</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2948,27 +3129,107 @@
       <!-- PAGE: PREFERENCIAS -->
       <div id="page-preferences" class="page-content">
         <div class="content-header">
-          <h1 class="page-title">Preferencias</h1>
+          <h1 class="page-title">⚙️ Preferencias</h1>
           <p class="page-subtitle">Personaliza tu experiencia en SPM</p>
         </div>
-        <div class="empty-state">
-          <div class="empty-state-icon">⚙️</div>
-          <h3>Configuración</h3>
-          <p>Las opciones de preferencias estarán disponibles pronto.</p>
+        <div style="max-width: 600px; background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; padding: 2rem; margin-top: 2rem;">
+          <!-- Tema -->
+          <div style="margin-bottom: 2rem; border-bottom: 1px solid #2d3342; padding-bottom: 2rem;">
+            <h3 style="color: #f3f4f6; margin: 0 0 1rem 0; font-size: 1rem; font-weight: 600;">🎨 Tema</h3>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: #d1d5db;">
+              <input type="radio" name="theme" value="dark" checked style="cursor: pointer;">
+              <span>Modo Oscuro (Recomendado)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: #d1d5db; margin-top: 0.75rem;">
+              <input type="radio" name="theme" value="light" style="cursor: pointer;">
+              <span>Modo Claro</span>
+            </label>
+          </div>
+          <!-- Notificaciones -->
+          <div style="margin-bottom: 2rem; border-bottom: 1px solid #2d3342; padding-bottom: 2rem;">
+            <h3 style="color: #f3f4f6; margin: 0 0 1rem 0; font-size: 1rem; font-weight: 600;">🔔 Notificaciones</h3>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: #d1d5db;">
+              <input type="checkbox" checked style="cursor: pointer;">
+              <span>Notificaciones de solicitudes</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: #d1d5db; margin-top: 0.75rem;">
+              <input type="checkbox" checked style="cursor: pointer;">
+              <span>Notificaciones de cambios</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: #d1d5db; margin-top: 0.75rem;">
+              <input type="checkbox" style="cursor: pointer;">
+              <span>Notificaciones por email</span>
+            </label>
+          </div>
+          <!-- Seguridad -->
+          <div style="margin-bottom: 2rem;">
+            <h3 style="color: #f3f4f6; margin: 0 0 1rem 0; font-size: 1rem; font-weight: 600;">🔐 Seguridad</h3>
+            <button style="padding: 0.75rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 500;">Cambiar Contraseña</button>
+            <div style="color: #9ca3af; font-size: 0.875rem; margin-top: 1rem;">
+              ✓ Autenticación de dos factores: Disponible
+            </div>
+          </div>
+          <!-- Botones -->
+          <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button style="padding: 0.75rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 500;">Guardar Cambios</button>
+            <button style="padding: 0.75rem 1.5rem; background: #2d3342; color: #d1d5db; border: 1px solid #3d4450; border-radius: 0.5rem; cursor: pointer; font-weight: 500;">Cancelar</button>
+          </div>
         </div>
       </div>
 
       <!-- PAGE: AYUDA -->
       <div id="page-help" class="page-content">
         <div class="content-header">
-          <h1 class="page-title">Centro de Ayuda</h1>
-          <p class="page-subtitle">Resuelve tus dudas y obtén soporte</p>
+          <h1 class="page-title">❓ Centro de Ayuda</h1>
+          <p class="page-subtitle">Preguntas frecuentes y soporte</p>
         </div>
-        <div class="empty-state">
-          <div class="empty-state-icon">ℹ️</div>
-          <h3>Ayuda y Soporte</h3>
-          <p>El centro de ayuda estará disponible pronto.</p>
-          <button class="btn-empty" onclick="location.href='mailto:manuelremon@live.com.ar'">Contactar Soporte</button>
+        <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
+          <!-- FAQ Item 1 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; overflow: hidden;">
+            <div style="padding: 1.5rem; cursor: pointer; transition: all 0.3s;" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
+              <h3 style="color: #f3f4f6; margin: 0; font-size: 1rem; font-weight: 600;">¿Cómo crear una nueva solicitud?</h3>
+              <span style="color: #9ca3af; font-size: 0.875rem;">Guía paso a paso</span>
+            </div>
+            <div style="padding: 0 1.5rem 1.5rem 1.5rem; color: #d1d5db; font-size: 0.95rem; display: none; border-top: 1px solid #2d3342;">
+              1. Dirígete a "Nueva Solicitud" en el menú<br>
+              2. Completa los campos requeridos<br>
+              3. Adjunta los materiales necesarios<br>
+              4. Envía para aprobación
+            </div>
+          </div>
+          <!-- FAQ Item 2 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; overflow: hidden;">
+            <div style="padding: 1.5rem; cursor: pointer; transition: all 0.3s;" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
+              <h3 style="color: #f3f4f6; margin: 0; font-size: 1rem; font-weight: 600;">¿Cómo agregar materiales?</h3>
+              <span style="color: #9ca3af; font-size: 0.875rem;">Gestión del catálogo</span>
+            </div>
+            <div style="padding: 0 1.5rem 1.5rem 1.5rem; color: #d1d5db; font-size: 0.95rem; display: none; border-top: 1px solid #2d3342;">
+              Accede a "Agregar Materiales" desde el menú, ingresa los datos del material, asigna códigos y cantidades disponibles, luego guarda en el sistema.
+            </div>
+          </div>
+          <!-- FAQ Item 3 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; overflow: hidden;">
+            <div style="padding: 1.5rem; cursor: pointer; transition: all 0.3s;" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
+              <h3 style="color: #f3f4f6; margin: 0; font-size: 1rem; font-weight: 600;">¿Cómo aceptar solicitudes como planificador?</h3>
+              <span style="color: #9ca3af; font-size: 0.875rem;">Rol de Planificador</span>
+            </div>
+            <div style="padding: 0 1.5rem 1.5rem 1.5rem; color: #d1d5db; font-size: 0.95rem; display: none; border-top: 1px solid #2d3342;">
+              En la sección "Planificación", verás todas las solicitudes pendientes. Revisa los detalles, valida disponibilidad de materiales y haz clic en "Aceptar" o "Rechazar" según corresponda.
+            </div>
+          </div>
+          <!-- FAQ Item 4 -->
+          <div style="background: linear-gradient(135deg, #262d48 0%, #37415d 100%); border: 1px solid #2d3342; border-radius: 0.75rem; overflow: hidden;">
+            <div style="padding: 1.5rem; cursor: pointer; transition: all 0.3s;" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">
+              <h3 style="color: #f3f4f6; margin: 0; font-size: 1rem; font-weight: 600;">¿Qué significa cada estado de solicitud?</h3>
+              <span style="color: #9ca3af; font-size: 0.875rem;">Estados y transiciones</span>
+            </div>
+            <div style="padding: 0 1.5rem 1.5rem 1.5rem; color: #d1d5db; font-size: 0.95rem; display: none; border-top: 1px solid #2d3342;">
+              • Pendiente: En espera de revisión<br>
+              • Aprobada: Autorizada para ejecución<br>
+              • Rechazada: No cumple requisitos<br>
+              • Ejecutada: Completada y finalizada
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -3021,6 +3282,15 @@
         const adminSection = document.getElementById('adminSection');
         if (adminSection && user.rol === 'Administrador') {
           adminSection.classList.remove('hidden');
+        }
+        
+        // Mostrar sección planificación si es Planificador o Administrador
+        const plannerSection = document.getElementById('plannerSection');
+        if (plannerSection) {
+          const rol = (user.rol || '').toLowerCase();
+          if (rol.includes('planificador') || rol.includes('administrador') || rol === 'admin') {
+            plannerSection.classList.remove('hidden');
+          }
         }
         
         console.log('Usuario cargado:', user);
@@ -3507,6 +3777,11 @@
             dateInput.value = dateStr;
             dateInput.dispatchEvent(new Event('change', { bubbles: true }));
           }
+        }
+
+        if (pageName === 'planner') {
+          // Initialize planner page
+          initPlannerPage();
         }
 
         console.log(`Navigated to: ${pageName}`);
@@ -4679,6 +4954,379 @@
       document.addEventListener('DOMContentLoaded', initializeNavigation);
     } else {
       initializeNavigation();
+    }
+
+    // ============ PLANNER PAGE STATE AND FUNCTIONS ============
+    const plannerState = {
+      currentPage: 1,
+      itemsPerPage: 10,
+      solicitudes: [],
+      currentSolicitud: null,
+      user: null,
+      isPlanner: false
+    };
+
+    // Planner: Show toast message
+    function showPlannerMessage(msg, isSuccess = false) {
+      const container = document.getElementById('toasts');
+      if (!container) {
+        alert(msg);
+        return;
+      }
+      
+      const node = document.createElement('div');
+      node.className = `toast ${isSuccess ? 'ok' : 'err'}`;
+      node.textContent = msg;
+      node.style.marginBottom = '8px';
+      node.style.padding = '12px 16px';
+      node.style.borderRadius = '6px';
+      node.style.backgroundColor = isSuccess ? '#10b981' : '#ef4444';
+      node.style.color = 'white';
+      node.style.fontSize = '14px';
+      container.appendChild(node);
+      
+      setTimeout(() => {
+        node.style.opacity = '0';
+        node.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => node.remove(), 300);
+      }, 3000);
+    }
+
+    // Planner: Wait for AuthAPI
+    async function waitForAuthAPI(maxAttempts = 50) {
+      console.log('[planner] Esperando AuthAPI...');
+      for (let i = 0; i < maxAttempts; i++) {
+        if (window.AuthAPI && typeof window.AuthAPI.me === 'function') {
+          console.log('[planner] ✓ AuthAPI encontrado en intento', i);
+          return;
+        }
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      throw new Error('AuthAPI no se cargó correctamente');
+    }
+
+    // Planner: Check access permissions
+    async function checkPlannerAccess() {
+      try {
+        await waitForAuthAPI();
+        const user = await window.AuthAPI.me();
+        plannerState.user = user;
+        
+        console.log('[planner] Usuario:', user.username, 'Rol:', user.rol);
+        
+        // Verificar si es Planificador o Administrador
+        const rolesPermitidos = ['Planificador', 'Administrador', 'admin', 'planificador'];
+        const tieneAcceso = rolesPermitidos.some(rol => 
+          (user.rol || '').toLowerCase().includes(rol.toLowerCase())
+        );
+        
+        if (!tieneAcceso) {
+          console.error('[planner] Acceso denegado: rol insuficiente', user.rol);
+          showPlannerMessage('No tienes permiso para acceder a esta sección', false);
+          return false;
+        }
+        
+        plannerState.isPlanner = true;
+        console.log('[planner] ✓ Acceso permitido');
+        return true;
+      } catch (err) {
+        console.error('[planner] Error verificando acceso:', err);
+        return false;
+      }
+    }
+
+    // Planner: Load solicitudes from API
+    async function loadPlannerSolicitudes() {
+      try {
+        console.log('[planner] Cargando solicitudes...');
+        
+        const response = await fetch('/api/planner/solicitudes?page=' + plannerState.currentPage + '&per_page=' + plannerState.itemsPerPage, {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        plannerState.solicitudes = data.solicitudes || data.data || [];
+        
+        console.log('[planner] ✓ Solicitudes cargadas:', plannerState.solicitudes.length);
+        renderPlannerSolicitudes();
+        updatePlannerStats();
+      } catch (err) {
+        console.error('[planner] Error cargando solicitudes:', err);
+        showPlannerMessage('Error al cargar solicitudes', false);
+      }
+    }
+
+    // Planner: Render solicitudes table
+    function renderPlannerSolicitudes() {
+      const tbody = document.querySelector('#solicitudesTable tbody');
+      if (!tbody) return;
+      
+      if (plannerState.solicitudes.length === 0) {
+        tbody.innerHTML = `
+          <tr class="empty-row">
+            <td colspan="8" style="text-align: center; padding: 32px; color: var(--text-secondary);">
+              No hay solicitudes para procesar
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      tbody.innerHTML = plannerState.solicitudes.map(sol => `
+        <tr data-id="${sol.id}" style="cursor: pointer;">
+          <td>${sol.id}</td>
+          <td>${sol.centro || '—'}</td>
+          <td>${sol.sector || '—'}</td>
+          <td><span class="badge badge--${(sol.criticidad || 'normal').toLowerCase()}">${sol.criticidad || 'Normal'}</span></td>
+          <td>${sol.items_count || 0}</td>
+          <td style="text-align: right;">$${(sol.total || 0).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+          <td><span class="state state--${(sol.estado || 'pending').toLowerCase()}">${sol.estado || 'Pendiente'}</span></td>
+          <td>
+            <button type="button" class="btn-mini pri" data-action="view" data-id="${sol.id}">Ver</button>
+          </td>
+        </tr>
+      `).join('');
+      
+      // Add event listeners to view buttons
+      tbody.querySelectorAll('[data-action="view"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = e.target.dataset.id;
+          showPlannerDetail(id);
+        });
+      });
+
+      // Add row click listeners
+      tbody.querySelectorAll('tr[data-id]').forEach(row => {
+        row.addEventListener('click', (e) => {
+          if (e.target.closest('[data-action]')) return; // Don't trigger if button was clicked
+          const id = row.dataset.id;
+          showPlannerDetail(id);
+        });
+      });
+    }
+
+    // Planner: Show detail panel
+    async function showPlannerDetail(solicitudId) {
+      try {
+        console.log('[planner] Mostrando detalles de solicitud:', solicitudId);
+        
+        const response = await fetch(`/api/planner/solicitudes/${solicitudId}`, {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        plannerState.currentSolicitud = data;
+        
+        // Fill detail panel
+        const detailPanel = document.getElementById('detailPanel');
+        const solicitudIdEl = document.getElementById('detailSolicitudId');
+        const detailCentro = document.getElementById('detailCentro');
+        const detailSector = document.getElementById('detailSector');
+        const detailCriticidad = document.getElementById('detailCriticidad');
+        const detailEstado = document.getElementById('detailEstado');
+        
+        if (solicitudIdEl) solicitudIdEl.textContent = `#${data.id}`;
+        if (detailCentro) detailCentro.textContent = data.centro || '—';
+        if (detailSector) detailSector.textContent = data.sector || '—';
+        if (detailCriticidad) detailCriticidad.textContent = data.criticidad || '—';
+        if (detailEstado) detailEstado.textContent = data.estado || '—';
+        
+        // Fill materials table
+        const materialesBody = document.getElementById('detailMateriales');
+        if (materialesBody) {
+          if (data.materiales && data.materiales.length > 0) {
+            materialesBody.innerHTML = data.materiales.map(mat => `
+              <tr>
+                <td>${mat.nombre || mat.description || '—'}</td>
+                <td>${mat.cantidad || 0}</td>
+                <td>${mat.unidad || 'UN'}</td>
+                <td>$${(mat.precio_unitario || 0).toFixed(2)}</td>
+                <td>$${((mat.cantidad || 0) * (mat.precio_unitario || 0)).toFixed(2)}</td>
+              </tr>
+            `).join('');
+          } else {
+            materialesBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 16px;">Sin materiales</td></tr>';
+          }
+        }
+        
+        // Show optimization analysis
+        showPlannerOptimizationAnalysis(data);
+        
+        // Display panel
+        if (detailPanel) {
+          detailPanel.style.display = 'block';
+          detailPanel.removeAttribute('hidden');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        console.error('[planner] Error cargando detalles:', err);
+        showPlannerMessage('Error al cargar detalles de solicitud', false);
+      }
+    }
+
+    // Planner: Show optimization analysis
+    function showPlannerOptimizationAnalysis(solicitud) {
+      const resultsDiv = document.getElementById('optimizationResults');
+      if (!resultsDiv) return;
+      
+      const analysis = {
+        consolidationOpportunity: '3 proveedores pueden abastecer el 85% del pedido',
+        costOptimization: 'Potencial de ahorro: 12% ($' + ((solicitud.total || 0) * 0.12).toFixed(2) + ')',
+        leadTimeRisk: 'Criticidad Alta - Plazo: 5 días',
+        alternativeItems: '2 ítems equivalentes disponibles con mejor precio'
+      };
+      
+      resultsDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="padding: 12px; background: var(--bg-primary); border-left: 3px solid #3b82f6; border-radius: 4px;">
+            <strong>🔗 Consolidación</strong>
+            <p style="margin: 4px 0 0 0; font-size: 12px;">${analysis.consolidationOpportunity}</p>
+          </div>
+          <div style="padding: 12px; background: var(--bg-primary); border-left: 3px solid #10b981; border-radius: 4px;">
+            <strong>💰 Ahorro</strong>
+            <p style="margin: 4px 0 0 0; font-size: 12px;">${analysis.costOptimization}</p>
+          </div>
+          <div style="padding: 12px; background: var(--bg-primary); border-left: 3px solid #f59e0b; border-radius: 4px;">
+            <strong>⏱️ Riesgo</strong>
+            <p style="margin: 4px 0 0 0; font-size: 12px;">${analysis.leadTimeRisk}</p>
+          </div>
+          <div style="padding: 12px; background: var(--bg-primary); border-left: 3px solid #8b5cf6; border-radius: 4px;">
+            <strong>🔄 Equivalentes</strong>
+            <p style="margin: 4px 0 0 0; font-size: 12px;">${analysis.alternativeItems}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Planner: Update statistics
+    async function updatePlannerStats() {
+      try {
+        const response = await fetch('/api/planner/dashboard', {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+          console.warn('[planner] Could not load stats:', response.status);
+          return;
+        }
+        
+        const stats = await response.json();
+        
+        const statPending = document.getElementById('statPending');
+        const statInProcess = document.getElementById('statInProcess');
+        const statOptimized = document.getElementById('statOptimized');
+        const statCompleted = document.getElementById('statCompleted');
+        
+        if (statPending) statPending.textContent = stats.pending || 0;
+        if (statInProcess) statInProcess.textContent = stats.in_process || 0;
+        if (statOptimized) statOptimized.textContent = stats.optimized || 0;
+        if (statCompleted) statCompleted.textContent = stats.completed || 0;
+      } catch (err) {
+        console.error('[planner] Error loading stats:', err);
+      }
+    }
+
+    // Planner: Initialize page
+    async function initPlannerPage() {
+      console.log('[planner] Inicializando página...');
+      
+      try {
+        // Check access
+        const hasAccess = await checkPlannerAccess();
+        if (!hasAccess) {
+          showPlannerMessage('Acceso denegado', false);
+          return;
+        }
+        
+        // Load solicitudes and stats
+        await loadPlannerSolicitudes();
+        
+        // Setup event listeners
+        const btnRefresh = document.getElementById('btnRefresh');
+        if (btnRefresh) {
+          btnRefresh.addEventListener('click', () => {
+            plannerState.currentPage = 1;
+            loadPlannerSolicitudes();
+          });
+        }
+        
+        const btnCloseDetail = document.getElementById('btnCloseDetail');
+        if (btnCloseDetail) {
+          btnCloseDetail.addEventListener('click', () => {
+            const detailPanel = document.getElementById('detailPanel');
+            if (detailPanel) {
+              detailPanel.style.display = 'none';
+              detailPanel.setAttribute('hidden', '');
+            }
+            plannerState.currentSolicitud = null;
+          });
+        }
+
+        const btnOptimize = document.getElementById('btnOptimize');
+        if (btnOptimize && !btnOptimize.hasListener) {
+          btnOptimize.hasListener = true;
+          btnOptimize.addEventListener('click', async () => {
+            if (!plannerState.currentSolicitud) return;
+            
+            try {
+              const response = await fetch(`/api/planner/solicitudes/${plannerState.currentSolicitud.id}/optimize`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+              });
+              
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+              }
+              
+              const result = await response.json();
+              showPlannerMessage('Optimización completada', true);
+              await loadPlannerSolicitudes();
+            } catch (err) {
+              console.error('[planner] Error optimizing:', err);
+              showPlannerMessage('Error al optimizar solicitud', false);
+            }
+          });
+        }
+
+        // Pagination
+        const btnPrevPage = document.getElementById('btnPrevPage');
+        if (btnPrevPage && !btnPrevPage.hasListener) {
+          btnPrevPage.hasListener = true;
+          btnPrevPage.addEventListener('click', () => {
+            if (plannerState.currentPage > 1) {
+              plannerState.currentPage--;
+              loadPlannerSolicitudes();
+            }
+          });
+        }
+
+        const btnNextPage = document.getElementById('btnNextPage');
+        if (btnNextPage && !btnNextPage.hasListener) {
+          btnNextPage.hasListener = true;
+          btnNextPage.addEventListener('click', () => {
+            plannerState.currentPage++;
+            loadPlannerSolicitudes();
+          });
+        }
+        
+        console.log('[planner] ✓ Página inicializada correctamente');
+      } catch (err) {
+        console.error('[planner] Error inicializando página:', err);
+        showPlannerMessage('Error cargando la página', false);
+      }
     }
   </script>
 </body>

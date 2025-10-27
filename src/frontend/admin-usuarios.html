@@ -189,6 +189,15 @@
   <datalist id="catalogSectoresList"></datalist>
 
   <div class="toasts" id="toasts"></div>
+
+  <script>
+    // Convertir data-page a clase de body inmediatamente
+    const pageName = document.body.dataset.page;
+    if (pageName) {
+      document.body.classList.add('page-' + pageName);
+    }
+  </script>
+
   <script src="/app.js" defer></script>
 </body>
 </html>

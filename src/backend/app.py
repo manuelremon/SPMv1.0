@@ -17,6 +17,7 @@ from .routes.materiales import bp as materiales_bp
 from .routes.preferences import bp as preferences_bp
 from .routes.solicitudes import bp as solicitudes_bp
 from .routes.solicitudes_archivos import bp as bp_up
+from .routes.planner_routes import bp as planner_bp
 # from .routes.form_intelligence_routes import bp as form_intelligence_bp  # DESACTIVADO: AI Assistant removido
 # from .routes.form_intelligence_routes_v2 import bp as form_intelligence_v2_bp  # DESACTIVADO: AI Assistant removido
 # from .export_solicitudes import bp as export_bp  # TODO: Crear este módulo o agregar funciones al blueprint
@@ -214,6 +215,7 @@ def create_app() -> Flask:
     app.register_blueprint(preferences_bp)
     app.register_blueprint(solicitudes_bp)
     app.register_blueprint(bp_up)
+    app.register_blueprint(planner_bp)
     # app.register_blueprint(form_intelligence_bp)  # DESACTIVADO: AI Assistant removido
     # app.register_blueprint(form_intelligence_v2_bp)  # DESACTIVADO: AI Assistant removido
     # app.register_blueprint(export_bp)  # TODO: Descomentar cuando se cree el módulo

@@ -3,9 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SPM · Mi cuenta</title>
+  <title>SPM · Mi Cuenta</title>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="icon" href="/assets/spm-logo.png" type="image/png">
 </head>
 <body data-page="mi-cuenta" data-requires-auth>
   <div class="main-container">
@@ -29,9 +28,9 @@
                 <span class="app-menu__caret" aria-hidden="true"></span>
               </button>
               <div class="app-submenu" role="menu" hidden aria-hidden="true">
-                <a id="nav-account" data-action="account" href="/mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
+                <a href="mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
                 <a href="preferencias.html" class="app-submenu__link" role="menuitem">Preferencias</a>
-                <button type="button" class="app-submenu__link" id="nav-logout" data-action="logout" role="menuitem">Salir</button>
+                <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesión</button>
                 <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>
               </div>
             </li>
@@ -76,35 +75,82 @@
     </header>
 
 <main class="content">
-      <div class="content-section">
+      <div class="content-section content-section--wide">
         <div class="page-header">
           <div>
+            <p class="overline">Configuración personal</p>
             <h1>Mi cuenta</h1>
+            <p class="muted">Administra tu perfil e información de acceso.</p>
           </div>
         </div>
-        <section class="pane" id="accountDetails"></section>
+
+        <!-- Sección de Datos de Perfil -->
+        <section class="pane">
+          <header class="section-head">
+            <h2>Datos del perfil</h2>
+            <p class="helper">Actualiza tu información personal.</p>
+          </header>
+          <form id="profileForm" class="form-grid" autocomplete="off">
+            <div class="field-group">
+              <label for="username">Usuario</label>
+              <input type="text" id="username" disabled readonly/>
+            </div>
+            <div class="field-group">
+              <label for="display_name">Nombre a mostrar</label>
+              <input type="text" id="display_name" placeholder="Tu nombre completo" required/>
+            </div>
+            <div class="field-group">
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" placeholder="correo@ejemplo.com" required/>
+            </div>
+            <div class="actions" style="grid-column: 1 / -1; justify-content: flex-end;">
+              <button type="submit" class="btn pri">Guardar cambios</button>
+            </div>
+          </form>
+          <p class="muted" id="profileStatus" style="margin-top:12px;">Última actualización: —</p>
+        </section>
+
+        <!-- Sección de Cambio de Contraseña -->
+        <section class="pane" style="margin-top:20px;">
+          <header class="section-head">
+            <h2>Seguridad</h2>
+            <p class="helper">Protege tu cuenta con una contraseña segura.</p>
+          </header>
+          <form id="passwordForm" class="form-grid" autocomplete="off">
+            <div class="field-group">
+              <label for="current_pw">Contraseña actual</label>
+              <input type="password" id="current_pw" autocomplete="current-password" required/>
+            </div>
+            <div class="field-group">
+              <label for="new_pw">Nueva contraseña</label>
+              <input type="password" id="new_pw" autocomplete="new-password" required/>
+            </div>
+            <div class="field-group">
+              <label for="new_pw2">Confirmar contraseña</label>
+              <input type="password" id="new_pw2" autocomplete="new-password" required/>
+            </div>
+            <div class="actions" style="grid-column: 1 / -1; justify-content: flex-end;">
+              <button type="submit" class="btn pri">Cambiar contraseña</button>
+            </div>
+          </form>
+          <p class="muted" id="passwordStatus" style="margin-top:12px;">—</p>
+        </section>
       </div>
     </main>
   </div>
 
-  <div id="toasts" class="toasts" aria-live="polite" role="status"></div>
-  <script src="/app.js" defer></script>
-  <script type="module">
-    import './mi-cuenta.js';
+  <div class="toasts" id="toasts"></div>
+
+  <script>
+    // Convertir data-page a clase de body inmediatamente (sin defer)
+    const pageName = document.body.dataset.page;
+    if (pageName) {
+      document.body.classList.add('page-' + pageName);
+    }
   </script>
-  <h2>Mi cuenta</h2>
-  <p>Usuario: <strong id="username"></strong></p>
-  <form id="profileForm">
-    <label>Nombre a mostrar <input id="display_name" /></label>
-    <label>Email <input id="email" type="email" /></label>
-    <button type="submit">Guardar</button>
-  </form>
-  <form id="passwordForm">
-    <label>Contraseña actual <input id="current_pw" type="password" autocomplete="current-password" /></label>
-    <label>Nueva contraseña <input id="new_pw" type="password" autocomplete="new-password" /></label>
-    <label>Repetir nueva <input id="new_pw2" type="password" /></label>
-    <button type="submit">Cambiar</button>
-  </form>
+
+  <script src="/utils/api.js" defer></script>
+  <script src="/app.js" defer></script>
+  <script src="./mi-cuenta.js" defer></script>
 </body>
 </html>
-
