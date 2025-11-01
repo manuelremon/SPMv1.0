@@ -1286,6 +1286,20 @@
           <h1 class="page-title">Mis Solicitudes</h1>
           <p class="page-subtitle">Visualiza y gestiona tus solicitudes</p>
         </div>
+        
+        <!-- BORRADORES PENDIENTES -->
+        <div id="draftsAlert" class="alert-section" style="display: none; margin-bottom: 20px; padding: 15px; background-color: var(--bg-warning, #fff3cd); border-left: 4px solid var(--warning, #ffc107); border-radius: 4px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">💾</span>
+            <div>
+              <strong>Borradores Pendientes</strong>
+              <p style="margin: 5px 0 0 0; font-size: 14px; color: var(--text-secondary);">
+                Tienes <span id="draftCount">0</span> solicitud(es) guardada(s) como borrador que puedes continuar editando.
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <div class="empty-state">
           <div class="empty-state-icon">📋</div>
           <h3>Solicitudes</h3>
@@ -1298,7 +1312,6 @@
       <div id="page-new-request" class="page-content new-request-layout">
         <div class="content-header">
           <h1 class="page-title">📝 Nueva Solicitud</h1>
-          <p class="page-subtitle">Crea una nueva solicitud de materiales de forma rápida y sencilla</p>
         </div>
 
         <div class="request-form-wrapper">
@@ -1331,7 +1344,6 @@
                 <div class="section-icon">📋</div>
                 <div>
                   <h2>Información de la Solicitud</h2>
-                  <p>Completa los datos básicos de tu solicitud</p>
                 </div>
               </div>
 
@@ -1342,13 +1354,12 @@
                   <select id="newReqCentro" required onchange="autoFillSector()">
                     <option value="">Seleccione un Centro...</option>
                   </select>
-                  <span class="field-hint">Selecciona el centro de abastecimiento</span>
+                  <span class="field-hint">Selecciona el Centro Logístico</span>
                 </div>
 
                 <div class="form-field">
                   <label for="newReqSector">Sector <span class="required">*</span></label>
                   <input type="text" id="newReqSector" readonly placeholder="Tu sector">
-                  <span class="field-hint">Se completa automáticamente al seleccionar Centro</span>
                 </div>
 
                 <div class="form-field">
@@ -1366,19 +1377,16 @@
                     <option value="Normal">🟢 Normal</option>
                     <option value="Alta">🔴 Alta</option>
                   </select>
-                  <span class="field-hint">Nivel de urgencia de la solicitud</span>
                 </div>
 
                 <div class="form-field">
                   <label for="newReqFecha">Fecha de Necesidad <span class="required">*</span></label>
                   <input type="date" id="newReqFecha" required>
-                  <span class="field-hint">¿Cuándo necesitas los materiales?</span>
                 </div>
 
                 <div class="form-field">
                   <label for="newReqCostos">Centro de Costos <span class="required">*</span></label>
-                  <input type="text" id="newReqCostos" placeholder="Ej: CC-2024-001">
-                  <span class="field-hint">Para imputación contable</span>
+                  <input type="text" id="newReqCostos" placeholder="">
                 </div>
               </div>
 
@@ -1395,7 +1403,6 @@
                   rows="3"
                   required
                   oninput="updateJustCounter()"></textarea>
-                <span class="field-hint">Explica el motivo y contexto de tu solicitud (máximo 250 caracteres)</span>
               </div>
             </div>
 
@@ -1404,8 +1411,11 @@
               <button type="button" class="btn btn-secondary" onclick="resetForm()">
                 🔄 Limpiar
               </button>
+              <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                💾 Guardar borrador
+              </button>
               <button type="button" class="btn btn-primary btn-lg" onclick="navigateFormStep('materials')">
-                Siguiente: Materiales →
+                Continuar
               </button>
             </div>
           </div>
@@ -3761,6 +3771,26 @@
           // Load form catalogs (centros, almacenes, materiales)
           loadFormCatalogs();
           
+          // Load and autofill user's sector
+          (async () => {
+            try {
+              const meResponse = await fetch('/api/auth/me', {
+                credentials: 'include',
+                headers: { 'Accept': 'application/json' }
+              });
+              const userData = await meResponse.json();
+              const userSector = userData.sector || userData.centro || userData.departamento || '';
+              if (userSector) {
+                const sectorInput = document.getElementById('newReqSector');
+                if (sectorInput) {
+                  sectorInput.value = userSector;
+                }
+              }
+            } catch (e) {
+              console.log('Could not load user sector:', e);
+            }
+          })();
+          
           // Set criticidad to "Normal" by default
           const critSelect = document.getElementById('newReqCriticidad');
           if (critSelect) {
@@ -3777,6 +3807,31 @@
             dateInput.value = dateStr;
             dateInput.dispatchEvent(new Event('change', { bubbles: true }));
           }
+        }
+
+        // Load pending drafts when navigating to requests page
+        if (pageName === 'requests') {
+          (async () => {
+            try {
+              const notifResponse = await fetch('/api/notificaciones', {
+                credentials: 'include',
+                headers: { 'Accept': 'application/json' }
+              });
+              const notifData = await notifResponse.json();
+              const borradores = notifData.borradores || [];
+              const draftsAlert = document.getElementById('draftsAlert');
+              const draftCount = document.getElementById('draftCount');
+              
+              if (borradores && borradores.length > 0) {
+                draftCount.textContent = borradores.length;
+                draftsAlert.style.display = 'block';
+              } else {
+                draftsAlert.style.display = 'none';
+              }
+            } catch (e) {
+              console.log('Could not load drafts:', e);
+            }
+          })();
         }
 
         if (pageName === 'planner') {
@@ -3917,7 +3972,7 @@
             opt.value = JSON.stringify({ id: c.id, nombre: c.nombre, sector: c.sector, hasAccess });
             
             // Show indicator if no access
-            const indicator = hasAccess ? '✅' : '🔓';
+            const indicator = hasAccess ? '✅' : '�';
             opt.textContent = `${indicator} ${c.id} - ${c.nombre}`;
             
             centroSelect.appendChild(opt);
@@ -3944,7 +3999,7 @@
             opt.value = JSON.stringify({ id: a.id, nombre: a.nombre, hasAccess });
             
             // Show indicator if no access
-            const indicator = hasAccess ? '✅' : '🔓';
+            const indicator = hasAccess ? '✅' : '�';
             opt.textContent = `${indicator} ${a.id} - ${a.nombre}`;
             
             almacenSelect.appendChild(opt);
@@ -4020,6 +4075,85 @@
         formData.materiales = [];
         updateMaterialsTable();
         showToast('Formulario limpiado', 'info');
+      }
+    };
+
+    // ===== SAVE DRAFT =====
+    window.saveDraft = async function() {
+      // Validate step 1
+      const centro = document.getElementById('newReqCentro').value;
+      const almacen = document.getElementById('newReqAlmacen').value;
+      const criticidad = document.getElementById('newReqCriticidad').value;
+      const fecha = document.getElementById('newReqFecha').value;
+      const costos = document.getElementById('newReqCostos').value;
+      const justificacion = document.getElementById('newReqJustificacion').value;
+
+      if (!centro) {
+        showToast('❌ Debes seleccionar un Centro', 'error');
+        return;
+      }
+      if (!almacen) {
+        showToast('❌ Debes seleccionar un Almacén', 'error');
+        return;
+      }
+      if (!criticidad) {
+        showToast('❌ Debes seleccionar una Criticidad', 'error');
+        return;
+      }
+      if (!fecha) {
+        showToast('❌ Debes seleccionar una Fecha', 'error');
+        return;
+      }
+      if (!costos || costos.trim() === '') {
+        showToast('❌ Debes ingresar Centro de Costos', 'error');
+        return;
+      }
+      if (!justificacion || justificacion.trim() === '') {
+        showToast('❌ Debes escribir una Justificación', 'error');
+        return;
+      }
+
+      try {
+        const draftData = {
+          centro: JSON.parse(centro),
+          almacen: JSON.parse(almacen),
+          criticidad: criticidad,
+          fecha: fecha,
+          costos: costos,
+          justificacion: justificacion,
+          materiales: formData.materiales || [],
+          estado: 'borrador'
+        };
+
+        const response = await fetch('/api/solicitudes/drafts', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(draftData)
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          showToast('❌ Error al guardar borrador: ' + (error.message || response.statusText), 'error');
+          return;
+        }
+
+        const result = await response.json();
+        const draftId = result.id || result.solicitud_id;
+        
+        // Store draft ID locally
+        document.getElementById('solicitudId').value = draftId;
+        formData.solicitudId = draftId;
+
+        showToast(`✅ Borrador guardado con ID: ${draftId}`, 'success');
+        
+        // Optional: navigate to mis-solicitudes after a delay
+        setTimeout(() => {
+          window.navigateTo('requests');
+        }, 1500);
+      } catch (e) {
+        console.error('Error guardando borrador:', e);
+        showToast('❌ Error al guardar borrador', 'error');
       }
     };
 

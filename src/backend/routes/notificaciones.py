@@ -162,12 +162,26 @@ def listar_notificaciones():
                 "new_users": new_users,
                 "is_admin": True,
             }
+        
+        # Get pending drafts for the user
+        drafts_rows = con.execute(
+            """
+            SELECT id, centro, sector, justificacion, total_monto, created_at, status
+              FROM solicitudes
+             WHERE lower(id_usuario)=? AND status='draft'
+             ORDER BY datetime(created_at) DESC, id DESC
+            """,
+            (uid.lower(),),
+        ).fetchall()
+        borradores_pendientes = [dict(r) for r in drafts_rows]
+        
     return {
         "ok": True,
         "unread": unread,
         "items": items,
         "pending": pendientes,
         "admin": admin_summary,
+        "borradores": borradores_pendientes,
     }
 
 

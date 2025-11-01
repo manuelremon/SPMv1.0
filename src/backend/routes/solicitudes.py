@@ -557,7 +557,7 @@ def crear_borrador():
         except Exception as exc:
             con.rollback()
             return _json_error("DB_ERROR", f"No se pudo crear el borrador: {exc}", 500)
-    return {"ok": True, "id": sol_id, "status": STATUS_DRAFT}
+    return {"ok": True, "id": sol_id, "solicitud_id": sol_id, "status": STATUS_DRAFT}
 
 
 @bp.route("/solicitudes/<int:sol_id>/draft", methods=["PATCH", "OPTIONS"])
