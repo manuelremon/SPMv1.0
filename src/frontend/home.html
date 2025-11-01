@@ -3936,97 +3936,122 @@
     };
 
     // Cargar catálogos y centros cuando se abre el formulario
-    window.loadFormCatalogs = async function() {
-      try {
-        // Load user access
-        const accessResponse = await fetch('/api/auth/mi-acceso', {
-          credentials: 'include',
-          headers: { 'Accept': 'application/json' }
-        });
-        const accessData = await accessResponse.json();
-        const centrosPermitidos = accessData.centros_permitidos || [];
-        const almacenesPermitidos = accessData.almacenes_permitidos || [];
-        
-        // Store access info globally
-        window.userAccess = {
-          centros: centrosPermitidos,
-          almacenes: almacenesPermitidos
-        };
-        
-        const response = await fetch('/api/catalogos', {
-          credentials: 'include',
-          headers: { 'Accept': 'application/json' }
-        });
-        const apiResponse = await response.json();
-        const catalogs = apiResponse.data || apiResponse;
-        
-        // Llenar selectores de centros y almacenes
-        const centroSelect = document.getElementById('newReqCentro');
-        const almacenSelect = document.getElementById('newReqAlmacen');
-        
-        if (catalogs.centros && centroSelect) {
-          centroSelect.innerHTML = '<option value="">Seleccione un Centro</option>';
-          catalogs.centros.forEach(c => {
-            const hasAccess = centrosPermitidos.includes(c.id);
-            const opt = document.createElement('option');
-            opt.value = JSON.stringify({ id: c.id, nombre: c.nombre, sector: c.sector, hasAccess });
-            
-            // Show indicator if no access
-            const indicator = hasAccess ? '✅' : '�';
-            opt.textContent = `${indicator} ${c.id} - ${c.nombre}`;
-            
-            centroSelect.appendChild(opt);
-          });
-        }
-        
-        // Remove old listener and add new one
-        const newCentroSelect = centroSelect.cloneNode(true);
-        centroSelect.parentNode.replaceChild(newCentroSelect, centroSelect);
-        
-        newCentroSelect?.addEventListener('change', (e) => {
-          if (e.target.value) {
-            const centro = JSON.parse(e.target.value);
-            document.getElementById('newReqSector').value = centro.sector || '';
-            formData.centro = centro;
-          }
-        });
+        window.loadFormCatalogs = async function() {
+        try {
+            const accessRes = await fetch('/api/auth/mi-acceso', { credentials: 'include' });
+            const access = await accessRes.json();
+            const centrosPermitidos = access.centros_permitidos || [];
+            const almacenesPermitidos = access.almacenes_permitidos || [];
 
-        if (catalogs.almacenes && almacenSelect) {
-          almacenSelect.innerHTML = '<option value="">Seleccione un Almacén</option>';
-          catalogs.almacenes.forEach(a => {
-            const hasAccess = almacenesPermitidos.includes(a.id);
-            const opt = document.createElement('option');
-            opt.value = JSON.stringify({ id: a.id, nombre: a.nombre, hasAccess });
-            
-            // Show indicator if no access
-            const indicator = hasAccess ? '✅' : '�';
-            opt.textContent = `${indicator} ${a.id} - ${a.nombre}`;
-            
-            almacenSelect.appendChild(opt);
-          });
-        }
+            const catalogRes = await fetch('/api/catalogos');
+            const catalogs = await catalogRes.json();
 
-        // Cargar materiales
-        const materialSelect = document.getElementById('materialSelect');
-        if (catalogs.materiales && materialSelect) {
-          materialSelect.innerHTML = '<option value="">Seleccione un Material</option>';
-          catalogs.materiales.forEach(m => {
-            const opt = document.createElement('option');
-            opt.value = JSON.stringify({ 
-              id: m.id, 
-              nombre: m.nombre, 
-              precio: m.precio || 0,
-              sap: m.sap || m.codigo || '',
-              descripcion: m.descripcion || ''
+            // Get DOM elements
+            const centroSelect = document.getElementById('newReqCentro');
+            const almacenSelect = document.getElementById('newReqAlmacen');
+
+            if (!centroSelect || !almacenSelect) {
+                console.warn('Could not find Centro or Almacén dropdowns');
+                return;
+            }
+
+            // Clear existing options (keep the first placeholder)
+            while (centroSelect.options.length > 1) centroSelect.remove(1);
+            while (almacenSelect.options.length > 1) almacenSelect.remove(1);
+
+            // CENTROS: Separate into permitted and denied
+            const centrosPermitidosList = [];
+            const centrosNegadosList = [];
+
+            catalogs.centros.forEach(c => {
+                const hasAccess = centrosPermitidos.includes(c.id);
+                const centro = { id: c.id, nombre: c.nombre, sector: c.sector, hasAccess };
+                if (hasAccess) {
+                    centrosPermitidosList.push(centro);
+                } else {
+                    centrosNegadosList.push(centro);
+                }
             });
-            opt.textContent = m.nombre;
-            materialSelect.appendChild(opt);
-          });
+
+            // Add permitted centros FIRST with green open lock
+            centrosPermitidosList.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify(c);
+                opt.textContent = `🟢 🔓 ${c.id} - ${c.nombre}`;
+                centroSelect.appendChild(opt);
+            });
+
+            // Add denied centros AFTER with red closed lock
+            centrosNegadosList.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify(c);
+                opt.textContent = `🔴 🔒 ${c.id} - ${c.nombre}`;
+                centroSelect.appendChild(opt);
+            });
+
+            // ALMACENES: Separate into permitted and denied
+            const almacenesPermitidosList = [];
+            const almacenesNegadosList = [];
+
+            catalogs.almacenes.forEach(a => {
+                const hasAccess = almacenesPermitidos.includes(a.id);
+                const almacen = { id: a.id, nombre: a.nombre, hasAccess };
+                if (hasAccess) {
+                    almacenesPermitidosList.push(almacen);
+                } else {
+                    almacenesNegadosList.push(almacen);
+                }
+            });
+
+            // Add permitted almacenes FIRST with green open lock
+            almacenesPermitidosList.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify(a);
+                opt.textContent = `🟢 🔓 ${a.id} - ${a.nombre}`;
+                almacenSelect.appendChild(opt);
+            });
+
+            // Add denied almacenes AFTER with red closed lock
+            almacenesNegadosList.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify(a);
+                opt.textContent = `🔴 🔒 ${a.id} - ${a.nombre}`;
+                almacenSelect.appendChild(opt);
+            });
+
+            // Add change listeners with warnings
+            centroSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    try {
+                        const centro = JSON.parse(e.target.value);
+                        if (!centro.hasAccess) {
+                            showToast(`⚠️ No tienes acceso al Centro "${centro.nombre}"`, 'warning');
+                        }
+                        autoFillSector();
+                    } catch (err) {
+                        console.error('Error parsing centro:', err);
+                    }
+                }
+            });
+
+            almacenSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    try {
+                        const almacen = JSON.parse(e.target.value);
+                        if (!almacen.hasAccess) {
+                            showToast(`⚠️ No tienes acceso al Almacén "${almacen.nombre}"`, 'warning');
+                        }
+                    } catch (err) {
+                        console.error('Error parsing almacen:', err);
+                    }
+                }
+            });
+
+        } catch (err) {
+            console.error('Error loading form catalogs:', err);
+            showToast('Error cargando catálogos', 'error');
         }
-      } catch (e) {
-        console.error('Error cargando catálogos:', e);
-      }
-    };
+    };;
 
     // Navegar entre pasos del formulario
     // ===== AUTO-FILL SECTOR =====
