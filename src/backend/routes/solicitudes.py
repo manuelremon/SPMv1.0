@@ -84,20 +84,26 @@ def _ensure_user_exists(con, uid: str | None) -> str | None:
     return normalized if row else None
 
 
+def _validar_material_existe(con, codigo: str) -> bool:
+    """Verificar si un código de material existe en la tabla materiales."""
+    if not codigo or not isinstance(codigo, str):
+        return False
+    codigo = codigo.strip()
+    if not codigo:
+        return False
+    row = con.execute(
+        "SELECT 1 FROM materiales WHERE codigo = ? LIMIT 1",
+        (codigo,),
+    ).fetchone()
+    return row is not None
+
+
 def _resolve_approver(con, user: dict[str, Any] | None, total_monto: float = 0.0) -> str | None:
     if not user:
         return None
     
     # Determinar el aprobador basado en el monto total
-    if total_monto <= 20000.0:
-        # Jefe desde USD 0.01 hasta USD 20000
-        approver_field = "jefe"
-    elif total_monto <= 100000.0:
-        # Gerente1 desde USD 20000.01 hasta USD 100000
-        approver_field = "gerente1"
-    else:
-        # Gerente2 desde USD 100000.01 en adelante
-        approver_field = "gerente2"
+    approver_field, _, _ = _get_approver_config(total_monto)
     
     approver_email = _coerce_str(user.get(approver_field))
     if approver_email:
@@ -107,7 +113,10 @@ def _resolve_approver(con, user: dict[str, Any] | None, total_monto: float = 0.0
             (approver_email.lower(),)
         ).fetchone()
         if approver_user:
-            return approver_user["id_spm"]
+            approver_id = approver_user["id_spm"]
+            # FIX #2: Validar que el aprobador existe y está activo
+            if _ensure_approver_exists_and_active(con, approver_id):
+                return approver_id
     
     # Fallback: buscar en otros campos si el campo específico no está disponible
     for field in ("jefe", "gerente1", "gerente2"):
@@ -118,29 +127,47 @@ def _resolve_approver(con, user: dict[str, Any] | None, total_monto: float = 0.0
                 (approver_email.lower(),)
             ).fetchone()
             if approver_user:
-                return approver_user["id_spm"]
+                approver_id = approver_user["id_spm"]
+                # FIX #2: Validar que el aprobador existe y está activo
+                if _ensure_approver_exists_and_active(con, approver_id):
+                    return approver_id
     return None
 
 
-def _resolve_planner(user: dict[str, Any] | None) -> str | None:
+def _resolve_planner(user: dict[str, Any] | None, con=None) -> str | None:
     if not user:
         return None
     for field in ("gerente2", "gerente1"):
         value = _coerce_str(user.get(field))
         if value:
-            return value.lower()
+            planner_id = value.lower()
+            # FIX #3: Validar que el planificador existe y está disponible
+            if con is not None:
+                if _ensure_planner_exists_and_available(con, planner_id):
+                    return planner_id
+            else:
+                # Si no hay conexión, retornar el valor como estaba antes
+                return planner_id
     return None
 
 
-def _normalize_items(raw_items: Iterable[Any]) -> tuple[list[dict[str, Any]], float]:
+def _normalize_items(raw_items: Iterable[Any], con=None) -> tuple[list[dict[str, Any]], float]:
     items: list[dict[str, Any]] = []
     total = 0.0
+    invalid_materials = []
+    
     for raw in raw_items or []:
         if not isinstance(raw, dict):
             continue
         codigo = _coerce_str(raw.get("codigo"))
         if not codigo:
             continue
+        
+        # FIX #1: Validar que el material exista en el catálogo
+        if con is not None and not _validar_material_existe(con, codigo):
+            invalid_materials.append(codigo)
+            continue
+            
         descripcion = _coerce_str(raw.get("descripcion"))
         try:
             cantidad = int(raw.get("cantidad", 0))
@@ -171,6 +198,11 @@ def _normalize_items(raw_items: Iterable[Any]) -> tuple[list[dict[str, Any]], fl
             item["unidad"] = _coerce_str(unidad)
         items.append(item)
         total += subtotal
+    
+    # Si hay materiales inválidos y se validaba, lanzar error
+    if invalid_materials and con is not None:
+        raise ValueError(f"Los siguientes códigos de material no existen en el catálogo: {', '.join(invalid_materials)}")
+    
     return items, round(total, 2)
 
 
@@ -185,7 +217,7 @@ def _parse_draft_payload(uid: str, payload: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
-def _parse_full_payload(uid: str, payload: dict[str, Any], *, expect_items: bool) -> dict[str, Any]:
+def _parse_full_payload(uid: str, payload: dict[str, Any], *, expect_items: bool, con=None) -> dict[str, Any]:
     sanitized_items = []
     for item in payload.get("items", []) or []:
         if not isinstance(item, dict):
@@ -207,7 +239,9 @@ def _parse_full_payload(uid: str, payload: dict[str, Any], *, expect_items: bool
     if fecha:
         data["fecha_necesidad"] = fecha.isoformat()
     data["criticidad"] = data.get("criticidad") or "Normal"
-    items, total = _normalize_items(payload.get("items", []))
+    
+    # Usar la nueva versión de _normalize_items con validación
+    items, total = _normalize_items(payload.get("items", []), con=con)
     if expect_items and not items:
         raise ValueError("Debe incluir al menos un ítem")
     data["items"] = items
@@ -326,6 +360,189 @@ def _assign_planner_automatically(con, centro: str, sector: str, almacen_virtual
     ).fetchone()
     
     return row["usuario_id"] if row else None
+
+
+def _get_approver_config(total_monto: float = 0.0) -> tuple[str, float, float]:
+    """Determinar el nivel de aprobación requerido basado en el monto.
+    
+    Retorna: (approver_field, min_monto, max_monto)
+    - jefe: USD 0.01 a 20000
+    - gerente1: USD 20000.01 a 100000
+    - gerente2: USD 100000.01 en adelante
+    """
+    if total_monto <= 0:
+        return ("jefe", 0.0, 20000.0)
+    elif total_monto <= 20000.0:
+        return ("jefe", 0.0, 20000.0)
+    elif total_monto <= 100000.0:
+        return ("gerente1", 20000.01, 100000.0)
+    else:
+        return ("gerente2", 100000.01, float("inf"))
+
+
+def _ensure_approver_exists_and_active(con, approver_id: str | None) -> bool:
+    """Verificar que el aprobador existe y está activo en el sistema.
+    
+    FIX #2: Valida que no haya aprobadores fantasma o inactivos.
+    """
+    if not approver_id:
+        return False
+    
+    approver_id = _coerce_str(approver_id).lower().strip()
+    if not approver_id:
+        return False
+    
+    row = con.execute(
+        """
+        SELECT id_spm, estado_registro 
+        FROM usuarios 
+        WHERE lower(id_spm) = ? OR lower(mail) = ?
+        LIMIT 1
+        """,
+        (approver_id, approver_id)
+    ).fetchone()
+    
+    if not row:
+        return False
+    
+    # Convertir a dict si es necesario
+    if hasattr(row, 'get'):
+        estado = _coerce_str(row.get("estado_registro", "")).lower()
+    else:
+        # Acceso por índice si es tupla
+        estado = _coerce_str(row[1] if len(row) > 1 else "").lower()
+    
+    # Verificar que el usuario esté activo (estado_registro puede ser 'Activo', 'activo', 'A', etc.)
+    if estado and estado not in ("activo", "active", "a", "1", "true"):
+        return False
+    
+    return True
+
+
+def _ensure_planner_exists_and_available(con, planner_id: str | None) -> bool:
+    """Verificar que el planificador existe, está activo y disponible en el sistema.
+    
+    FIX #3: Valida que no haya planificadores fantasma, inactivos o sobrecargados.
+    """
+    if not planner_id:
+        return False
+    
+    planner_id = _coerce_str(planner_id).lower().strip()
+    if not planner_id:
+        return False
+    
+    row = con.execute(
+        """
+        SELECT id_spm, estado_registro, rol
+        FROM usuarios 
+        WHERE lower(id_spm) = ? OR lower(mail) = ?
+        LIMIT 1
+        """,
+        (planner_id, planner_id)
+    ).fetchone()
+    
+    if not row:
+        return False
+    
+    # Convertir a dict si es necesario
+    if hasattr(row, 'get'):
+        estado = _coerce_str(row.get("estado_registro", "")).lower()
+        rol = _coerce_str(row.get("rol", "")).lower()
+    else:
+        # Acceso por índice si es tupla
+        estado = _coerce_str(row[1] if len(row) > 1 else "").lower()
+        rol = _coerce_str(row[2] if len(row) > 2 else "").lower()
+    
+    # Verificar que el usuario esté activo
+    if estado and estado not in ("activo", "active", "a", "1", "true"):
+        return False
+    
+    # Verificar que tenga rol de planificador
+    if rol and rol not in ("planificador", "planner", "gerente", "gerente1", "gerente2", "admin", "administrador"):
+        return False
+    
+    # Verificar que no esté sobrecargado (máximo N solicitudes en tratamiento por planificador)
+    MAX_ACTIVE_SOLICITUDES = 20
+    count_result = con.execute(
+        """
+        SELECT COUNT(*) as count
+        FROM solicitudes
+        WHERE lower(planner_id) = ? AND status IN (?, ?)
+        """,
+        (planner_id, STATUS_IN_TREATMENT, STATUS_APPROVED)
+    ).fetchone()
+    
+    if hasattr(count_result, 'get'):
+        active_count = count_result.get("count", 0) if count_result else 0
+    else:
+        active_count = count_result[0] if count_result else 0
+    
+    if active_count >= MAX_ACTIVE_SOLICITUDES:
+        return False
+    
+    return True
+
+
+def _pre_validar_aprobacion(con, row: dict[str, Any], approver_user: dict[str, Any] | None) -> tuple[bool, str | None]:
+    """Validaciones previas a la aprobación de una solicitud.
+    
+    FIX #4: Realiza 5 validaciones críticas antes de permitir aprobación.
+    
+    Retorna: (es_valido, mensaje_error)
+    """
+    if not row:
+        return False, "Solicitud no encontrada"
+    
+    sol_id = row.get("id")
+    data = _json_load(row.get("data_json", "{}"))
+    items = data.get("items", [])
+    total_monto = row.get("total_monto", 0.0)
+    
+    # Validación 1: Aprobador activo
+    if approver_user:
+        approver_id = approver_user.get("id_spm")
+        if not _ensure_approver_exists_and_active(con, approver_id):
+            return False, f"El aprobador {approver_id} no está activo en el sistema"
+    
+    # Validación 2: Materiales válidos (todos en el catálogo)
+    invalid_materials = []
+    for item in items:
+        codigo = _coerce_str(item.get("codigo", "")).strip()
+        if codigo and not _validar_material_existe(con, codigo):
+            invalid_materials.append(codigo)
+    if invalid_materials:
+        return False, f"Materiales inválidos: {', '.join(invalid_materials[:5])}"
+    
+    # Validación 3: Total consistente (no debe ser 0 o negativo)
+    if not isinstance(total_monto, (int, float)) or total_monto <= 0:
+        return False, f"Monto total inválido: {total_monto}"
+    
+    # Validación 4: Presupuesto disponible (sin exceder límites del aprobador)
+    if approver_user:
+        _, min_monto, max_monto = _get_approver_config(total_monto)
+        if total_monto < min_monto or total_monto > max_monto:
+            return False, f"Monto USD ${total_monto:,.2f} fuera del rango autorizado por este aprobador (USD ${min_monto:,.2f} - USD ${max_monto:,.2f})"
+    
+    # Validación 5: Usuario solicitante activo
+    usuario_id = row.get("id_usuario")
+    if usuario_id:
+        usuario_row = con.execute(
+            "SELECT estado_registro FROM usuarios WHERE lower(id_spm) = ? OR lower(mail) = ?",
+            (usuario_id.lower(), usuario_id.lower())
+        ).fetchone()
+        if usuario_row:
+            # Manejar tanto dict como tuplas
+            if hasattr(usuario_row, 'get'):
+                estado = _coerce_str(usuario_row.get("estado_registro", "")).lower()
+            else:
+                estado = _coerce_str(usuario_row[0] if len(usuario_row) > 0 else "").lower()
+            
+            if estado and estado not in ("activo", "active", "a", "1", "true"):
+                return False, f"Usuario solicitante {usuario_id} no está activo"
+        else:
+            return False, f"Usuario solicitante {usuario_id} no encontrado"
+    
+    return True, None
 
 
 def _serialize_row(row: dict[str, Any], *, detailed: bool) -> dict[str, Any]:
@@ -512,7 +729,7 @@ def crear_borrador():
         if not user:
             return _json_error("NOUSER", "Usuario no encontrado", 404)
         approver = _ensure_user_exists(con, _resolve_approver(con, user, 0.0))
-        planner = _ensure_user_exists(con, _resolve_planner(user))
+        planner = _ensure_user_exists(con, _resolve_planner(user, con=con))
         draft_payload = {
             **draft_data,
             "items": [],
@@ -637,7 +854,7 @@ def _finalizar_solicitud(con, row: dict[str, Any], final_data: dict[str, Any], u
     )
     planner = _ensure_user_exists(
         con,
-        final_data.get("planner_id") or row.get("planner_id") or _resolve_planner(user),
+        final_data.get("planner_id") or row.get("planner_id") or _resolve_planner(user, con=con),
     )
     final_payload = {**_json_load(row.get("data_json")), **final_data}
     final_payload["aprobador_id"] = approver
@@ -718,14 +935,17 @@ def finalizar_solicitud(sol_id: int):
     if not uid:
         return _json_error("NOAUTH", "No autenticado", 401)
     payload = request.get_json(force=True, silent=False) or {}
-    try:
-        final_data = _parse_full_payload(uid, payload, expect_items=True)
-    except ValueError as exc:
-        return _json_error("BAD_REQUEST", str(exc), 400)
-    except Exception as exc:
-        return _json_error("BAD_REQUEST", str(exc), 400)
+    
     with get_connection() as con:
         con.row_factory = lambda cursor, row: {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
+        try:
+            # Pasar la conexión para validar materiales
+            final_data = _parse_full_payload(uid, payload, expect_items=True, con=con)
+        except ValueError as exc:
+            return _json_error("BAD_REQUEST", str(exc), 400)
+        except Exception as exc:
+            return _json_error("BAD_REQUEST", str(exc), 400)
+        
         row = _load_solicitud(con, sol_id)
         if not row:
             return _json_error("NOTFOUND", "Solicitud no encontrada", 404)
@@ -751,14 +971,17 @@ def crear_solicitud():
     if not uid:
         return _json_error("NOAUTH", "No autenticado", 401)
     payload = request.get_json(force=True, silent=False) or {}
-    try:
-        final_data = _parse_full_payload(uid, payload, expect_items=True)
-    except ValueError as exc:
-        return _json_error("BAD_REQUEST", str(exc), 400)
-    except Exception as exc:
-        return _json_error("BAD_REQUEST", str(exc), 400)
+    
     with get_connection() as con:
         con.row_factory = lambda cursor, row: {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
+        try:
+            # Pasar la conexión para validar materiales
+            final_data = _parse_full_payload(uid, payload, expect_items=True, con=con)
+        except ValueError as exc:
+            return _json_error("BAD_REQUEST", str(exc), 400)
+        except Exception as exc:
+            return _json_error("BAD_REQUEST", str(exc), 400)
+        
         dummy_row = {
             "id": None,
             "data_json": json.dumps({}, ensure_ascii=False),
@@ -826,8 +1049,19 @@ def decidir_solicitud(sol_id: int):
         user = _fetch_user(con, uid)
         if not _can_resolve(user, row):
             return _json_error("FORBIDDEN", "No tienes permisos para esta operación", 403)
+        
+        # FIX #2: Validar que el usuario que está decidiendo existe y está activo
+        if not _ensure_approver_exists_and_active(con, uid):
+            return _json_error("INVALID_APPROVER", "Tu perfil de aprobador no está activo en el sistema", 403)
+        
         if row.get("status") != STATUS_PENDING:
             return _json_error("INVALID_STATE", "La solicitud no está pendiente de aprobación", 409)
+        
+        # FIX #4: Pre-validaciones antes de permitir aprobación
+        if decision.accion == "aprobar":
+            es_valido, error_msg = _pre_validar_aprobacion(con, row, user)
+            if not es_valido:
+                return _json_error("VALIDATION_ERROR", error_msg or "Validación previa falló", 400)
 
         decision_at = _utcnow_iso()
         data = _json_load(row.get("data_json"))
