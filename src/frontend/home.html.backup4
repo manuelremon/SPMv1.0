@@ -13,82 +13,42 @@
     }
 
     :root {
-      /* LIGHT MODE PROFESSIONAL - Azul Corporativo + Blanco Limpio */
-      --primary: #2563eb;
-      --primary-light: #60a5fa;
-      --primary-dark: #1e40af;
-      --accent: #60a5fa;
-      --success: #059669;
-      --success-light: #10b981;
-      --warning: #d97706;
-      --danger: #dc2626;
-      --danger-light: #ef4444;
+      /* DARK MODE PREMIUM - Violeta Premium + Oscuro Elegante */
+      --primary: #7c3aed;
+      --primary-light: #a78bfa;
+      --primary-dark: #5b21b6;
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --danger-light: #f87171;
       
-      /* Backgrounds - Clean & Professional Light Mode */
-      --bg-primary: #ffffff;
-      --bg-secondary: #f9fafb;
-      --bg-tertiary: #f3f4f6;
-      --bg-canvas: #ffffff;
-      --bg-canvas-inset: #f9fafb;
+      /* Backgrounds - Deep & Professional */
+      --bg-primary: #1a1f35;
+      --bg-secondary: #262d48;
+      --bg-tertiary: #37415d;
+      --bg-canvas: #0f1729;
+      --bg-canvas-inset: #0a0e1a;
       
       /* Legacy aliases - for compatibility */
       --bg-card: var(--bg-primary);
       --bg-darker: var(--bg-secondary);
       --border: var(--border-default);
-      --border-light: #e5e7eb;
+      --border-light: #37415d;
       
-      /* Text colors - High contrast for light mode */
-      --text-primary: #111827;
-      --text-secondary: #6b7280;
+      /* Text colors - Premium contrast for dark mode */
+      --text-primary: #f3f4f6;
+      --text-secondary: #d1d5db;
       --text-tertiary: #9ca3af;
       
-      /* Borders - Clean and subtle light mode */
-      --border-default: #e5e7eb;
-      --border-muted: #f3f4f6;
+      /* Borders - Subtle elegance for dark mode */
+      --border-default: #3f4655;
+      --border-muted: #2d3342;
       
       /* Accents for cards and highlights */
-      --accent-blue: #dbeafe;
-      --accent-purple: #ede9fe;
-      --accent-emerald: #d1fae5;
-      
-      /* Shadow System - Professional Blue Tint */
-      --shadow-xs: 0 1px 2px rgba(37, 99, 235, 0.06);
-      --shadow-sm: 0 1px 3px rgba(37, 99, 235, 0.08);
-      --shadow-md: 0 2px 8px rgba(37, 99, 235, 0.06);
-      --shadow-lg: 0 8px 16px rgba(37, 99, 235, 0.12);
-      --shadow-xl: 0 12px 24px rgba(37, 99, 235, 0.15);
-      
-      /* Border Radius System */
-      --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --radius-full: 50%;
-      
-      /* Typography System */
-      --text-xs: 11px;
-      --text-sm: 12px;
-      --text-base: 13px;
-      --text-lg: 14px;
-      --text-xl: 16px;
-      --text-2xl: 18px;
-      --text-3xl: 24px;
-      --text-4xl: 28px;
-      --text-5xl: 36px;
-      
-      /* Font Weight System */
-      --fw-normal: 500;
-      --fw-medium: 600;
-      --fw-bold: 700;
-      --fw-extrabold: 800;
-      
-      /* Spacing Scale - 4px base unit */
-      --space-xs: 4px;
-      --space-sm: 8px;
-      --space-md: 12px;
-      --space-lg: 16px;
-      --space-xl: 24px;
-      --space-2xl: 32px;
-      --space-3xl: 40px;
+      --accent-blue: #1e3a8a;
+      --accent-purple: #4c1d95;
+      --accent-emerald: #064e3b;
       
       /* Transitions */
       --transition: all 0.2s ease-in-out;
@@ -136,7 +96,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       background: transparent;
       overflow: hidden;
       flex-shrink: 0;
@@ -181,7 +141,7 @@
       align-items: center;
       gap: 10px;
       padding: 8px 12px;
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       color: var(--text-secondary);
       text-decoration: none;
       transition: var(--transition);
@@ -227,7 +187,7 @@
       gap: 12px;
       padding: 12px 16px;
       background: var(--bg-secondary);
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       margin-bottom: 12px;
     }
 
@@ -301,8 +261,8 @@
     .action-btn {
       width: 40px;
       height: 40px;
-      border-radius: var(--radius-md);
-      background: rgba(37, 99, 235, 0.08);
+      border-radius: 8px;
+      background: rgba(124, 58, 237, 0.08);
       border: 1px solid var(--border);
       color: var(--text-secondary);
       cursor: pointer;
@@ -315,7 +275,7 @@
     }
 
     .action-btn:hover {
-      background: rgba(37, 99, 235, 0.15);
+      background: rgba(124, 58, 237, 0.15);
       color: var(--primary);
       border-color: var(--primary);
     }
@@ -331,13 +291,13 @@
       border-radius: 50%;
       background: var(--primary);
       border: none;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       animation: floatingPulse 3s ease-in-out infinite;
     }
 
     .action-btn.floating:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     }
 
     .notification-icon {
@@ -368,11 +328,11 @@
     @keyframes floatingPulse {
       0%, 100% {
         transform: translateY(0) scale(1);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
       50% {
         transform: translateY(-4px) scale(1.02);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
       }
     }
 
@@ -406,10 +366,6 @@
       box-shadow: none;
       animation: none;
       overflow: visible;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow-xs);
     }
     
     /* Animated background gradient */
@@ -496,39 +452,31 @@
 
     .stat-card {
       background: var(--bg-primary);
-      border: 1.5px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 20px;
+      transition: var(--transition);
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
-      animation: slideUpFadeIn 0.6s ease-out backwards;
     }
 
     .stat-card::before {
       content: '';
       position: absolute;
       top: 0;
-      left: 0;
+      right: 0;
       width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--primary-light));
-      transition: all 0.3s ease;
-      transform: scaleX(0);
-      transform-origin: left;
-    }
-
-    .stat-card:hover::before {
-      transform: scaleX(1);
+      height: 100%;
+      background: transparent;
+      transition: var(--transition);
     }
 
     .stat-card:hover {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(249, 250, 251, 0.8) 100%);
+      background: var(--bg-secondary);
       border-color: var(--primary);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .stat-card-content {
@@ -537,96 +485,63 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 16px;
     }
 
     .stat-info {
       flex: 1;
-      animation: slideInLeft 0.7s ease-out backwards;
     }
 
     .stat-label {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 600;
       text-transform: uppercase;
       color: var(--text-secondary);
-      margin-bottom: 12px;
-      letter-spacing: 0.8px;
-      opacity: 0.8;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
     }
 
     .stat-value {
-      font-size: 36px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
       margin-bottom: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover .stat-value {
-      transform: scale(1.05);
-      filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.2));
     }
 
     .stat-change {
       font-size: 12px;
-      color: var(--success, #10b981);
-      font-weight: 700;
-      display: inline-block;
-      padding: 4px 8px;
-      background: rgba(16, 185, 129, 0.1);
-      border-radius: 4px;
-      animation: slideInUp 0.7s ease-out 0.2s backwards;
+      color: var(--success);
+      font-weight: 600;
     }
 
     .stat-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: var(--radius-lg);
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(96, 165, 250, 0.08));
+      font-size: 20px;
+      background: var(--bg-secondary);
       color: var(--primary);
-      animation: slideInRight 0.7s ease-out backwards;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-    }
-
-    .stat-card:hover .stat-icon {
-      transform: rotate(8px) scale(1.1);
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(96, 165, 250, 0.12));
     }
 
     /* ========== ACTIVITY SECTION ========== */
     .activity-section {
-      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-      border: 1.5px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      padding: 28px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 24px;
       margin-bottom: 32px;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
-      animation: slideUpFadeIn 0.8s ease-out 0.3s backwards;
     }
 
     .section-title {
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 24px;
       display: flex;
       align-items: center;
       gap: 12px;
-      animation: slideInLeft 0.7s ease-out backwards;
-    }
-
-    .section-title span {
-      display: inline-block;
-      animation: bounce 2s infinite;
     }
 
     .activity-list {
@@ -639,49 +554,37 @@
       display: flex;
       gap: 16px;
       padding: 16px;
-      background: #ffffff;
-      border-radius: 10px;
-      border-left: 4px solid var(--primary);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid var(--border-default);
-      border-left: 4px solid var(--primary);
-      animation: slideInUp 0.6s ease-out backwards;
+      background: rgba(124, 58, 237, 0.05);
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+      transition: var(--transition);
     }
 
     .activity-item:hover {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.04), rgba(96, 165, 250, 0.04));
-      border-left-color: var(--primary-light);
-      transform: translateX(6px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.12);
+      background: rgba(124, 58, 237, 0.08);
+      border-left-color: var(--accent);
+      transform: translateX(4px);
     }
 
     .activity-icon {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(96, 165, 250, 0.08));
+      background: rgba(124, 58, 237, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 20px;
-      animation: slideInLeft 0.7s ease-out backwards;
-      transition: all 0.3s ease;
-    }
-
-    .activity-item:hover .activity-icon {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(96, 165, 250, 0.12));
-      transform: scale(1.15);
+      font-size: 18px;
     }
 
     .activity-content {
       flex: 1;
-      animation: slideInRight 0.7s ease-out 0.1s backwards;
     }
 
     .activity-title {
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 4px;
     }
@@ -700,36 +603,21 @@
     }
 
     .chart-container {
-      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-      border: 1.5px solid var(--border-default);
-      border-radius: var(--radius-lg);
-      padding: 28px;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
-      animation: slideUpFadeIn 0.8s ease-out 0.2s backwards;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .chart-container:hover {
-      border-color: var(--primary);
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
-      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.5) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
     }
 
     .chart-title {
       font-size: 16px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-      animation: slideInLeft 0.7s ease-out backwards;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 15px;
     }
 
     .chart-spacer {
       margin-top: 20px;
-      filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.08));
-      animation: fadeInScale 0.8s ease-out 0.4s backwards;
     }
 
     .activity-loading {
@@ -766,9 +654,9 @@
       align-items: center;
       justify-content: center;
       padding: 60px 20px;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.03) 100%);
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: 12px;
       text-align: center;
       min-height: 400px;
     }
@@ -797,17 +685,17 @@
       background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
       color: white;
       border: none;
-      border-radius: var(--radius-md);
-      font-size: var(--text-lg);
-      font-weight: var(--fw-medium);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
     }
 
     .btn-empty:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-xl);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
     }
 
     .btn-empty:active {
@@ -828,12 +716,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(37, 99, 235, 0.25);
-      border-radius: var(--radius-sm);
+      background: rgba(124, 58, 237, 0.25);
+      border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(37, 99, 235, 0.45);
+      background: rgba(124, 58, 237, 0.45);
     }
 
     /* ========== RESPONSIVE ========== */
@@ -931,23 +819,23 @@
       align-items: center;
       justify-content: center;
       font-size: 24px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
       transition: all 0.3s ease;
       animation: pulse 2s infinite;
     }
 
     .ai-widget-button:hover {
       transform: scale(1.1);
-      box-shadow: var(--shadow-xl);
+      box-shadow: 0 6px 24px rgba(124, 58, 237, 0.5);
       animation: none;
     }
 
     @keyframes pulse {
       0%, 100% {
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
       }
       50% {
-        box-shadow: 0 4px 24px rgba(37, 99, 235, 0.6);
+        box-shadow: 0 4px 24px rgba(124, 58, 237, 0.6);
       }
     }
 
@@ -959,7 +847,7 @@
       max-height: 600px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-default);
-      border-radius: var(--radius-lg);
+      border-radius: 12px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       display: none;
       flex-direction: column;
@@ -1022,7 +910,7 @@
     .ai-message {
       margin-bottom: 12px;
       padding: 12px;
-      border-radius: var(--radius-md);
+      border-radius: 8px;
       font-size: 13px;
       line-height: 1.4;
     }
@@ -1057,17 +945,17 @@
       flex: 1;
       padding: 10px 12px;
       border: 1px solid var(--border-default);
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       background: var(--bg-secondary);
       color: var(--text-primary);
-      font-size: var(--text-base);
+      font-size: 13px;
       transition: all 0.2s;
     }
 
     .ai-input-field:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
     }
 
     .ai-send-button {
@@ -1075,10 +963,10 @@
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       cursor: pointer;
-      font-size: var(--text-lg);
-      font-weight: var(--fw-medium);
+      font-size: 14px;
+      font-weight: 600;
       transition: all 0.2s;
     }
 
@@ -1102,7 +990,7 @@
       padding: 8px 12px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-muted);
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
       transition: all 0.2s;
@@ -1144,62 +1032,6 @@
       40% {
         opacity: 1;
         transform: translateY(-6px);
-      }
-    }
-
-    /* Dashboard Animation Keyframes */
-    @keyframes slideUpFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInScale {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
       }
     }
 
@@ -1366,29 +1198,6 @@
       </div>
     </header>
 
-    <!-- HEADER CON TÍTULO Y STEPPER - NUEVA SOLICITUD -->
-    <div class="nueva-solicitud-header hidden" style="display: flex; align-items: center; justify-content: center; gap: 40px; padding: 16px 48px; border-bottom: 1px solid var(--border-default); position: sticky; top: 0; z-index: 99; background: white;">
-      <h1 class="page-title" style="position: absolute; left: 48px;">📝 Nueva Solicitud</h1>
-      
-      <!-- STEPPER INDICATOR - HORIZONTAL TOP - CENTERED -->
-      <div class="form-stepper" style="margin: 0; padding: 0; flex: 0 0 auto; max-width: 600px;">
-        <div class="stepper-step active" data-step="1" onclick="goToStep(1)" style="cursor: pointer;">
-          <div class="stepper-circle">1</div>
-          <span class="stepper-label">Información</span>
-        </div>
-        <div class="stepper-line"></div>
-        <div class="stepper-step" data-step="2" onclick="goToStep(2)" style="cursor: pointer;">
-          <div class="stepper-circle">2</div>
-          <span class="stepper-label">Materiales</span>
-        </div>
-        <div class="stepper-line"></div>
-        <div class="stepper-step" data-step="3" onclick="goToStep(3)" style="cursor: pointer;">
-          <div class="stepper-circle">3</div>
-          <span class="stepper-label">Confirmar</span>
-        </div>
-      </div>
-    </div>
-
     <!-- CONTENT -->
     <div class="content">
       <!-- PAGE: DASHBOARD -->
@@ -1490,137 +1299,40 @@
             </div>
           </div>
         </div>
-
-        <!-- SOLICITUDES TABLE -->
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h2 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-            <span>📋</span> Mis Solicitudes
-          </h2>
-          
-          <div style="overflow-x: auto; margin-bottom: 16px;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;" id="userSolicitudesTable">
-              <thead>
-                <tr style="background: #f9fafb; border-bottom: 2px solid var(--border);">
-                  <th style="padding: 12px; text-align: left; color: #374151; font-weight: 600; border: none;">ID</th>
-                  <th style="padding: 12px; text-align: left; color: #374151; font-weight: 600; border: none;">Centro</th>
-                  <th style="padding: 12px; text-align: left; color: #374151; font-weight: 600; border: none;">Sector</th>
-                  <th style="padding: 12px; text-align: center; color: #374151; font-weight: 600; border: none;">Items</th>
-                  <th style="padding: 12px; text-align: right; color: #374151; font-weight: 600; border: none;">Monto Total</th>
-                  <th style="padding: 12px; text-align: center; color: #374151; font-weight: 600; border: none;">Estado</th>
-                  <th style="padding: 12px; text-align: center; color: #374151; font-weight: 600; border: none;">Fecha</th>
-                  <th style="padding: 12px; text-align: center; color: #374151; font-weight: 600; border: none;">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="userSolicitudesBody" style="border-top: 1px solid var(--border);">
-                <tr style="text-align: center; color: #9ca3af;">
-                  <td colspan="8" style="padding: 24px; border: none;">Cargando solicitudes...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- EMPTY STATE (shown when no solicitudes) -->
-        <div id="emptyRequestsState" class="empty-state" style="display: none;">
+        
+        <div class="empty-state">
           <div class="empty-state-icon">📋</div>
-          <h3>Sin solicitudes</h3>
-          <p>No tienes solicitudes creadas aún.</p>
+          <h3>Solicitudes</h3>
+          <p>En breve podrás ver todas tus solicitudes aquí.</p>
           <button class="btn-empty" onclick="navigateTo('new-request')">Crear Nueva Solicitud</button>
-        </div>
-      </div>
-
-      <!-- MODAL: SOLICITUD DETAIL -->
-      <div id="solicitudDetailModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; backdrop-filter: blur(2px); animation: fadeIn 0.2s ease-out;">
-        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 12px 24px rgba(0,0,0,0.15); animation: slideUp 0.3s ease-out;">
-          
-          <!-- Modal Header -->
-          <div style="padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary);">
-            <div>
-              <h2 style="margin: 0; color: var(--text-primary); font-size: 18px; font-weight: 600;">Detalles de Solicitud</h2>
-              <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 13px;">ID: <span id="modalSolicitudId" style="font-weight: 600;">#-</span></p>
-            </div>
-            <button onclick="closeSolicitudDetail()" style="background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-primary)'" onmouseout="this.style.background='none'; this.style.color='var(--text-secondary)'">✕</button>
-          </div>
-
-          <!-- Modal Body -->
-          <div style="padding: 24px;">
-            
-            <!-- Info Section -->
-            <div style="margin-bottom: 24px;">
-              <h3 style="margin: 0 0 16px 0; color: var(--text-primary); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Información General</h3>
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                  <label style="display: block; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Centro</label>
-                  <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;" id="modalDetailCentro">-</div>
-                </div>
-                <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                  <label style="display: block; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Sector</label>
-                  <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;" id="modalDetailSector">-</div>
-                </div>
-                <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                  <label style="display: block; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Almacén</label>
-                  <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;" id="modalDetailAlmacen">-</div>
-                </div>
-                <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                  <label style="display: block; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Estado</label>
-                  <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;" id="modalDetailStatus">-</div>
-                </div>
-                <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                  <label style="display: block; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Criticidad</label>
-                  <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;" id="modalDetailCriticidad">-</div>
-                </div>
-                <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                  <label style="display: block; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Fecha Necesaria</label>
-                  <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;" id="modalDetailFecha">-</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Justificación -->
-            <div style="margin-bottom: 24px;">
-              <h3 style="margin: 0 0 12px 0; color: var(--text-primary); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Justificación</h3>
-              <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); line-height: 1.5; font-size: 13px; max-height: 120px; overflow-y: auto;" id="modalDetailJustificacion">-</div>
-            </div>
-
-            <!-- Materials Table -->
-            <div style="margin-bottom: 24px;">
-              <h3 style="margin: 0 0 12px 0; color: var(--text-primary); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Materiales</h3>
-              <div style="overflow-x: auto; border-radius: 8px; border: 1px solid var(--border);">
-                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                  <thead>
-                    <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
-                      <th style="padding: 10px 12px; text-align: left; color: var(--text-secondary); font-weight: 600;">Material</th>
-                      <th style="padding: 10px 12px; text-align: center; color: var(--text-secondary); font-weight: 600;">Cantidad</th>
-                      <th style="padding: 10px 12px; text-align: right; color: var(--text-secondary); font-weight: 600;">Precio Unit.</th>
-                      <th style="padding: 10px 12px; text-align: right; color: var(--text-secondary); font-weight: 600;">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody id="modalDetailMaterials" style="border-top: 1px solid var(--border);">
-                    <tr>
-                      <td colspan="4" style="padding: 12px; text-align: center; color: var(--text-secondary);">Cargando materiales...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Total -->
-            <div style="padding: 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%); border: 1px solid var(--success-light); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-weight: 600; color: var(--text-primary); font-size: 14px;">TOTAL A SOLICITAR:</span>
-              <span style="font-size: 18px; font-weight: 700; color: var(--success);" id="modalDetailTotal">$0.00</span>
-            </div>
-          </div>
-
-          <!-- Modal Footer -->
-          <div style="padding: 16px 24px; border-top: 1px solid var(--border); background: var(--bg-secondary); display: flex; justify-content: flex-end; gap: 12px;">
-            <button onclick="closeSolicitudDetail()" style="padding: 10px 20px; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--bg-tertiary)'">Cerrar</button>
-          </div>
         </div>
       </div>
 
       <!-- PAGE: NUEVA SOLICITUD -->
       <div id="page-new-request" class="page-content new-request-layout">
+        <div class="content-header">
+          <h1 class="page-title">📝 Nueva Solicitud</h1>
+        </div>
+
         <div class="request-form-wrapper">
+          <!-- STEPPER INDICATOR - LATERAL -->
+          <div class="form-stepper">
+            <div class="stepper-step active" data-step="1">
+              <div class="stepper-circle">1</div>
+              <span class="stepper-label">Información</span>
+            </div>
+            <div class="stepper-line"></div>
+            <div class="stepper-step" data-step="2">
+              <div class="stepper-circle">2</div>
+              <span class="stepper-label">Materiales</span>
+            </div>
+            <div class="stepper-line"></div>
+            <div class="stepper-step" data-step="3">
+              <div class="stepper-circle">3</div>
+              <span class="stepper-label">Confirmar</span>
+            </div>
+          </div>
+
           <!-- FORM CONTENT -->
           <div class="form-content-area">
 
@@ -1695,21 +1407,15 @@
             </div>
 
             <!-- ACTION BUTTONS -->
-            <div class="form-actions-bottom" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-default);">
-              <button type="button" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;" 
-                onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'" 
-                onclick="resetForm()">
+            <div class="form-actions-bottom">
+              <button type="button" class="btn btn-secondary" onclick="resetForm()">
                 🔄 Limpiar
               </button>
-              <button type="button" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;" 
-                onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'" 
-                onclick="saveDraft()">
+              <button type="button" class="btn btn-secondary" onclick="saveDraft()">
                 💾 Guardar borrador
               </button>
-              <button type="button" style="padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;" 
-                onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='var(--primary)'" 
-                onclick="navigateFormStep('materials')">
-                ➜ Continuar
+              <button type="button" class="btn btn-primary btn-lg" onclick="navigateFormStep('materials')">
+                Continuar
               </button>
             </div>
           </div>
@@ -1723,129 +1429,125 @@
                 <div class="section-icon">📦</div>
                 <div>
                   <h2>Agregar Materiales</h2>
+                  <p>Especifica qué materiales necesitas y sus cantidades</p>
                 </div>
               </div>
 
-              <!-- SECTION 1: SEARCH (MEJORADA - PROPUESTA 3) -->
+              <!-- SECTION 1: SEARCH -->
               <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                  <h3 style="margin: 0; color: #111827; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.2em;">🔍</span> Buscar Material
-                  </h3>
-                  <span id="resultsCount" style="color: #6b7280; font-size: 0.85rem; font-weight: 500;">Resultados: 0</span>
-                </div>
-                <p style="margin: 0 0 16px 0; color: #6b7280; font-size: 0.85rem;">Busca el material por código SAP o descripción, luego haz clic en el resultado para ver detalles y agregarlo a tu solicitud</p>
-                
-                <!-- Fila 1: Campos de búsqueda + botón -->
-                <div style="display: grid; grid-template-columns: 140px 140px 1fr auto; gap: 12px; align-items: flex-end; margin-bottom: 12px;">
-                  <div class="form-field">
-                    <label for="materialSearchSAP" style="font-weight: 500; color: #374151; font-size: 0.9rem;">Código SAP</label>
-                    <input type="text" id="materialSearchSAP" placeholder="Ej: 1000000006" oninput="filterMaterials(); showSearchSuggestions();" maxlength="20"
-                           style="width: 100%; border: 1px solid #d1d5db; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
-                  </div>
+                <h3 style="margin: 0 0 16px 0; color: #111827; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.2em;">🔍</span> Buscar Material
+                </h3>
                   
-                  <div class="form-field">
-                    <label for="materialSearchCategory" style="font-weight: 500; color: #374151; font-size: 0.9rem;">Categoría</label>
-                    <select id="materialSearchCategory" onchange="filterMaterials();"
-                            style="width: 100%; border: 1px solid #d1d5db; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px; box-sizing: border-box; font-family: inherit; background: white; cursor: pointer;">
-                      <option value="">Todas</option>
-                    </select>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-field">
+                      <label for="materialSearchSAP" style="font-weight: 600; color: #1e40af;">� Código SAP</label>
+                      <input type="text" id="materialSearchSAP" placeholder="Ej: 1000000006" oninput="filterMaterials()" 
+                             style="border: 2px solid #93c5fd; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px;">
+                    </div>
+                    <div class="form-field">
+                      <label for="materialSearchDesc" style="font-weight: 600; color: #1e40af;">📝 Descripción o Nombre</label>
+                      <input type="text" id="materialSearchDesc" placeholder="Ej: TORNILLO, CABLE, SENSOR..." oninput="filterMaterials()" 
+                             style="border: 2px solid #93c5fd; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px;">
+                    </div>
                   </div>
-                  
-                  <div class="form-field">
-                    <label for="materialSearchDesc" style="font-weight: 500; color: #374151; font-size: 0.9rem;">Descripción</label>
-                    <input type="text" id="materialSearchDesc" placeholder="Ej: TORNILLO, CABLE..." oninput="filterMaterials(); showSearchSuggestions();" 
-                           list="materialsList"
-                           style="width: 100%; border: 1px solid #d1d5db; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
-                    <datalist id="materialsList"></datalist>
-                  </div>
-                  
-                  <button type="button" style="padding: 10px 14px; background: var(--text-secondary); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.85rem; white-space: nowrap; transition: all 0.2s;" 
-                    onmouseover="this.style.background='#4b5563'" onmouseout="this.style.background='var(--text-secondary)'" 
-                    onclick="showMaterialDescriptionFromSearch();">
-                    📋 Descripción Ampliada
-                  </button>
                 </div>
 
-                <!-- Fila 2: Opciones de ordenamiento -->
-                <div style="display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
-                  <label for="sortBy" style="font-weight: 500; color: #374151; font-size: 0.9rem; white-space: nowrap;">Ordenar por:</label>
-                  <select id="sortBy" onchange="filterMaterials();"
-                          style="flex: 1; max-width: 250px; border: 1px solid #d1d5db; padding: 8px 12px; font-size: 0.9rem; border-radius: 6px; background: white; cursor: pointer; font-family: inherit;">
-                    <option value="relevancia">⭐ Relevancia (Defecto)</option>
-                    <option value="precio_asc">💰 Precio (Menor)</option>
-                    <option value="precio_desc">💰 Precio (Mayor)</option>
-                    <option value="nombre_asc">🔤 Nombre (A-Z)</option>
-                    <option value="nombre_desc">🔤 Nombre (Z-A)</option>
-                  </select>
-                  <button type="button" onclick="clearSearchFilters();" style="padding: 8px 12px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
-                    ✕ Limpiar
-                  </button>
-                </div>
+                <!-- MATERIAL SELECTION SECTION -->
+                <div style="margin-bottom: 20px;">
+                  <h3 style="margin: 0 0 16px 0; color: #1e40af; font-size: 1.1rem; font-weight: 600;">✅ Seleccionar Material</h3>
+                  
+                  <div class="form-grid-materials" style="display: grid; grid-template-columns: 2fr 1fr 1fr auto auto; gap: 12px; align-items: flex-end;">
+                    <div class="form-field">
+                      <label for="materialSelect" style="font-weight: 600; color: #1e40af;">Material <span class="required">*</span></label>
+                      <input type="search" id="materialSelect" list="materialsList" required 
+                             placeholder="Selecciona de los resultados filtrados..." autocomplete="off"
+                             style="border: 2px solid #3b82f6; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px; background: white;">
+                      <datalist id="materialsList">
+                        <!-- Populated by loadFormCatalogs() -->
+                      </datalist>
+                    </div>
 
-                <!-- Búsquedas Recientes (ocultas por defecto) -->
-                <div id="searchSuggestions" style="margin-top: 12px; padding: 12px; background: white; border: 2px solid #0284c7; border-radius: 6px; display: none; max-height: 300px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                  <div id="suggestionsList" style="display: flex; flex-direction: column; gap: 6px;">
-                    <!-- Populated by showSearchSuggestions() -->
+                    <div class="form-field">
+                      <label for="materialQuantity" style="font-weight: 600; color: #1e40af;">Cantidad <span class="required">*</span></label>
+                      <input type="number" id="materialQuantity" min="1" placeholder="1" required
+                             style="border: 2px solid #3b82f6; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px;">
+                    </div>
+
+                    <div class="form-field">
+                      <label for="materialPrice" style="font-weight: 600; color: #1e40af;">Precio Unit. <span class="required">*</span></label>
+                      <input type="number" id="materialPrice" min="0" step="0.01" placeholder="0.00" required
+                             style="border: 2px solid #3b82f6; padding: 10px 12px; font-size: 0.95rem; border-radius: 6px;">
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" id="btnViewDescription" style="display: none; padding: 10px 14px; font-size: 0.9rem; white-space: nowrap;" onclick="showMaterialDescription()">
+                      📖 Info
+                    </button>
+
+                    <button type="button" class="btn btn-success btn-add-material" onclick="addMaterialToList()" 
+                            style="padding: 10px 16px; font-weight: 600; white-space: nowrap;">
+                      ➕ Agregar
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <!-- SECTION 2: TABLA DE MATERIALES AGREGADOS -->
-              <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-                <h3 style="margin: 0 0 16px 0; color: #111827; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 1.2em;">📋</span> Materiales Agregados (<span id="materialsCount">0</span>)
-                </h3>
-                
-                <div style="overflow-x: auto; margin-bottom: 16px;">
-                  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+              <!-- MATERIALS TABLE -->
+              <div class="materials-list">
+                <div class="materials-header">
+                  <h3>📋 Materiales Agregados</h3>
+                  <span class="material-count" id="materialCount">0 items</span>
+                </div>
+
+                <div class="materials-table-wrapper">
+                  <table class="materials-table">
                     <thead>
-                      <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
-                        <th style="padding: 12px; text-align: left; color: #374151; font-weight: 600; border: none;">Material</th>
-                        <th style="padding: 12px; text-align: center; color: #374151; font-weight: 600; border: none;">Cantidad</th>
-                        <th style="padding: 12px; text-align: right; color: #374151; font-weight: 600; border: none;">Precio Unit.</th>
-                        <th style="padding: 12px; text-align: right; color: #374151; font-weight: 600; border: none;">Subtotal</th>
-                        <th style="padding: 12px; text-align: center; color: #374151; font-weight: 600; border: none;">Acciones</th>
+                      <tr>
+                        <th class="col-material">Material</th>
+                        <th class="col-qty">Cantidad</th>
+                        <th class="col-price">Precio Unit.</th>
+                        <th class="col-subtotal">Subtotal</th>
+                        <th class="col-action">Acción</th>
                       </tr>
                     </thead>
-                    <tbody id="materialsTableBody" style="border-top: 1px solid #e5e7eb;">
-                      <tr style="text-align: center; color: #9ca3af;">
-                        <td colspan="5" style="padding: 24px; border: none;">Sin materiales agregados</td>
+                    <tbody id="materialsTableBody">
+                      <tr id="no-materials" class="empty-row">
+                        <td colspan="5">
+                          <div class="empty-materials">
+                            <div class="empty-icon">🎁</div>
+                            <p>Aún no has agregado materiales</p>
+                            <small>Comienza seleccionando un material arriba</small>
+                          </div>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
-                  <div style="font-weight: 600; color: #111827; font-size: 0.95rem;">
-                    TOTAL: <span id="materialsTotal" style="color: #10b981; font-size: 1.1rem;">$0.00</span>
+                <!-- TOTALS SUMMARY -->
+                <div class="materials-summary">
+                  <div class="summary-item">
+                    <span>Cantidad Total:</span>
+                    <strong id="totalQty">0</strong>
                   </div>
-                  <button type="button" onclick="clearAllMaterials()" style="padding: 10px 16px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: all 0.2s;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
-                    🔄 Limpiar Todo
-                  </button>
+                  <div class="summary-divider"></div>
+                  <div class="summary-item total">
+                    <span>Monto Total:</span>
+                    <strong id="totalAmount" class="amount">$0.00</strong>
+                  </div>
                 </div>
-              </div>
-
-              <!-- ACTION BUTTONS FOR PASO 2 -->
-              <div class="form-actions-bottom" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-default);">
-                <button type="button" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;" 
-                  onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'" 
-                  onclick="navigateFormStep('info')">
-                  ← Anterior
-                </button>
-                <button type="button" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;" 
-                  onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'" 
-                  onclick="saveDraft()">
-                  💾 Guardar borrador
-                </button>
-                <button type="button" style="padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;" 
-                  onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='var(--primary)'" 
-                  onclick="navigateFormStep('review')">
-                  ➜ Continuar
-                </button>
               </div>
             </div>
 
+            <!-- ACTION BUTTONS -->
+            <div class="form-actions-bottom">
+              <button type="button" class="btn btn-secondary" onclick="navigateFormStep('info')">
+                ← Anterior
+              </button>
+              <button type="button" class="btn btn-primary btn-lg" onclick="navigateFormStep('review')">
+                Siguiente: Revisar →
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1944,15 +1646,11 @@
             </div>
 
             <!-- ACTION BUTTONS -->
-            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-default);">
-              <button type="button" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;" 
-                onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'" 
-                onclick="navigateFormStep('materials')">
+            <div class="form-actions-bottom">
+              <button type="button" class="btn btn-secondary" onclick="navigateFormStep('materials')">
                 ← Anterior
               </button>
-              <button type="button" style="padding: 12px 24px; background: var(--success-light); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;" 
-                onmouseover="this.style.background='var(--success)'" onmouseout="this.style.background='var(--success-light)'" 
-                onclick="submitNewRequest()">
+              <button type="button" class="btn btn-success btn-lg btn-submit" onclick="submitNewRequest()">
                 ✓ Confirmar y Crear Solicitud
               </button>
             </div>
@@ -1961,48 +1659,38 @@
       </div>
 
       <style>
-        /* ===== FORM STEPPER - HORIZONTAL TOP VERSION ===== */
+        /* ===== FORM STEPPER - VERTICAL VERSION ===== */
         .request-form-wrapper {
           display: flex;
-          gap: 0;
+          gap: 28px;
           align-items: flex-start;
-          padding: 0 48px 32px 48px;
-          max-width: 100%;
-          margin: 0 auto;
-          justify-content: center;
+          padding: 0 32px 32px 32px;
         }
 
         .form-stepper {
           display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
           gap: 12px;
-          margin: 24px auto 28px auto;
+          margin-bottom: 0;
           padding: 20px 24px;
-          background: transparent;
+          background: var(--bg-primary);
           backdrop-filter: none;
-          border-radius: 0;
-          border: none;
-          z-index: 50;
+          border-radius: 8px;
+          border: 1px solid var(--border-default);
+          
+          /* Sticky positioning */
+          position: sticky;
+          top: 80px;
+          z-index: 100;
           box-shadow: none;
           animation: none;
           transition: var(--transition);
           position: relative;
-          width: auto;
-          max-width: 100%;
-          align-self: center;
-          flex-shrink: 0;
-        }
-        
-        .form-content-area {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          min-width: 0;
-          max-width: 900px;
-          margin: 0 auto;
-          width: 100%;
+          max-width: 220px;
+          width: 220px;
+          align-self: flex-start;
         }
         
         @keyframes popIn {
@@ -2041,7 +1729,7 @@
           background: var(--bg-primary);
           border-bottom: 1px solid var(--border-default);
           border-radius: 0;
-          box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
+          box-shadow: 0 8px 25px rgba(124, 58, 237, 0.1);
           width: 180px;
           max-width: 180px;
         }
@@ -2067,13 +1755,12 @@
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: 8px;
+          gap: 12px;
           opacity: 0.45;
           transition: all 0.2s ease;
           position: relative;
           cursor: pointer;
-          width: auto;
-          flex: 0 0 auto;
+          width: 100%;
         }
 
         .stepper-step.active {
@@ -2092,9 +1779,9 @@
         }
 
         .stepper-circle {
-          width: 44px;
-          height: 44px;
-          min-width: 44px;
+          width: 48px;
+          height: 48px;
+          min-width: 48px;
           flex-shrink: 0;
           background: var(--bg-secondary);
           border: 2px solid var(--border-default);
@@ -2103,10 +1790,10 @@
           align-items: center;
           justify-content: center;
           font-weight: 800;
-          font-size: 18px;
+          font-size: 21px;
           color: rgba(148, 163, 184, 0.6);
           transition: all 0.2s ease;
-          box-shadow: var(--shadow-sm);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
           position: relative;
           overflow: hidden;
         }
@@ -2147,38 +1834,35 @@
         }
 
         .stepper-label {
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 500;
           color: var(--text-tertiary);
           text-transform: none;
           letter-spacing: 0;
           transition: var(--transition);
-          text-align: center;
+          text-align: left;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          max-width: 120px;
-          display: inline-block;
-          margin-left: 8px;
         }
         
         .stepper-step.active .stepper-label {
           color: var(--primary);
           letter-spacing: 0;
-          font-size: 11px;
+          font-size: 12px;
           text-shadow: none;
           font-weight: 600;
         }
 
         .stepper-line {
-          width: 24px;
-          height: 2px;
+          width: 2px;
+          height: 24px;
           background: var(--border-default);
           transition: var(--transition);
           border-radius: 1px;
           position: relative;
-          margin: 0 8px;
-          display: block;
+          margin-left: 22px;
+          display: none;
         }
         
         .stepper-line::after {
@@ -2198,18 +1882,17 @@
 
         /* ===== FORM CONTAINER ===== */
         .form-container {
-          max-width: 850px;
+          max-width: 900px;
           margin: 0 auto;
-          width: 100%;
         }
 
         .form-panel {
           background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: 12px;
-          padding: 32px;
+          padding: 28px;
           margin-bottom: 24px;
-          box-shadow: var(--shadow-xs);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
           transition: var(--transition);
         }
 
@@ -2438,11 +2121,11 @@
         .form-field input[data-filled="true"],
         .form-field select[data-filled="true"],
         .form-field textarea[data-filled="true"] {
-          background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-          border-color: rgba(37, 99, 235, 0.3);
-          box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08),
-                      inset 0 1px 2px rgba(37, 99, 235, 0.12),
-                      inset 0 -1px 0 rgba(37, 99, 235, 0.03);
+          background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
+          border-color: rgba(124, 58, 237, 0.3);
+          box-shadow: 0 2px 6px rgba(124, 58, 237, 0.08),
+                      inset 0 1px 2px rgba(124, 58, 237, 0.12),
+                      inset 0 -1px 0 rgba(255, 255, 255, 0.03);
           animation: fieldFill 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -2456,7 +2139,7 @@
         .form-field input[data-filled="true"] ~ label,
         .form-field select[data-filled="true"] ~ label,
         .form-field textarea[data-filled="true"] ~ label {
-          filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.18)) drop-shadow(0 2px 4px rgba(37, 99, 235, 0.1));
+          filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.18)) drop-shadow(0 2px 4px rgba(148, 163, 184, 0.1));
           letter-spacing: 0.7px;
         }
 
@@ -2499,9 +2182,9 @@
           display: inline-block;
           width: 16px;
           height: 16px;
-          border: 2px solid rgba(37, 99, 235, 0.15);
+          border: 2px solid rgba(124, 58, 237, 0.15);
           border-top-color: var(--primary);
-          border-radius: var(--radius-full);
+          border-radius: 50%;
           animation: spin 0.8s linear infinite;
         }
 
@@ -2520,7 +2203,7 @@
           margin-right: 8px;
           border: 2px solid rgba(255, 255, 255, 0.3);
           border-top-color: white;
-          border-radius: var(--radius-full);
+          border-radius: 50%;
           animation: spin 0.8s linear infinite;
           vertical-align: middle;
         }
@@ -2529,9 +2212,9 @@
         .shimmer-loading {
           background: linear-gradient(
             90deg,
-            rgba(37, 99, 235, 0.08) 0%,
-            rgba(37, 99, 235, 0.12) 50%,
-            rgba(37, 99, 235, 0.08) 100%
+            rgba(124, 58, 237, 0.08) 0%,
+            rgba(124, 58, 237, 0.12) 50%,
+            rgba(124, 58, 237, 0.08) 100%
           );
           opacity: 0.7;
         }
@@ -2572,7 +2255,7 @@
         .material-search-filters input[type="text"]:focus {
           outline: none;
           border-color: var(--primary);
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
 
         .material-search-filters input[type="text"]::placeholder {
@@ -2606,7 +2289,7 @@
         .material-count {
           font-size: 12px;
           padding: 4px 10px;
-          background: rgba(37, 99, 235, 0.15);
+          background: rgba(124, 58, 237, 0.15);
           color: var(--primary-light);
           border-radius: 20px;
           font-weight: 600;
@@ -2627,7 +2310,7 @@
         }
 
         .materials-table thead {
-          background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.05) 100%);
+          background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(236, 72, 153, 0.05) 100%);
         }
 
         .materials-table th {
@@ -2700,7 +2383,7 @@
           align-items: center;
           gap: 20px;
           padding: 20px;
-          background: linear-gradient(135deg, var(--bg-darker) 0%, rgba(37, 99, 235, 0.05) 100%);
+          background: linear-gradient(135deg, var(--bg-darker) 0%, rgba(124, 58, 237, 0.05) 100%);
           border: 1px solid var(--border-light);
           border-radius: 10px;
           margin-bottom: 0;
@@ -2751,7 +2434,7 @@
           align-items: center;
           gap: 12px;
           padding: 16px 20px;
-          background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.05) 100%);
+          background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(236, 72, 153, 0.05) 100%);
           border-bottom: 1px solid var(--border);
         }
 
@@ -2838,7 +2521,7 @@
         .final-total {
           text-align: center;
           padding: 28px;
-          background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
           border: 2px solid var(--success);
           border-radius: 12px;
           margin-top: 24px;
@@ -3021,7 +2704,7 @@
           background: var(--bg-primary);
           border: 1px solid var(--border-default);
           border-radius: 12px;
-          box-shadow: var(--shadow-xl);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
           max-width: 600px;
           width: 90%;
           max-height: 80vh;
@@ -3665,7 +3348,7 @@
             background: rgba(10, 14, 39, 0.95);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(37, 99, 235, 0.15);
+            border-top: 1px solid rgba(124, 58, 237, 0.15);
             padding: 20px;
             color: white;
             font-size: 14px;
@@ -3775,17 +3458,17 @@
 
           .cookie-btn-accept:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.25);
           }
 
           .cookie-btn-info {
-            background: rgba(37, 99, 235, 0.08);
+            background: rgba(124, 58, 237, 0.08);
             color: white;
-            border: 1px solid rgba(37, 99, 235, 0.25);
+            border: 1px solid rgba(124, 58, 237, 0.25);
           }
 
           .cookie-btn-info:hover {
-            background: rgba(37, 99, 235, 0.15);
+            background: rgba(124, 58, 237, 0.15);
           }
 
           @media (max-width: 640px) {
@@ -3880,7 +3563,7 @@
         line.setAttribute('y1', y);
         line.setAttribute('x2', width - padding);
         line.setAttribute('y2', y);
-        line.setAttribute('stroke', 'rgba(37, 99, 235, 0.08)');
+        line.setAttribute('stroke', 'rgba(124, 58, 237, 0.08)');
         line.setAttribute('stroke-width', '1');
         svg.appendChild(line);
       }
@@ -3891,7 +3574,7 @@
       xAxis.setAttribute('y1', height - padding);
       xAxis.setAttribute('x2', width - padding);
       xAxis.setAttribute('y2', height - padding);
-      xAxis.setAttribute('stroke', 'rgba(37, 99, 235, 0.25)');
+      xAxis.setAttribute('stroke', 'rgba(124, 58, 237, 0.25)');
       xAxis.setAttribute('stroke-width', '2');
       svg.appendChild(xAxis);
 
@@ -3900,7 +3583,7 @@
       yAxis.setAttribute('y1', padding);
       yAxis.setAttribute('x2', padding);
       yAxis.setAttribute('y2', height - padding);
-      yAxis.setAttribute('stroke', 'rgba(37, 99, 235, 0.25)');
+      yAxis.setAttribute('stroke', 'rgba(124, 58, 237, 0.25)');
       yAxis.setAttribute('stroke-width', '2');
       svg.appendChild(yAxis);
 
@@ -4091,13 +3774,6 @@
 
         // Set default values when opening new request form
         if (pageName === 'new-request') {
-          // Show the nueva-solicitud-header
-          const nsHeader = document.querySelector('.nueva-solicitud-header');
-          if (nsHeader) {
-            nsHeader.classList.remove('hidden');
-            nsHeader.style.display = 'flex';
-          }
-          
           // Load form catalogs (centros, almacenes, materiales)
           loadFormCatalogs();
           
@@ -4137,46 +3813,29 @@
             dateInput.value = dateStr;
             dateInput.dispatchEvent(new Event('change', { bubbles: true }));
           }
-        } else {
-          // Hide the nueva-solicitud-header when navigating away
-          const nsHeader = document.querySelector('.nueva-solicitud-header');
-          if (nsHeader) {
-            nsHeader.classList.add('hidden');
-            nsHeader.style.display = 'none';
-          }
         }
 
-        // Load pending drafts and solicitudes when navigating to requests page
+        // Load pending drafts when navigating to requests page
         if (pageName === 'requests') {
           (async () => {
             try {
-              // Load user's solicitudes
-              await loadUserSolicitudes();
+              const notifResponse = await fetch('/api/notificaciones', {
+                credentials: 'include',
+                headers: { 'Accept': 'application/json' }
+              });
+              const notifData = await notifResponse.json();
+              const borradores = notifData.borradores || [];
+              const draftsAlert = document.getElementById('draftsAlert');
+              const draftCount = document.getElementById('draftCount');
               
-              // Try to load drafts (may fail if endpoint doesn't exist)
-              try {
-                const notifResponse = await fetch('/api/notificaciones', {
-                  credentials: 'include',
-                  headers: { 'Accept': 'application/json' }
-                });
-                if (notifResponse.ok) {
-                  const notifData = await notifResponse.json();
-                  const borradores = notifData.borradores || [];
-                  const draftsAlert = document.getElementById('draftsAlert');
-                  const draftCount = document.getElementById('draftCount');
-                  
-                  if (borradores && borradores.length > 0) {
-                    draftCount.textContent = borradores.length;
-                    draftsAlert.style.display = 'block';
-                  } else {
-                    draftsAlert.style.display = 'none';
-                  }
-                }
-              } catch (e) {
-                console.log('Could not load drafts notification:', e);
+              if (borradores && borradores.length > 0) {
+                draftCount.textContent = borradores.length;
+                draftsAlert.style.display = 'block';
+              } else {
+                draftsAlert.style.display = 'none';
               }
             } catch (e) {
-              console.error('Error loading requests page:', e);
+              console.log('Could not load drafts:', e);
             }
           })();
         }
@@ -4269,237 +3928,6 @@
 
     // Refresh data every 5 minutes
     setInterval(loadDashboardData, 5 * 60 * 1000);
-
-    // ============ LOAD USER SOLICITUDES ============
-    // Load and display user's solicitudes
-    window.loadUserSolicitudes = async function() {
-      try {
-        const response = await fetch('/api/solicitudes', {
-          credentials: 'include',
-          headers: { 'Accept': 'application/json' }
-        });
-        
-        if (!response.ok) {
-          console.log('Error loading solicitudes:', response.status);
-          return;
-        }
-
-        const data = await response.json();
-        const solicitudes = data.items || [];
-        const tbody = document.getElementById('userSolicitudesBody');
-        const emptyState = document.getElementById('emptyRequestsState');
-        const table = document.getElementById('userSolicitudesTable');
-
-        if (!tbody) {
-          console.log('Table body not found');
-          return;
-        }
-
-        // Clear current table
-        tbody.innerHTML = '';
-
-        if (!solicitudes || solicitudes.length === 0) {
-          // Show empty state
-          table.style.display = 'none';
-          emptyState.style.display = 'block';
-          return;
-        }
-
-        // Show table
-        table.style.display = 'table';
-        emptyState.style.display = 'none';
-
-        // Populate table rows
-        solicitudes.forEach(solicitud => {
-          const row = document.createElement('tr');
-          row.style.cssText = 'border-bottom: 1px solid var(--border);';
-          
-          // Get status badge
-          const statusMap = {
-            'pending': '⏳ Pendiente',
-            'approved': '✅ Aprobada',
-            'rejected': '❌ Rechazada',
-            'completed': '✔️ Completada',
-            'draft': '📝 Borrador'
-          };
-          const statusDisplay = statusMap[solicitud.status] || solicitud.status;
-
-          // Count items from data_json
-          let itemCount = 0;
-          try {
-            if (solicitud.data_json && typeof solicitud.data_json === 'string') {
-              const parsed = JSON.parse(solicitud.data_json);
-              itemCount = parsed.items ? parsed.items.length : 0;
-            } else if (solicitud.data_json && typeof solicitud.data_json === 'object') {
-              itemCount = solicitud.data_json.items ? solicitud.data_json.items.length : 0;
-            }
-          } catch (e) {
-            itemCount = 0;
-          }
-
-          // Format date
-          const createdDate = new Date(solicitud.created_at);
-          const dateStr = createdDate.toLocaleDateString('es-AR', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric' 
-          });
-
-          // Format total monto
-          const totalStr = new Intl.NumberFormat('es-AR', {
-            style: 'currency',
-            currency: 'ARS'
-          }).format(solicitud.total_monto || 0);
-
-          row.innerHTML = `
-            <td style="padding: 12px; color: var(--text-primary); border: none; font-weight: 500;">#${solicitud.id}</td>
-            <td style="padding: 12px; color: var(--text-primary); border: none;">${solicitud.centro || '-'}</td>
-            <td style="padding: 12px; color: var(--text-primary); border: none;">${solicitud.sector || '-'}</td>
-            <td style="padding: 12px; color: var(--text-primary); border: none; text-align: center;">${itemCount}</td>
-            <td style="padding: 12px; color: var(--text-primary); border: none; text-align: right; font-weight: 500;">${totalStr}</td>
-            <td style="padding: 12px; border: none; text-align: center;">${statusDisplay}</td>
-            <td style="padding: 12px; color: var(--text-secondary); border: none; text-align: center; font-size: 0.85rem;">${dateStr}</td>
-            <td style="padding: 12px; border: none; text-align: center;">
-              <button onclick="viewSolicitudDetail(${solicitud.id})" style="padding: 6px 12px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Ver</button>
-            </td>
-          `;
-          
-          tbody.appendChild(row);
-        });
-
-        console.log(`✅ Cargadas ${solicitudes.length} solicitudes`);
-
-      } catch (e) {
-        console.error('Error loading user solicitudes:', e);
-      }
-    };
-
-    // View detail of a specific solicitud
-    window.viewSolicitudDetail = async function(solicitudId) {
-      try {
-        console.log(`Loading solicitud detail: ${solicitudId}`);
-        
-        const response = await fetch(`/api/solicitudes/${solicitudId}`, {
-          credentials: 'include',
-          headers: { 'Accept': 'application/json' }
-        });
-
-        if (!response.ok) {
-          console.error(`Error loading solicitud: ${response.status}`);
-          alert('Error al cargar los detalles de la solicitud');
-          return;
-        }
-
-        const data = await response.json();
-        const solicitud = data.solicitud;
-
-        if (!solicitud) {
-          alert('Solicitud no encontrada');
-          return;
-        }
-
-        // Populate modal with data
-        document.getElementById('modalSolicitudId').textContent = `#${solicitud.id}`;
-        document.getElementById('modalDetailCentro').textContent = solicitud.centro || '-';
-        document.getElementById('modalDetailSector').textContent = solicitud.sector || '-';
-        document.getElementById('modalDetailAlmacen').textContent = solicitud.almacen_virtual || '-';
-        document.getElementById('modalDetailCriticidad').textContent = solicitud.criticidad || '-';
-        document.getElementById('modalDetailJustificacion').textContent = solicitud.justificacion || '-';
-
-        // Status badge
-        const statusMap = {
-          'pending': '⏳ Pendiente',
-          'approved': '✅ Aprobada',
-          'rejected': '❌ Rechazada',
-          'completed': '✔️ Completada',
-          'draft': '📝 Borrador',
-          'pending_approval': '⏳ Pendiente Aprobación'
-        };
-        document.getElementById('modalDetailStatus').textContent = statusMap[solicitud.status] || solicitud.status;
-
-        // Date
-        if (solicitud.fecha_necesidad) {
-          const date = new Date(solicitud.fecha_necesidad);
-          document.getElementById('modalDetailFecha').textContent = date.toLocaleDateString('es-AR');
-        } else {
-          document.getElementById('modalDetailFecha').textContent = '-';
-        }
-
-        // Format total
-        const totalStr = new Intl.NumberFormat('es-AR', {
-          style: 'currency',
-          currency: 'ARS'
-        }).format(solicitud.total_monto || 0);
-        document.getElementById('modalDetailTotal').textContent = totalStr;
-
-        // Load materials from data_json
-        const materialsBody = document.getElementById('modalDetailMaterials');
-        materialsBody.innerHTML = '';
-
-        let items = [];
-        try {
-          if (solicitud.data_json) {
-            if (typeof solicitud.data_json === 'string') {
-              const parsed = JSON.parse(solicitud.data_json);
-              items = parsed.items || [];
-            } else if (typeof solicitud.data_json === 'object') {
-              items = solicitud.data_json.items || [];
-            }
-          }
-        } catch (e) {
-          console.error('Error parsing data_json:', e);
-        }
-
-        if (!items || items.length === 0) {
-          materialsBody.innerHTML = '<tr><td colspan="4" style="padding: 12px; text-align: center; color: var(--text-secondary);">Sin materiales</td></tr>';
-        } else {
-          items.forEach(item => {
-            const row = document.createElement('tr');
-            row.style.borderBottom = '1px solid var(--border)';
-            
-            const subtotal = (item.cantidad || 0) * (item.precio_unitario || 0);
-            const subtotalStr = new Intl.NumberFormat('es-AR', {
-              style: 'currency',
-              currency: 'ARS'
-            }).format(subtotal);
-            
-            const priceStr = new Intl.NumberFormat('es-AR', {
-              style: 'currency',
-              currency: 'ARS'
-            }).format(item.precio_unitario || 0);
-
-            row.innerHTML = `
-              <td style="padding: 10px 12px; color: var(--text-primary);">${item.descripcion || item.codigo || '-'}</td>
-              <td style="padding: 10px 12px; text-align: center; color: var(--text-primary);">${item.cantidad || 0}</td>
-              <td style="padding: 10px 12px; text-align: right; color: var(--text-primary);">${priceStr}</td>
-              <td style="padding: 10px 12px; text-align: right; color: var(--text-primary); font-weight: 500;">${subtotalStr}</td>
-            `;
-            
-            materialsBody.appendChild(row);
-          });
-        }
-
-        // Show modal
-        document.getElementById('solicitudDetailModal').style.display = 'flex';
-
-      } catch (e) {
-        console.error('Error viewing solicitud detail:', e);
-        alert('Error al cargar el detalle de la solicitud');
-      }
-    };
-
-    // Close detail modal
-    window.closeSolicitudDetail = function() {
-      document.getElementById('solicitudDetailModal').style.display = 'none';
-    };
-
-    // Close modal when clicking outside
-    document.addEventListener('click', function(event) {
-      const modal = document.getElementById('solicitudDetailModal');
-      if (modal && event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
 
     // ============ FORM: NUEVA SOLICITUD ============
     let formData = {
@@ -4602,11 +4030,6 @@
                 // Store materials globally for later reference
                 window.allMateriales = materiales;
                 
-                // PROPUESTA 3: Inicializar búsqueda mejorada
-                loadCategoryFilter();
-                loadSearchHistory();
-                showSearchSuggestions();
-                
                 materiales.forEach(m => {
                     const opt = document.createElement('option');
                     const displayText = `${m.codigo} - ${m.nombre}`;
@@ -4616,9 +4039,7 @@
                         codigo: m.codigo,
                         nombre: m.nombre,
                         descripcion: m.descripcion,
-                        sap: m.sap,
-                        categoria: m.categoria,
-                        precio: m.precio
+                        sap: m.sap
                     }));
                     materialsList.appendChild(opt);
                 });
@@ -4698,89 +4119,55 @@
 
     // ===== SAVE DRAFT =====
     window.saveDraft = async function() {
-      // First ensure formData is up-to-date from current DOM state
-      formData.centro = document.getElementById('newReqCentro')?.value ? 
-        JSON.parse(document.getElementById('newReqCentro').value) : formData.centro;
-      formData.almacen = document.getElementById('newReqAlmacen')?.value ? 
-        JSON.parse(document.getElementById('newReqAlmacen').value) : formData.almacen;
-      formData.criticidad = document.getElementById('newReqCriticidad')?.value || formData.criticidad;
-      formData.fecha = document.getElementById('newReqFecha')?.value || formData.fecha;
-      formData.costos = document.getElementById('newReqCostos')?.value || formData.costos;
-      formData.justificacion = document.getElementById('newReqJustificacion')?.value || formData.justificacion;
+      // Validate step 1
+      const centro = document.getElementById('newReqCentro').value;
+      const almacen = document.getElementById('newReqAlmacen').value;
+      const criticidad = document.getElementById('newReqCriticidad').value;
+      const fecha = document.getElementById('newReqFecha').value;
+      const costos = document.getElementById('newReqCostos').value;
+      const justificacion = document.getElementById('newReqJustificacion').value;
 
-      // Validate using formData instead of DOM
-      if (!formData.centro) {
+      if (!centro) {
         showToast('❌ Debes seleccionar un Centro', 'error');
         return;
       }
-      if (!formData.almacen) {
+      if (!almacen) {
         showToast('❌ Debes seleccionar un Almacén', 'error');
         return;
       }
-      if (!formData.criticidad) {
+      if (!criticidad) {
         showToast('❌ Debes seleccionar una Criticidad', 'error');
         return;
       }
-      if (!formData.fecha) {
+      if (!fecha) {
         showToast('❌ Debes seleccionar una Fecha', 'error');
         return;
       }
-      if (!formData.costos || formData.costos.trim() === '') {
+      if (!costos || costos.trim() === '') {
         showToast('❌ Debes ingresar Centro de Costos', 'error');
         return;
       }
-      if (!formData.justificacion || formData.justificacion.trim() === '') {
+      if (!justificacion || justificacion.trim() === '') {
         showToast('❌ Debes escribir una Justificación', 'error');
         return;
       }
 
       try {
-        // Get centro and almacen from formData
-        const centroObj = formData.centro;
-        const almacenObj = formData.almacen;
-        
-        console.log('🔍 DEBUG saveDraft:', { centroObj, almacenObj, formData });
-        
-        // Verify objects exist and have id property
-        if (!centroObj || !centroObj.id) {
-          console.error('❌ Centro object missing or no ID:', centroObj);
-          showToast('❌ Centro inválido', 'error');
-          return;
-        }
-        if (!almacenObj || !almacenObj.id) {
-          console.error('❌ Almacén object missing or no ID:', almacenObj);
-          showToast('❌ Almacén inválido', 'error');
-          return;
-        }
-        
-        // PROPUESTA 9: Guardar también los materiales agregados en localStorage
-        const localStorageDraft = {
-          centro: JSON.stringify(centroObj),
-          sector: formData.sector || 'SIN_SECTOR',
-          almacen: JSON.stringify(almacenObj),
-          criticidad: formData.criticidad,
-          fecha_necesidad: formData.fecha,
-          centro_costos: formData.costos,
-          justificacion: formData.justificacion,
-          materiales: window.agregatedMaterials || [],
-          timestamp: new Date().toISOString()
-        };
-        
-        // Guardar en localStorage como borrador local
-        localStorage.setItem('spm_draft_solicitud', JSON.stringify(localStorageDraft));
+        // Parse centro and almacen objects
+        const centroObj = JSON.parse(centro);
+        const almacenObj = JSON.parse(almacen);
         
         const draftData = {
           centro: centroObj.id.toString(),           // Send centro ID as string
-          sector: formData.sector || 'SIN_SECTOR',   // Use sector from formData, fallback to placeholder
+          sector: centroObj.sector || '',            // Include sector if available
           almacen_virtual: almacenObj.id.toString(), // Send almacen ID as string with correct field name
-          criticidad: formData.criticidad,
-          fecha_necesidad: formData.fecha,           // Use correct field name
-          centro_costos: formData.costos,            // Use correct field name
-          justificacion: formData.justificacion
+          criticidad: criticidad,
+          fecha_necesidad: fecha,                    // Use correct field name
+          centro_costos: costos,                     // Use correct field name
+          justificacion: justificacion
         };
 
         console.log('📤 Enviando datos de borrador:', draftData);
-        console.log('📤 Materiales incluidos:', window.agregatedMaterials);
 
         const response = await fetch('/api/solicitudes/drafts', {
           method: 'POST',
@@ -4799,7 +4186,8 @@
         const result = await response.json();
         const draftId = result.id || result.solicitud_id;
         
-        // Store draft ID in memory
+        // Store draft ID locally
+        document.getElementById('solicitudId').value = draftId;
         formData.solicitudId = draftId;
 
         showToast(`✅ Borrador guardado con ID: ${draftId}`, 'success');
@@ -4834,46 +4222,15 @@
 
     // ===== NAVIGATE FORM STEP =====
     window.navigateFormStep = function(stepName) {
-      // Save current data - preserve existing values if DOM is empty
-      const centroDomValue = document.getElementById('newReqCentro')?.value;
-      if (centroDomValue) {
-        try {
-          formData.centro = JSON.parse(centroDomValue);
-        } catch (e) {
-          console.error('Error parsing centro:', e);
-        }
-      }
-      // If no value in DOM but we had one before, keep it
-      if (!formData.centro) {
-        console.warn('⚠️ Centro no encontrado en DOM, usando valor previo:', formData.centro);
-      }
-      
-      const almacenDomValue = document.getElementById('newReqAlmacen')?.value;
-      if (almacenDomValue) {
-        try {
-          formData.almacen = JSON.parse(almacenDomValue);
-        } catch (e) {
-          console.error('Error parsing almacen:', e);
-        }
-      }
-      // If no value in DOM but we had one before, keep it
-      if (!formData.almacen) {
-        console.warn('⚠️ Almacén no encontrado en DOM, usando valor previo:', formData.almacen);
-      }
-      
-      formData.sector = document.getElementById('newReqSector')?.value || formData.sector;
-      formData.criticidad = document.getElementById('newReqCriticidad')?.value || formData.criticidad;
-      formData.fecha = document.getElementById('newReqFecha')?.value || formData.fecha;
-      formData.costos = document.getElementById('newReqCostos')?.value || formData.costos;
-      formData.justificacion = document.getElementById('newReqJustificacion')?.value || formData.justificacion;
-      
-      console.log('📝 navigateFormStep("' + stepName + '") - formData después de capturar:', {
-        centro: formData.centro?.nombre,
-        sector: formData.sector,
-        almacen: formData.almacen?.nombre,
-        criticidad: formData.criticidad,
-        fecha: formData.fecha
-      });
+      // Save current data
+      formData.centro = document.getElementById('newReqCentro').value ? 
+        JSON.parse(document.getElementById('newReqCentro').value) : null;
+      formData.almacen = document.getElementById('newReqAlmacen').value ? 
+        JSON.parse(document.getElementById('newReqAlmacen').value) : null;
+      formData.criticidad = document.getElementById('newReqCriticidad').value;
+      formData.fecha = document.getElementById('newReqFecha').value;
+      formData.costos = document.getElementById('newReqCostos').value;
+      formData.justificacion = document.getElementById('newReqJustificacion').value;
 
       // Hide all steps
       document.querySelectorAll('#page-new-request .form-step').forEach(s => s.style.display = 'none');
@@ -4929,13 +4286,6 @@
         step2.style.display = 'block';
         updateStepperUI(2);
       } else if (stepName === 'review') {
-        // Copy agregatedMaterials from app.js to formData
-        formData.materiales = window.agregatedMaterials || [];
-        
-        console.log('🔍 DEBUG PASO 3 - agregatedMaterials:', window.agregatedMaterials);
-        console.log('🔍 DEBUG PASO 3 - formData.materiales:', formData.materiales);
-        console.log('🔍 DEBUG PASO 3 - length:', formData.materiales.length);
-        
         // Validate step 2
         if (formData.materiales.length === 0) {
           showToast('❌ Debes agregar al menos 1 material', 'error');
@@ -4978,13 +4328,13 @@
         reviewBody.innerHTML = '';
         let total = 0;
         formData.materiales.forEach(m => {
-          const subtotal = m.quantity * m.price;
+          const subtotal = m.cantidad * m.precio;
           total += subtotal;
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${m.material}</td>
-            <td class="text-right">${m.quantity}</td>
-            <td class="text-right">$${m.price.toFixed(2)}</td>
+            <td>${m.nombre}</td>
+            <td class="text-right">${m.cantidad}</td>
+            <td class="text-right">$${m.precio.toFixed(2)}</td>
             <td class="text-right"><strong>$${subtotal.toFixed(2)}</strong></td>
           `;
           reviewBody.appendChild(row);
@@ -5000,90 +4350,51 @@
       if (content) content.scrollTop = 0;
     };
 
-    // ===== PROPUESTA 3: BÚSQUEDA MEJORADA - FUNCIONES NUEVAS =====
-
-    // Obtener todas las categorías únicas del catálogo
-    window.getAllCategories = function() {
-      if (window.allMaterialsCategories) {
-        return window.allMaterialsCategories;
-      }
+    // ===== FILTER MATERIALS BY SAP CODE AND DESCRIPTION =====
+    window.filterMaterials = function() {
+      const searchSAP = document.getElementById('materialSearchSAP').value.toLowerCase().trim();
+      const searchDesc = document.getElementById('materialSearchDesc').value.toLowerCase().trim();
+      const materialsList = document.getElementById('materialsList');
+      
+      if (!materialsList) return;
+      
+      // Clear current list and filter
+      materialsList.innerHTML = '';
       
       const allMateriales = window.allMateriales || [];
-      const categoriesSet = new Set();
+      let visibleCount = 0;
       
       allMateriales.forEach(m => {
-        if (m.categoria) {
-          categoriesSet.add(m.categoria);
+        const sap = (m.sap || '').toLowerCase();
+        const nombre = (m.nombre || '').toLowerCase();
+        const codigo = (m.codigo || '').toLowerCase();
+        const descripcion = (m.descripcion || '').toLowerCase();
+        
+        // Check if matches both SAP and description search
+        const matchesSAP = !searchSAP || sap.includes(searchSAP) || codigo.includes(searchSAP);
+        const matchesDesc = !searchDesc || nombre.includes(searchDesc) || descripcion.includes(searchDesc) || codigo.includes(searchDesc);
+        
+        if (matchesSAP && matchesDesc) {
+          const opt = document.createElement('option');
+          const displayText = `${m.codigo} - ${m.nombre}`;
+          opt.value = displayText;
+          opt.setAttribute('data-material', JSON.stringify({
+            id: m.id || m.codigo,
+            codigo: m.codigo,
+            nombre: m.nombre,
+            descripcion: m.descripcion,
+            sap: m.sap
+          }));
+          materialsList.appendChild(opt);
+          visibleCount++;
         }
       });
       
-      const categories = Array.from(categoriesSet).sort();
-      window.allMaterialsCategories = categories;
-      return categories;
-    };
-
-    // Cargar categorías en el select
-    window.loadCategoryFilter = function() {
-      const categorySelect = document.getElementById('materialSearchCategory');
-      if (!categorySelect) return;
-      
-      const categories = getAllCategories();
-      
-      // Mantener la opción "Todas"
-      categorySelect.innerHTML = '<option value="">Todas</option>';
-      
-      categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
-      });
-    };
-
-    // Cargar historial de búsquedas desde localStorage
-    window.loadSearchHistory = function() {
-      try {
-        const stored = localStorage.getItem('materialSearchHistory');
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      } catch (e) {
-        console.log('Error loading search history:', e);
-      }
-      return { searches: [] };
-    };
-
-    // Guardar búsqueda en historial
-    window.saveSearchTerm = function(term, category) {
-      if (!term || term.length < 2) return;
-      
-      try {
-        let history = loadSearchHistory();
-        
-        // Evitar duplicados
-        history.searches = history.searches.filter(s => s.term !== term);
-        
-        history.searches.unshift({
-          term: term,
-          category: category || 'todas',
-          timestamp: Date.now()
-        });
-        
-        // Limitar a 10 búsquedas
-        history.searches = history.searches.slice(0, 10);
-        
-        localStorage.setItem('materialSearchHistory', JSON.stringify(history));
-      } catch (e) {
-        console.log('Error saving search history:', e);
+      // Show message if no results
+      if (visibleCount === 0 && (searchSAP || searchDesc)) {
+        showToast('⚠️ No se encontraron materiales con esos criterios', 'info');
       }
     };
-
-    // ===== FILTER MATERIALS - ALL MOVED TO app.js =====
-    // filterMaterials(), showSearchSuggestions(), clearSearchFilters() están en app.js
-
-    // ===== FILTER MATERIALS - MOVED TO app.js =====
-    // La función filterMaterials() ahora está en app.js y usa la API directamente
-
 
     // ===== HANDLE MATERIAL SELECTION =====
     window.onMaterialSelected = function() {
@@ -5126,11 +4437,16 @@
         // If not found in datalist, try to extract from allMateriales
         if (!material && window.allMateriales) {
           const found = window.allMateriales.find(m => 
-            `${m.codigo} - ${m.descripcion}` === selectedText ||
-            m.codigo === selectedText
+            `${m.codigo} - ${m.nombre}` === selectedText
           );
           if (found) {
-            material = found;
+            material = {
+              id: found.id || found.codigo,
+              codigo: found.codigo,
+              nombre: found.nombre,
+              descripcion: found.descripcion,
+              sap: found.sap
+            };
           }
         }
         
@@ -5139,45 +4455,34 @@
           return;
         }
         
-        const codigo = material.codigo || 'N/A';
-        const descripcion = material.descripcion || 'Sin descripción';
-        const descripcionLarga = material.descripcion_larga || 'Sin descripción ampliada disponible';
-        const precio = material.precio_usd ? `$${material.precio_usd.toFixed(2)}` : 'N/A';
-        const unidad = material.unidad || 'UNI';
+        const descripcion = material.descripcion || 'Sin descripción disponible';
+        const sap = material.sap || 'N/A';
+        const nombre = material.nombre || 'Desconocido';
         
-        // Show modal with complete description
+        // Show modal with description
         const modalHTML = `
-          <div class="modal-backdrop" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;" onclick="if(event.target === this) closeDescriptionModal()">
-            <div class="modal-content description-modal" style="background: white; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
-              <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #e5e7eb;">
-                <h2 style="margin: 0; color: #111827; font-size: 1.25rem; font-weight: 600;">📖 Detalles del Material</h2>
-                <button class="btn-close" onclick="closeDescriptionModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">✕</button>
+          <div class="modal-backdrop" onclick="closeDescriptionModal()">
+            <div class="modal-content description-modal" onclick="event.stopPropagation()">
+              <div class="modal-header">
+                <h2>📖 Descripción del Material</h2>
+                <button class="btn-close" onclick="closeDescriptionModal()">✕</button>
               </div>
-              <div class="modal-body" style="padding: 20px;">
-                <div class="desc-field" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6;">
-                  <label style="font-weight: 600; color: #374151; font-size: 0.9rem; display: block; margin-bottom: 4px;">📍 Código SAP</label>
-                  <p style="margin: 0; color: #111827; font-size: 0.95rem; font-family: monospace; background: #f9fafb; padding: 8px 12px; border-radius: 4px; word-break: break-all;">${codigo}</p>
-                </div>
-                <div class="desc-field" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6;">
-                  <label style="font-weight: 600; color: #374151; font-size: 0.9rem; display: block; margin-bottom: 4px;">📝 Descripción Corta</label>
-                  <p style="margin: 0; color: #111827; font-size: 0.95rem;">${descripcion}</p>
-                </div>
-                <div class="desc-field" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6;">
-                  <label style="font-weight: 600; color: #374151; font-size: 0.9rem; display: block; margin-bottom: 4px;">📖 Descripción Ampliada</label>
-                  <p style="margin: 0; color: #111827; font-size: 0.95rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;">${descripcionLarga}</p>
-                </div>
-                <div class="desc-field" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6;">
-                  <label style="font-weight: 600; color: #374151; font-size: 0.9rem; display: block; margin-bottom: 4px;">💲 Precio USD</label>
-                  <p style="margin: 0; color: #10b981; font-size: 1.1rem; font-weight: 600;">${precio}</p>
+              <div class="modal-body">
+                <div class="desc-field">
+                  <label>Material:</label>
+                  <p>${nombre}</p>
                 </div>
                 <div class="desc-field">
-                  <label style="font-weight: 600; color: #374151; font-size: 0.9rem; display: block; margin-bottom: 4px;">📊 Unidad de Medida</label>
-                  <p style="margin: 0; color: #111827; font-size: 0.95rem;">${unidad}</p>
+                  <label>Código SAP:</label>
+                  <p>${sap}</p>
+                </div>
+                <div class="desc-field">
+                  <label>Descripción:</label>
+                  <p>${descripcion}</p>
                 </div>
               </div>
-              <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 20px; border-top: 1px solid var(--border-default); background: var(--bg-secondary);">
-                <button onclick="closeDescriptionModal()" style="background: var(--text-secondary); color: white; border: none; padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='#4b5563'" onmouseout="this.style.background='var(--text-secondary)'">Cerrar</button>
-                <button onclick="agregarDesdeModal()" style="background: var(--success-light); color: white; border: none; padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='var(--success)'" onmouseout="this.style.background='var(--success-light)'">✓ Agregar Material</button>
+              <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeDescriptionModal()">Cerrar</button>
               </div>
             </div>
           </div>
@@ -5189,36 +4494,9 @@
         
         // Append new modal
         document.body.insertAdjacentHTML('beforeend', modalHTML);
-        
-        // Store current material for "Agregar desde modal"
-        window.currentMaterialInModal = material;
       } catch (e) {
-        console.error('Error en showMaterialDescription:', e);
         showToast('❌ Error al mostrar descripción', 'error');
       }
-    };
-
-    // ===== ADD FROM MODAL =====
-    window.agregarDesdeModal = function() {
-      if (!window.currentMaterialInModal) {
-        showToast('⚠️ Material no disponible', 'warning');
-        return;
-      }
-      
-      // Pre-fill the price from modal
-      const material = window.currentMaterialInModal;
-      const priceInput = document.getElementById('materialPrice');
-      if (!priceInput.value || parseFloat(priceInput.value) === 0) {
-        priceInput.value = material.precio_usd || 0;
-      }
-      
-      // Close modal and add
-      closeDescriptionModal();
-      
-      // Focus quantity for user to enter
-      setTimeout(() => {
-        document.getElementById('materialQuantity').focus();
-      }, 100);
     };
 
     // ===== CLOSE DESCRIPTION MODAL =====
@@ -5395,30 +4673,6 @@
       btn.innerHTML = '⏳ Creando...';
 
       try {
-        // formData ya tiene los valores desde navigateFormStep()
-        // No necesitamos leer del DOM en PASO 3, ya están guardados
-        
-        console.log('🔄 formData en submitNewRequest:', {
-          centro: formData.centro,
-          sector: formData.sector,
-          almacen: formData.almacen,
-          materiales: formData.materiales?.length
-        });
-        
-        // Validar que tenemos los campos requeridos
-        if (!formData.centro?.id) {
-          console.error('❌ Centro faltante o sin ID:', formData.centro);
-          throw new Error('Centro es requerido');
-        }
-        if (!formData.almacen?.id) {
-          console.error('❌ Almacén faltante o sin ID:', formData.almacen);
-          throw new Error('Almacén es requerido');
-        }
-        if (!formData.sector) {
-          console.error('❌ Sector faltante:', formData.sector);
-          throw new Error('Sector es requerido');
-        }
-        
         // Check if user has access to selected center and warehouse
         const userAccess = window.userAccess || { centros: [], almacenes: [] };
         const centroPerm = formData.centro?.hasAccess !== false;
@@ -5431,19 +4685,26 @@
         }
         
         const payload = {
-          centro: String(formData.centro?.id),
-          sector: formData.sector,
-          almacen_virtual: String(formData.almacen?.id),
+          centro: formData.centro?.id,
+          sector: formData.centro?.sector,
+          almacen_virtual: formData.almacen?.nombre,
           criticidad: formData.criticidad,
           fecha_necesidad: formData.fecha,
           centro_costos: formData.costos,
           justificacion: formData.justificacion,
-          items: formData.materiales.map(m => ({
-            codigo: m.codigo_sap,
-            descripcion: m.material,
-            cantidad: m.quantity,
-            precio_unitario: m.price
-          }))
+          data_json: {
+            materiales: formData.materiales.map(m => ({
+              id: m.id,
+              nombre: m.nombre,
+              cantidad: m.cantidad,
+              precio: m.precio,
+              subtotal: m.cantidad * m.precio
+            })),
+            requiereAprobacionAcceso: requiereAprobacionAcceso,
+            centroSinAcceso: !centroPerm,
+            almacenSinAcceso: !almacenPerm
+          },
+          total_monto: formData.materiales.reduce((sum, m) => sum + (m.cantidad * m.precio), 0)
         };
 
         const response = await fetch('/api/solicitudes', {
@@ -5456,12 +4717,8 @@
           body: JSON.stringify(payload)
         });
 
-        console.log('📤 Payload enviado:', JSON.stringify(payload, null, 2));
-        console.log('📥 Respuesta status:', response.status);
-
         if (!response.ok) {
           const error = await response.json();
-          console.error('❌ Error respuesta:', JSON.stringify(error, null, 2));
           throw new Error(error.message || 'Error al crear solicitud');
         }
 
@@ -5475,9 +4732,6 @@
 
         // Reset form
         setTimeout(() => {
-          // Clear materials array
-          window.agregatedMaterials = [];
-          
           formData = {
             centro: null,
             almacen: null,
@@ -5497,13 +4751,7 @@
           document.getElementById('newReqCostos').value = '';
           document.getElementById('newReqJustificacion').value = '';
           document.getElementById('justCounter').textContent = '0';
-          
-          // Clear materials table
-          const materialTableBody = document.querySelector('#materialsTable tbody');
-          if (materialTableBody) {
-            materialTableBody.innerHTML = '';
-          }
-          
+          updateMaterialsTable();
           updateStepperUI(1);
 
           // Go to Requests page
@@ -5922,42 +5170,6 @@
       }
     });
 
-    // ============ STEP NAVIGATION ============
-    function goToStep(stepNumber) {
-      // Hide all form steps
-      document.querySelectorAll('.form-step').forEach(step => {
-        step.classList.remove('active');
-      });
-      
-      // Show selected step
-      const selectedStep = document.getElementById(`form-step-${stepNumber}`);
-      if (selectedStep) {
-        selectedStep.classList.add('active');
-      }
-      
-      // Update stepper indicators
-      document.querySelectorAll('.stepper-step').forEach(step => {
-        const stepNum = parseInt(step.getAttribute('data-step'));
-        step.classList.remove('active', 'completed');
-        
-        if (stepNum < stepNumber) {
-          step.classList.add('completed');
-        } else if (stepNum === stepNumber) {
-          step.classList.add('active');
-        }
-      });
-      
-      console.log(`Navigated to step: ${stepNumber}`);
-    }
-
-    // ============ SAVE DRAFT ============
-    function saveDraft() {
-      // TODO: Implementar lógica de guardar como borrador
-      // Por ahora, mostrar confirmación
-      alert('Solicitud guardada como borrador ✓');
-      console.log('Draft saved');
-    }
-
     // ============ NAVIGATION HANDLER ============
     function initializeNavigation() {
       document.querySelectorAll('.nav-item').forEach(navItem => {
@@ -6375,110 +5587,6 @@
       }
     }
   </script>
-
-  <!-- MODAL: DESCRIPCIÓN AMPLIADA DE MATERIAL -->
-  <div id="materialDescriptionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: white; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15); animation: slideIn 0.3s ease-out;">
-      <!-- Header -->
-      <div style="background: linear-gradient(135deg, var(--primary, #2563eb) 0%, var(--primary-dark, #1e40af) 100%); color: white; padding: 24px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
-        <h2 id="materialDescTitle" style="margin: 0; font-size: 1.25rem; font-weight: 700;">Descripción del Material</h2>
-        <button onclick="closeMaterialDescriptionModal()" style="background: rgba(255, 255, 255, 0.2); border: none; color: white; font-size: 1.5rem; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">✕</button>
-      </div>
-
-      <!-- Content -->
-      <div style="padding: 24px;">
-        
-        <!-- Información Básica -->
-        <div style="margin-bottom: 24px;">
-          <h3 style="margin: 0 0 12px 0; color: #111827; font-weight: 600; font-size: 0.95rem;">📋 Información Básica</h3>
-          <div style="background: #f9fafb; border-left: 4px solid var(--primary, #2563eb); padding: 16px; border-radius: 6px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.9rem;">
-              <div>
-                <span style="color: #6b7280; font-weight: 500;">Código SAP:</span>
-                <div id="materialDescCode" style="color: #111827; font-weight: 600; font-size: 1rem; margin-top: 4px;">--</div>
-              </div>
-              <div>
-                <span style="color: #6b7280; font-weight: 500;">Unidad:</span>
-                <div id="materialDescUnit" style="color: #111827; font-weight: 600; font-size: 1rem; margin-top: 4px;">--</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Descripción Ampliada -->
-        <div style="margin-bottom: 24px;">
-          <h3 style="margin: 0 0 12px 0; color: #111827; font-weight: 600; font-size: 0.95rem;">📝 Descripción Ampliada</h3>
-          <div id="materialDescContent" style="background: #f9fafb; border-left: 4px solid var(--success, #10b981); padding: 16px; border-radius: 6px; color: #374151; line-height: 1.6; font-size: 0.9rem;">
-            Cargando...
-          </div>
-        </div>
-
-        <!-- Precio -->
-        <div style="margin-bottom: 24px;">
-          <h3 style="margin: 0 0 12px 0; color: #111827; font-weight: 600; font-size: 0.95rem;">💰 Precio</h3>
-          <div style="background: #f0fdf4; border-left: 4px solid var(--success, #10b981); padding: 16px; border-radius: 6px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.9rem;">
-              <div>
-                <span style="color: #6b7280; font-weight: 500;">Precio USD:</span>
-                <div id="materialDescPrice" style="color: #059669; font-weight: 700; font-size: 1.1rem; margin-top: 4px;">$0.00</div>
-              </div>
-              <div>
-                <span style="color: #6b7280; font-weight: 500;">Estado:</span>
-                <div id="materialDescStatus" style="color: #10b981; font-weight: 600; margin-top: 4px;">Disponible</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stock Disponible -->
-        <div style="margin-bottom: 24px;">
-          <h3 style="margin: 0 0 12px 0; color: #111827; font-weight: 600; font-size: 0.95rem;">📦 Stock Disponible</h3>
-          <div id="materialDescStock" style="background: #eff6ff; border-left: 4px solid var(--info, #3b82f6); padding: 16px; border-radius: 6px; color: #1e40af; font-size: 0.9rem;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span>⏳</span>
-              <span>Cargando información de stock...</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Historial de Precios (si disponible) -->
-        <div id="priceHistoryContainer" style="margin-bottom: 24px; display: none;">
-          <h3 style="margin: 0 0 12px 0; color: #111827; font-weight: 600; font-size: 0.95rem;">📊 Últimos Precios</h3>
-          <div id="materialDescPriceHistory" style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 6px; color: #78350f; font-size: 0.85rem;">
-            <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
-              <!-- Populated by JavaScript -->
-            </ul>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Footer -->
-      <div style="background: #f9fafb; padding: 16px 24px; border-top: 1px solid #e5e7eb; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; gap: 12px;">
-        <button onclick="closeMaterialDescriptionModal()" style="padding: 10px 20px; background: #e5e7eb; color: #111827; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='#e5e7eb'">
-          Cerrar
-        </button>
-        <button onclick="addMaterialFromModal()" style="padding: 10px 20px; background: var(--success, #10b981); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='var(--success-dark, #059669)'" onmouseout="this.style.background='var(--success, #10b981)'">
-          ➕ Agregar Material
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CSS para animación del modal -->
-  <style>
-    @keyframes slideIn {
-      from {
-        transform: translateY(-50px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-  </style>
-
 </body>
 </html>
 

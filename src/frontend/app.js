@@ -2315,6 +2315,9 @@ function initAddMaterialsPage() {
   // Renderizar carrito inicial
   renderMaterialsCart();
   
+  // Inicializar validación visual en tiempo real (PROPUESTA 8)
+  initMaterialsValidation();
+  
   console.log('Página de agregar materiales inicializada correctamente');
 }
 
@@ -3159,8 +3162,756 @@ function initReportesPage() {
   }
 }
 
+// ===== TABLA DE MATERIALES AGREGADOS =====
+// Array global para almacenar materiales agregados
+window.agregatedMaterials = [];
+
+function addMaterialToList() {
+  const materialSelect = document.getElementById('materialSelect');
+  const quantityInput = document.getElementById('materialQuantity');
+  const priceInput = document.getElementById('materialPrice');
+  
+  // Validaciones
+  if (!materialSelect.value || !materialSelect.value.trim()) {
+    toast('Selecciona un material', false);
+    return;
+  }
+  
+  if (!quantityInput.value || parseFloat(quantityInput.value) < 1) {
+    toast('La cantidad debe ser mayor a 0', false);
+    return;
+  }
+  
+  if (!priceInput.value || parseFloat(priceInput.value) < 0) {
+    toast('El precio debe ser válido', false);
+    return;
+  }
+  
+  // Obtener valores
+  const material = materialSelect.value;
+  const quantity = parseFloat(quantityInput.value);
+  const price = parseFloat(priceInput.value);
+  const subtotal = quantity * price;
+  
+  // Agregar a array
+  window.agregatedMaterials.push({
+    material: material,
+    quantity: quantity,
+    price: price,
+    subtotal: subtotal
+  });
+  
+  // Actualizar tabla
+  updateMaterialsTable();
+  
+  // Limpiar campos
+  materialSelect.value = '';
+  quantityInput.value = '';
+  priceInput.value = '';
+  materialSelect.focus();
+  
+  // Mostrar feedback
+  toast(`Material agregado: ${material}`, true);
+}
+
+function removeMaterialRow(index) {
+  if (index >= 0 && index < window.agregatedMaterials.length) {
+    const removedMaterial = window.agregatedMaterials[index].material;
+    window.agregatedMaterials.splice(index, 1);
+    updateMaterialsTable();
+    toast(`Material removido: ${removedMaterial}`, true);
+  }
+}
+
+/**
+ * PROPUESTA 4: Incrementa la cantidad de un material en la tabla (botón +)
+ */
+function incrementQuantity(index) {
+  if (index >= 0 && index < window.agregatedMaterials.length) {
+    window.agregatedMaterials[index].quantity += 1;
+    updateMaterialsTable();
+  }
+}
+
+/**
+ * PROPUESTA 4: Decrementa la cantidad de un material en la tabla (botón -)
+ * Mínimo: 1 unidad
+ */
+function decrementQuantity(index) {
+  if (index >= 0 && index < window.agregatedMaterials.length) {
+    if (window.agregatedMaterials[index].quantity > 1) {
+      window.agregatedMaterials[index].quantity -= 1;
+      updateMaterialsTable();
+    } else {
+      toast('La cantidad mínima es 1', false);
+    }
+  }
+}
+
+/**
+ * Actualiza la cantidad de un material editada manualmente
+ */
+function updateQuantity(index, newQuantity) {
+  if (index >= 0 && index < window.agregatedMaterials.length) {
+    const qty = parseInt(newQuantity) || 1;
+    if (qty >= 1) {
+      window.agregatedMaterials[index].quantity = qty;
+      updateMaterialsTable();
+    } else {
+      toast('La cantidad debe ser mayor a 0', false);
+      updateMaterialsTable();
+    }
+  }
+}
+
+function clearAllMaterials() {
+  if (window.agregatedMaterials.length === 0) {
+    toast('No hay materiales para limpiar', false);
+    return;
+  }
+  
+  if (confirm('¿Está seguro que desea eliminar todos los materiales?')) {
+    window.agregatedMaterials = [];
+    updateMaterialsTable();
+    toast('Todos los materiales fueron eliminados', true);
+  }
+}
+
+function updateMaterialsTable() {
+  const tbody = document.getElementById('materialsTableBody');
+  const countSpan = document.getElementById('materialsCount');
+  const totalSpan = document.getElementById('materialsTotal');
+  
+  if (!tbody) return;
+  
+  // Actualizar contador
+  countSpan.textContent = window.agregatedMaterials.length;
+  
+  // Si no hay materiales, mostrar mensaje
+  if (window.agregatedMaterials.length === 0) {
+    tbody.innerHTML = '<tr style="text-align: center; color: #9ca3af;"><td colspan="5" style="padding: 24px; border: none;">Sin materiales agregados</td></tr>';
+    totalSpan.textContent = '$0.00';
+    return;
+  }
+  
+  // Generar filas de tabla
+  let html = '';
+  let total = 0;
+  
+  window.agregatedMaterials.forEach((item, index) => {
+    const subtotal = item.quantity * item.price;
+    total += subtotal;
+    const unit = item.unit || 'u.';
+    
+    html += `
+      <tr style="border-bottom: 1px solid #e5e7eb; hover-background: #f9fafb;">
+        <td style="padding: 12px; text-align: left; border: none; color: #111827;">
+          <div style="font-weight: 600;">${item.material}</div>
+          <div style="font-size: 0.8rem; color: #6b7280;">SAP: ${item.codigo_sap || '--'}</div>
+        </td>
+        <td style="padding: 12px; text-align: center; border: none; color: #111827;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button type="button" onclick="decrementQuantity(${index})" style="background: #e5e7eb; color: #374151; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='#e5e7eb'">−</button>
+            <input type="number" value="${item.quantity}" min="1" style="width: 50px; text-align: center; border: 1px solid #d1d5db; padding: 4px; border-radius: 4px; font-weight: 600;" onchange="updateQuantity(${index}, this.value)">
+            <button type="button" onclick="incrementQuantity(${index})" style="background: #e5e7eb; color: #374151; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='#e5e7eb'">+</button>
+          </div>
+        </td>
+        <td style="padding: 12px; text-align: right; border: none; color: #111827;">
+          <div style="font-weight: 600;">$${item.price.toFixed(2)}</div>
+          <div style="font-size: 0.8rem; color: #6b7280;">${unit}</div>
+        </td>
+        <td style="padding: 12px; text-align: right; border: none; color: #111827; font-weight: 600;">$${subtotal.toFixed(2)}</td>
+        <td style="padding: 12px; text-align: center; border: none;">
+          <button type="button" onclick="removeMaterialRow(${index})" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: background 0.2s;" onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">
+            🗑️ Eliminar
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+  
+  tbody.innerHTML = html;
+  totalSpan.textContent = `$${total.toFixed(2)}`;
+}
+
+// ===== VALIDACIÓN VISUAL EN TIEMPO REAL (PROPUESTA 8) =====
+
+/**
+ * Estado de validación global
+ */
+const validationState = {
+  material: null,
+  quantity: null,
+  price: null
+};
+
+/**
+ * Valida el campo de Material
+ */
+function validateMaterialField() {
+  const field = document.getElementById('materialSelect');
+  const indicator = document.getElementById('materialIndicator');
+  const errorDiv = document.getElementById('materialError');
+  const value = field?.value?.trim();
+  
+  if (!field) return;
+  
+  if (!value) {
+    validationState.material = false;
+    field.style.borderColor = '#fca5a5';
+    field.style.backgroundColor = '#fef2f2';
+    indicator.textContent = '🔴';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Selecciona un material';
+    errorDiv.style.display = 'block';
+  } else if (value.length < 2) {
+    validationState.material = false;
+    field.style.borderColor = '#fbbf24';
+    field.style.backgroundColor = '#fffbeb';
+    indicator.textContent = '⚠️';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Material inválido o muy corto';
+    errorDiv.style.display = 'block';
+  } else {
+    validationState.material = true;
+    field.style.borderColor = '#86efac';
+    field.style.backgroundColor = '#f0fdf4';
+    indicator.textContent = '✅';
+    indicator.style.display = 'inline';
+    errorDiv.style.display = 'none';
+  }
+  
+  updateAddButtonState();
+}
+
+/**
+ * Valida el campo de Cantidad
+ */
+function validateQuantityField() {
+  const field = document.getElementById('materialQuantity');
+  const indicator = document.getElementById('quantityIndicator');
+  const errorDiv = document.getElementById('quantityError');
+  const value = field?.value;
+  
+  if (!field) return;
+  
+  const numValue = parseFloat(value);
+  
+  if (!value || value === '') {
+    validationState.quantity = false;
+    field.style.borderColor = '#fca5a5';
+    field.style.backgroundColor = '#fef2f2';
+    indicator.textContent = '🔴';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'La cantidad es requerida';
+    errorDiv.style.display = 'block';
+  } else if (isNaN(numValue) || numValue <= 0) {
+    validationState.quantity = false;
+    field.style.borderColor = '#fca5a5';
+    field.style.backgroundColor = '#fef2f2';
+    indicator.textContent = '🔴';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Cantidad debe ser mayor a 0';
+    errorDiv.style.display = 'block';
+  } else if (numValue < 1) {
+    validationState.quantity = false;
+    field.style.borderColor = '#fbbf24';
+    field.style.backgroundColor = '#fffbeb';
+    indicator.textContent = '⚠️';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Cantidad muy baja (mínimo 1)';
+    errorDiv.style.display = 'block';
+  } else if (!Number.isInteger(numValue)) {
+    validationState.quantity = false;
+    field.style.borderColor = '#fbbf24';
+    field.style.backgroundColor = '#fffbeb';
+    indicator.textContent = '⚠️';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Cantidad debe ser un número entero';
+    errorDiv.style.display = 'block';
+  } else {
+    validationState.quantity = true;
+    field.style.borderColor = '#86efac';
+    field.style.backgroundColor = '#f0fdf4';
+    indicator.textContent = '✅';
+    indicator.style.display = 'inline';
+    errorDiv.style.display = 'none';
+  }
+  
+  updateAddButtonState();
+}
+
+/**
+ * Valida el campo de Precio
+ */
+function validatePriceField() {
+  const field = document.getElementById('materialPrice');
+  const indicator = document.getElementById('priceIndicator');
+  const errorDiv = document.getElementById('priceError');
+  const value = field?.value;
+  
+  if (!field) return;
+  
+  const numValue = parseFloat(value);
+  
+  if (!value || value === '') {
+    validationState.price = false;
+    field.style.borderColor = '#fca5a5';
+    field.style.backgroundColor = '#fef2f2';
+    indicator.textContent = '🔴';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'El precio es requerido';
+    errorDiv.style.display = 'block';
+  } else if (isNaN(numValue) || numValue < 0) {
+    validationState.price = false;
+    field.style.borderColor = '#fca5a5';
+    field.style.backgroundColor = '#fef2f2';
+    indicator.textContent = '🔴';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Precio no puede ser negativo';
+    errorDiv.style.display = 'block';
+  } else if (numValue === 0) {
+    validationState.price = false;
+    field.style.borderColor = '#fbbf24';
+    field.style.backgroundColor = '#fffbeb';
+    indicator.textContent = '⚠️';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Precio es $0 (¿sin costo?)';
+    errorDiv.style.display = 'block';
+  } else if (numValue > 100000) {
+    validationState.price = false;
+    field.style.borderColor = '#fbbf24';
+    field.style.backgroundColor = '#fffbeb';
+    indicator.textContent = '⚠️';
+    indicator.style.display = 'inline';
+    errorDiv.textContent = 'Precio parece muy alto (>$100k)';
+    errorDiv.style.display = 'block';
+  } else {
+    validationState.price = true;
+    field.style.borderColor = '#86efac';
+    field.style.backgroundColor = '#f0fdf4';
+    indicator.textContent = '✅';
+    indicator.style.display = 'inline';
+    errorDiv.style.display = 'none';
+  }
+  
+  updateAddButtonState();
+}
+
+/**
+ * Actualiza el estado del botón Agregar según validaciones
+ */
+function updateAddButtonState() {
+  const btn = document.getElementById('btnAddMaterial');
+  if (!btn) return;
+  
+  const isValid = validationState.material === true && 
+                  validationState.quantity === true && 
+                  validationState.price === true;
+  
+  if (isValid) {
+    btn.disabled = false;
+    btn.style.background = 'var(--success)';
+    btn.style.color = 'white';
+    btn.style.cursor = 'pointer';
+    btn.style.opacity = '1';
+  } else {
+    btn.disabled = true;
+    btn.style.background = '#d1d5db';
+    btn.style.color = '#9ca3af';
+    btn.style.cursor = 'not-allowed';
+    btn.style.opacity = '0.6';
+  }
+}
+
+/**
+ * Inicializa validación en campos
+ */
+function initMaterialsValidation() {
+  const materialField = document.getElementById('materialSelect');
+  const quantityField = document.getElementById('materialQuantity');
+  const priceField = document.getElementById('materialPrice');
+  
+  if (materialField) {
+    materialField.addEventListener('blur', validateMaterialField);
+  }
+  if (quantityField) {
+    quantityField.addEventListener('blur', validateQuantityField);
+  }
+  if (priceField) {
+    priceField.addEventListener('blur', validatePriceField);
+  }
+  
+  // Forzar validación inicial
+  setTimeout(() => {
+    validateMaterialField();
+    validateQuantityField();
+    validatePriceField();
+  }, 100);
+}
+
+// ===== FIN VALIDACIÓN VISUAL =====
+
+// ===== MODAL DE DESCRIPCIÓN AMPLIADA DE MATERIAL =====
+
+/**
+ * Muestra el modal con la descripción ampliada del material desde búsqueda
+ */
+async function showMaterialDescriptionFromSearch() {
+  const sapCode = document.getElementById('materialSearchSAP')?.value.trim();
+  const description = document.getElementById('materialSearchDesc')?.value.trim();
+  
+  if (!sapCode && !description) {
+    toast('Por favor ingresa un código SAP o descripción');
+    return;
+  }
+  
+  try {
+    // Buscar material con criterios
+    let url = '/api/materiales?';
+    if (sapCode) url += `codigo=${encodeURIComponent(sapCode)}`;
+    if (description) {
+      if (sapCode) url += '&';
+      url += `descripcion=${encodeURIComponent(description)}`;
+    }
+    url += '&limit=1';
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Error buscando material');
+    
+    const materials = await response.json();
+    if (!materials || materials.length === 0) {
+      toast('Material no encontrado');
+      return;
+    }
+    
+    const material = materials[0];
+    showMaterialDescriptionModal(material);
+    
+  } catch (error) {
+    console.error('Error en showMaterialDescriptionFromSearch:', error);
+    toast('Error al cargar detalles del material');
+  }
+}
+
+/**
+ * Muestra el modal con detalles del material
+ * @param {Object} material - Objeto con propiedades del material
+ */
+function showMaterialDescriptionModal(material) {
+  const modal = document.getElementById('materialDescriptionModal');
+  if (!modal) return;
+  
+  // Llenar datos básicos
+  document.getElementById('materialDescTitle').textContent = `${material.codigo} - ${material.descripcion}`;
+  document.getElementById('materialDescCode').textContent = material.codigo || '--';
+  document.getElementById('materialDescUnit').textContent = material.unidad || '--';
+  document.getElementById('materialDescContent').textContent = material.descripcion_larga || 'Sin descripción disponible';
+  document.getElementById('materialDescPrice').textContent = `$${(material.precio_usd || 0).toFixed(2)}`;
+  
+  // Guardar material actual para referencia posterior
+  window.currentMaterialForModal = material;
+  
+  // Mostrar modal
+  modal.style.display = 'flex';
+  
+  // Animar entrada
+  const content = modal.querySelector('div > div');
+  if (content) {
+    content.style.animation = 'slideIn 0.3s ease-out';
+  }
+  
+  // Cargar stock (simulado, puedes conectar a API real)
+  loadMaterialStockInfo(material.codigo);
+}
+
+/**
+ * Carga información de stock (puede conectarse a API real)
+ * @param {string} materialCode - Código del material
+ */
+async function loadMaterialStockInfo(materialCode) {
+  const stockDiv = document.getElementById('materialDescStock');
+  if (!stockDiv) return;
+  
+  try {
+    // Por ahora simulamos datos. En producción, esto vendría de una API
+    const stockData = {
+      available: Math.floor(Math.random() * 1000),
+      reserved: Math.floor(Math.random() * 100),
+      incoming: Math.floor(Math.random() * 500),
+      warehouse: 'Centro Principal'
+    };
+    
+    stockDiv.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.9rem;">
+        <div>
+          <span style="color: #1e40af; font-weight: 500;">Disponible:</span>
+          <div style="color: #10b981; font-weight: 700; font-size: 1.1rem; margin-top: 4px;">${stockData.available} unidades</div>
+        </div>
+        <div>
+          <span style="color: #1e40af; font-weight: 500;">Reservado:</span>
+          <div style="color: #f59e0b; font-weight: 600; margin-top: 4px;">${stockData.reserved} unidades</div>
+        </div>
+        <div>
+          <span style="color: #1e40af; font-weight: 500;">En Camino:</span>
+          <div style="color: #6366f1; font-weight: 600; margin-top: 4px;">${stockData.incoming} unidades</div>
+        </div>
+        <div>
+          <span style="color: #1e40af; font-weight: 500;">Almacén:</span>
+          <div style="color: #111827; font-weight: 600; margin-top: 4px;">${stockData.warehouse}</div>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    console.error('Error cargando stock:', error);
+    stockDiv.innerHTML = '<span style="color: #dc2626;">Error al cargar información de stock</span>';
+  }
+}
+
+/**
+ * Cierra el modal de descripción ampliada
+ */
+function closeMaterialDescriptionModal() {
+  const modal = document.getElementById('materialDescriptionModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+  window.currentMaterialForModal = null;
+}
+
+/**
+ * Agrega el material mostrado en el modal directamente a la tabla
+ */
+function addMaterialFromModal() {
+  if (!window.currentMaterialForModal) {
+    toast('Material no válido');
+    return;
+  }
+  
+  const material = window.currentMaterialForModal;
+  
+  // Agregar directamente al array de materiales agregados
+  window.agregatedMaterials.push({
+    material: material.descripcion,
+    codigo_sap: material.codigo,
+    quantity: 1,  // Cantidad por defecto
+    price: material.precio_usd || 0,
+    unit: material.unidad || 'u.',
+    subtotal: material.precio_usd || 0
+  });
+  
+  // Actualizar tabla
+  updateMaterialsTable();
+  
+  // Cerrar modal
+  closeMaterialDescriptionModal();
+  
+  toast(`Material "${material.descripcion}" agregado exitosamente`, true);
+}
+
+// ===== FIN MODAL DE DESCRIPCIÓN AMPLIADA =====
+
+// ===== FUNCIONES DE FILTRADO Y AUTOCOMPLETE =====
+
+/**
+ * Busca materiales directamente en la API
+ */
+async function filterMaterials() {
+  const sapFilter = document.getElementById('materialSearchSAP')?.value.trim() || '';
+  const descFilter = document.getElementById('materialSearchDesc')?.value.trim() || '';
+  const categoryFilter = document.getElementById('materialSearchCategory')?.value || '';
+  const sortBy = document.getElementById('sortBy')?.value || 'relevancia';
+
+  // No hacer búsqueda si no hay criterios
+  if (!sapFilter && !descFilter && !categoryFilter) {
+    document.getElementById('resultsCount').textContent = 'Resultados: 0';
+    document.getElementById('searchSuggestions').style.display = 'none';
+    return;
+  }
+
+  try {
+    // Construir URL de búsqueda - IMPORTANTE: usar q para búsqueda general
+    let url = '/api/materiales?limit=10000';
+    
+    // Si hay SAP, usar parámetro codigo
+    if (sapFilter) {
+      url = `/api/materiales?codigo=${encodeURIComponent(sapFilter)}&limit=10000`;
+    } 
+    // Si hay descripción, usar parámetro descripcion
+    else if (descFilter) {
+      url = `/api/materiales?descripcion=${encodeURIComponent(descFilter)}&limit=10000`;
+    }
+
+    console.log('Buscando con URL:', url);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error('Error en búsqueda:', response.status);
+      document.getElementById('resultsCount').textContent = 'Error en búsqueda';
+      return;
+    }
+
+    let results = await response.json();
+    if (!Array.isArray(results)) results = [];
+
+    // Aplicar ordenamiento
+    switch (sortBy) {
+      case 'precio_asc':
+        results.sort((a, b) => (a.precio_usd || 0) - (b.precio_usd || 0));
+        break;
+      case 'precio_desc':
+        results.sort((a, b) => (b.precio_usd || 0) - (a.precio_usd || 0));
+        break;
+      case 'nombre_asc':
+        results.sort((a, b) => a.descripcion.localeCompare(b.descripcion));
+        break;
+      case 'nombre_desc':
+        results.sort((a, b) => b.descripcion.localeCompare(a.descripcion));
+        break;
+    }
+
+    // Actualizar contador
+    document.getElementById('resultsCount').textContent = `Resultados: ${results.length}`;
+
+    // Mostrar resultados en dropdown
+    showSearchResults(results);
+
+    return results;
+  } catch (error) {
+    console.error('Error en filterMaterials:', error);
+    document.getElementById('resultsCount').textContent = 'Error';
+  }
+}
+
+/**
+ * Muestra los resultados de búsqueda en un dropdown
+ */
+function showSearchResults(results) {
+  const suggestionsDiv = document.getElementById('searchSuggestions');
+  const suggestionsList = document.getElementById('suggestionsList');
+
+  if (!suggestionsDiv || !suggestionsList) return;
+
+  if (!results || results.length === 0) {
+    suggestionsDiv.style.display = 'none';
+    return;
+  }
+
+  suggestionsDiv.style.display = 'block';
+  suggestionsList.innerHTML = '';
+
+  results.slice(0, 50).forEach((material, idx) => {
+    const item = document.createElement('div');
+    item.style.cssText = `
+      padding: 10px 12px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+    `;
+
+    item.onmouseover = () => {
+      item.style.background = '#f0f9ff';
+      item.style.borderColor = '#0284c7';
+    };
+
+    item.onmouseout = () => {
+      item.style.background = 'white';
+      item.style.borderColor = '#e5e7eb';
+    };
+
+    item.onclick = () => {
+      selectMaterialFromSearch(material);
+    };
+
+    item.innerHTML = `
+      <span>
+        <strong>${material.codigo}</strong> - ${material.descripcion.substring(0, 50)}
+      </span>
+      <span style="color: #6b7280; font-weight: 500;">$${(material.precio_usd || 0).toFixed(2)}</span>
+    `;
+
+    suggestionsList.appendChild(item);
+  });
+
+  if (results.length > 50) {
+    const moreItem = document.createElement('div');
+    moreItem.style.cssText = `
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.85rem;
+    `;
+    moreItem.textContent = `... y ${results.length - 50} resultados más`;
+    suggestionsList.appendChild(moreItem);
+  }
+}
+
+/**
+ * Selecciona un material de la búsqueda y abre el modal
+ */
+function selectMaterialFromSearch(material) {
+  showMaterialDescriptionModal(material);
+  // Ocultar dropdown
+  const suggestionsDiv = document.getElementById('searchSuggestions');
+  if (suggestionsDiv) suggestionsDiv.style.display = 'none';
+}
+
+/**
+ * Muestra sugerencias de búsquedas (detonada por oninput)
+ */
+function showSearchSuggestions() {
+  const suggestionsDiv = document.getElementById('searchSuggestions');
+  if (!suggestionsDiv) return;
+
+  const sapValue = document.getElementById('materialSearchSAP')?.value.trim();
+  const descValue = document.getElementById('materialSearchDesc')?.value.trim();
+
+  if (sapValue || descValue) {
+    // Si hay algo escrito, filtrar y mostrar resultados
+    filterMaterials();
+  } else {
+    // Si no hay nada escrito, ocultar
+    suggestionsDiv.style.display = 'none';
+  }
+}
+
+/**
+ * Inicializa el cache de materiales (ahora vacío, usamos API directa)
+ */
+function loadMaterialsCache() {
+  // Cache no necesario, usamos API directa con filtros
+  console.log('Autocomplete listo: buscando directamente en API');
+}
+
+/**
+ * Limpia todos los filtros de búsqueda
+ */
+function clearSearchFilters() {
+  document.getElementById('materialSearchSAP').value = '';
+  document.getElementById('materialSearchDesc').value = '';
+  document.getElementById('materialSearchCategory').value = '';
+  document.getElementById('sortBy').value = 'relevancia';
+  document.getElementById('resultsCount').textContent = 'Resultados: 0';
+  document.getElementById('searchSuggestions').style.display = 'none';
+}
+
+// ===== FIN TABLA DE MATERIALES =====
+
 // Auto-initialize pages based on detected elements
 document.addEventListener('DOMContentLoaded', () => {
+  // Cargar cache de materiales para autocomplete
+  loadMaterialsCache();
+  
   // Detect agregar-materiales page
   if (document.getElementById('codeSearch') && document.getElementById('btnAdd')) {
     initAddMaterialsPage();

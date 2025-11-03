@@ -46,8 +46,16 @@ class SolicitudBase(BaseModel):
     criticidad: Literal["Normal", "Alta"] = "Normal"
     fecha_necesidad: date
 
-class SolicitudDraft(SolicitudBase):
-    pass
+class SolicitudDraft(BaseModel):
+    """Draft version allows optional/flexible fields"""
+    id_usuario: IdSPM
+    centro: Optional[constr(min_length=1)] = None
+    sector: Optional[constr(min_length=1)] = None
+    justificacion: Optional[constr(min_length=0)] = None
+    centro_costos: Optional[constr(min_length=1)] = None
+    almacen_virtual: Optional[constr(min_length=1)] = None
+    criticidad: Literal["Normal", "Alta"] = "Normal"
+    fecha_necesidad: Optional[date] = None
 
 class SolicitudCreate(SolicitudBase):
     items: List[SolicitudItem] = Field(default_factory=list)

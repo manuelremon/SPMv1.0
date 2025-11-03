@@ -62,10 +62,10 @@ CATALOG_RESOURCES: Dict[str, Dict[str, Any]] = {
     },
     "materiales": {
         "table": "materiales",
-        "fields": ("id", "codigo", "sap", "nombre", "descripcion", "descripcion_larga", "unidad", "precio_usd", "activo"),
+        "fields": ("codigo", "descripcion", "descripcion_larga", "centro", "sector", "unidad", "precio_usd"),
         "required": ("codigo",),
-        "defaults": {"activo": 1},
-        "bools": ("activo",),
+        "defaults": {},
+        "bools": (),
         "order_by": "codigo COLLATE NOCASE",
     },
 }
