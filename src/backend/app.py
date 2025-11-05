@@ -24,6 +24,7 @@ from .routes.planner_routes import bp as planner_bp
 # from .files import files_bp  # TODO: Descomentar cuando el módulo exista
 from .services.auth.jwt_utils import verify_token
 from .core.db import get_db
+from .middleware.ratelimit import apply_rate_limits
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
@@ -159,6 +160,11 @@ def create_app() -> Flask:
          supports_credentials=True,
          resources={r"/api/*": {"origins": app.config["FRONTEND_ORIGIN"]}})
 
+    # Apply global rate limiting (100 req/min per IP)
+    # Individual endpoints can have stricter limits using @limit decorator
+    apply_rate_limits(app)
+    app.logger.info("Global rate limiting enabled: 100 requests per minute per IP")
+
     # Development bypass: if AUTH_BYPASS=1 and running on localhost, inject an admin user
     # This allows the frontend to work in development when auth backend is failing.
     class _DevAdmin:
@@ -172,8 +178,29 @@ def create_app() -> Flask:
 
     @app.before_request
     def _dev_login_bypass():
+        """
+        DEVELOPMENT ONLY: Bypass authentication for local development.
+
+        SECURITY NOTES:
+        - Only active when AUTH_BYPASS=1 (must be string "1")
+        - Only works on localhost/127.0.0.1
+        - Only when FLASK_ENV=development
+        - Logs every bypass attempt
+        - MUST be disabled in production
+        """
         try:
-            if os.environ.get("AUTH_BYPASS") == "1" and request.host.startswith(("127.0.0.1", "localhost")):
+            # Triple-check: AUTH_BYPASS + localhost + development environment
+            is_bypass_enabled = os.environ.get("AUTH_BYPASS") == "1"
+            is_local_host = request.host.startswith(("127.0.0.1", "localhost"))
+            is_dev_env = os.environ.get("FLASK_ENV") == "development" or Config.DEBUG
+
+            if is_bypass_enabled and is_local_host and is_dev_env:
+                # Log bypass usage for security audit
+                current_app.logger.warning(
+                    "AUTH_BYPASS active - Development mode only! "
+                    f"Request from {request.remote_addr} to {request.path}"
+                )
+
                 # populate g with the shape expected by auth helpers
                 g.user = {
                     "id": _DevAdmin.id,
@@ -193,19 +220,60 @@ def create_app() -> Flask:
                 except Exception:
                     # session may not be available in some contexts, ignore silently
                     pass
+            elif is_bypass_enabled and not is_dev_env:
+                # CRITICAL: AUTH_BYPASS enabled in non-development environment
+                current_app.logger.error(
+                    "SECURITY ALERT: AUTH_BYPASS=1 in production environment! "
+                    "This is a critical security vulnerability!"
+                )
         except Exception:
             # defensive: don't break the app if anything goes wrong here
             current_app.logger.debug("dev login bypass check failed", exc_info=True)
 
     @app.after_request
-    def _set_dev_headers(resp):
+    def _set_security_headers(resp):
+        """
+        Set security and content headers for all responses.
+
+        Security Headers:
+        - X-Content-Type-Options: Prevent MIME-type sniffing
+        - X-Frame-Options: Prevent clickjacking
+        - X-XSS-Protection: Enable XSS filter (legacy browsers)
+        - Strict-Transport-Security: Force HTTPS (production only)
+        - Content-Security-Policy: Basic CSP
+        """
         content_type = resp.headers.get("Content-Type", "")
+
+        # Set charset for JSON and HTML responses
         if "application/json" in content_type and "charset" not in content_type.lower():
             resp.headers["Content-Type"] = "application/json; charset=utf-8"
         if "text/html" in content_type:
             if "charset" not in content_type.lower():
                 resp.headers["Content-Type"] = "text/html; charset=utf-8"
             resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+
+        # Security headers
+        resp.headers["X-Content-Type-Options"] = "nosniff"
+        resp.headers["X-Frame-Options"] = "DENY"
+        resp.headers["X-XSS-Protection"] = "1; mode=block"
+
+        # HSTS - Only in production with HTTPS
+        if not Config.DEBUG and app.config.get("COOKIE_SECURE"):
+            resp.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+
+        # Basic CSP - adjust based on your needs
+        # This allows self-hosted resources and inline scripts (common in development)
+        if "text/html" in content_type:
+            csp_policy = (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+                "style-src 'self' 'unsafe-inline'; "
+                "img-src 'self' data: https:; "
+                "font-src 'self'; "
+                "connect-src 'self'"
+            )
+            resp.headers["Content-Security-Policy"] = csp_policy
+
         return resp
 
     app.register_blueprint(catalogos_bp)
@@ -223,11 +291,60 @@ def create_app() -> Flask:
 
     @app.get("/api/health")
     def health():
-        return jsonify(ok=True, app="SPM")
+        """
+        Basic health check endpoint.
+        Returns simple OK status for load balancers.
+        Use /api/status for detailed health information.
+        """
+        from .services.health import get_system_status
+        try:
+            status = get_system_status()
+            summary = status.get("summary", "ERROR")
+
+            # Return 200 if OK or WARN, 503 if ERROR
+            status_code = 200 if summary in ["OK", "WARN"] else 503
+
+            return jsonify({
+                "ok": summary in ["OK", "WARN"],
+                "app": "SPM",
+                "status": summary,
+                "timestamp": status.get("generated_at")
+            }), status_code
+        except Exception as e:
+            current_app.logger.error(f"Health check failed: {e}", exc_info=True)
+            return jsonify({"ok": False, "app": "SPM", "status": "ERROR"}), 503
 
     @app.get("/healthz")
     def healthz():
-        return jsonify(status="ok")
+        """Kubernetes-style health probe - simple alive check."""
+        from .core.db import health_ok
+        if health_ok():
+            return jsonify(status="ok"), 200
+        return jsonify(status="error"), 503
+
+    @app.get("/api/status")
+    def status():
+        """
+        Detailed system status endpoint.
+        Returns comprehensive health information including:
+        - Database connectivity
+        - Disk space
+        - Memory
+        - Recent errors
+        - External services
+        """
+        from .services.health import get_system_status
+        force = request.args.get("force") == "true"
+        try:
+            status_data = get_system_status(force=force)
+            return jsonify(status_data), 200
+        except Exception as e:
+            current_app.logger.error(f"Status check failed: {e}", exc_info=True)
+            return jsonify({
+                "ok": False,
+                "summary": "ERROR",
+                "error": str(e)
+            }), 500
 
     @app.post("/api/client-logs")
     def client_logs():

@@ -1,5 +1,38 @@
+# Development dependencies for SPMv1.0
+# Install with: pip install -r requirements-dev.txt
+
+# Include production dependencies
 -r requirements.txt
+
+# Testing Framework
+pytest==8.0.0
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+pytest-flask==1.3.0
+pytest-xdist==3.5.0  # Parallel test execution
+coverage[toml]==7.4.0
+
+# Code Quality & Linting
 black==24.8.0
-pip-audit==2.6.1
-pip-tools==7.4.1
 ruff==0.5.7
+flake8==7.0.0
+flake8-docstrings==1.7.0
+isort==5.13.2
+
+# Security Auditing
+pip-audit==2.6.1
+bandit==1.7.6
+safety==3.0.1
+
+# Development Tools
+pip-tools==7.4.1
+pre-commit==3.6.0
+ipython==8.20.0
+
+# HTTP Testing
+httpx==0.26.0
+requests-mock==1.11.0
+
+# Test Data Generation
+faker==22.1.0
+factory-boy==3.3.0
