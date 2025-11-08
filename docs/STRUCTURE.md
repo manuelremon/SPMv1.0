@@ -621,40 +621,47 @@ Documentación del proyecto.
 
 ```
 docs/
-├── api.md                   # Documentación de API
-├── preview.html             # Preview de documentación
-└── [otros docs]
+├── ai/                      # Integraciones de asistentes y LLMs
+├── guides/                  # Guías operativas y quick starts
+├── history/                 # Bitácoras y registros históricos
+│   ├── audits/              # Auditorías y verificaciones
+│   ├── backups/             # Respaldos puntuales
+│   ├── commits/             # Resúmenes de sesiones de commit
+│   ├── iterations/          # Cierres por iteración
+│   ├── refactors/           # Planes y validaciones de refactor
+│   └── sessions/            # Cronologías y resúmenes diarios
+├── infrastructure/          # Notas de despliegue e infraestructura
+├── planning/                # Planificación por fases
+├── reference/               # Referencias rápidas (colors, diseños)
+│   └── ui/                  # Material visual y paletas
+├── reports/                 # Entregables ejecutivos y auditorías
+├── system/                  # Estado del sistema y reparaciones
+└── testing/                 # Manuales y reportes de pruebas
+    └── reports/             # Resultados detallados de runs
 ```
 
 ---
 
-## 📂 Directorio: `infra/`
-Configuración de infraestructura.
+## 📂 Directorio: `infrastructure/`
+Recursos de infraestructura como código.
 
 ```
-infra/
-├── docker/                  # Configuración Docker
-│   ├── Dockerfile           # (en raíz)
-│   └── docker-compose.yml   # (en raíz)
-├── nginx/                   # Configuración Nginx
-│   └── nginx.conf
-└── deploy/                  # Scripts de deployment
-    └── render.yaml          # (movido a config/)
+infrastructure/
+└── terraform/               # Módulos Terraform para despliegues
+    ├── deploy/
+    └── nginx/
 ```
 
 ---
 
-## 📂 Directorio: `archive/`
-Archivos históricos, obsoletos o de referencia.
+## 📂 Directorio: `docs/archive/`
+Documentación histórica conservada como referencia.
 
 ```
-archive/
-├── Manu-Notas/              # Notas personales
-├── db_audit/                # Reportes históricos de auditoría
-├── diff_app.py              # Script de comparación (obsoleto)
-├── spm_fix.md               # Fixes históricos
-├── cookies.txt              # Archivo de test (no usar)
-└── minimal_app*.py          # Versiones antiguas de app.py
+docs/archive/
+├── legacy/                  # Artefactos previos a la reestructura
+├── form-intelligence-v2/    # Iteraciones de inteligencia de formularios
+└── *.md / *.txt             # Resúmenes y reportes cerrados
 ```
 
 ---

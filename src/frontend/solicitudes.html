@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Solicitudes - SPM</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <a href="/dashboard">Dashboard</a>
+    <nav>
+      <a href="/mi-cuenta">Mi Cuenta</a>
+      <a href="/preferencias">Preferencias</a>
+      <a href="/mis-solicitudes">Mis Solicitudes</a>
+      <a href="/crear-solicitud">Crear Solicitud</a>
+      <a href="/materiales">Materiales</a>
+      <a href="/notificaciones">Notificaciones</a>
+      <a href="/presupuesto">Presupuesto</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+  <main class="main-container">
+<main class="main-container">
+<!-- NAVBAR -->
+  <div id="navbar"></div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="main-container">
+    <!-- HEADER -->
+    <div id="header"></div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="content-header">
+        <h1 class="page-title">Mis Solicitudes</h1>
+        <p class="page-subtitle">Visualiza y gestiona tus solicitudes</p>
+      </div>
+
+      <!-- BORRADORES PENDIENTES -->
+      <div id="draftsAlert" class="alert-section" style="display: none;">
+        <span>💾</span>
+        <div>
+          <strong>Borradores Pendientes</strong>
+          <p>Tienes <span id="draftCount">0</span> solicitud(es) guardada(s) como borrador que puedes continuar editando.</p>
+        </div>
+      </div>
+
+      <!-- SOLICITUDES TABLE -->
+      <div class="solicitudes-card">
+        <h2>
+          <span>📋</span> Mis Solicitudes
+        </h2>
+
+        <div style="overflow-x: auto; margin-bottom: 16px;">
+          <table id="userSolicitudesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Centro</th>
+                <th>Sector</th>
+                <th style="text-align: center;">Items</th>
+                <th style="text-align: right;">Monto Total</th>
+                <th style="text-align: center;">Estado</th>
+                <th style="text-align: center;">Fecha</th>
+                <th style="text-align: center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="userSolicitudesBody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: #9ca3af; padding: 24px;">Cargando solicitudes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="emptyRequestsState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">📋</div>
+        <h3>Sin solicitudes</h3>
+        <p>No tienes solicitudes creadas aún.</p>
+        <a href="//nueva-solicitud" class="btn-primary">Crear Nueva Solicitud</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL MODAL -->
+  <div id="solicitudDetailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Detalles de Solicitud</h2>
+          <p>ID: <span id="modalSolicitudId" style="font-weight: 600;">#-</span></p>
+        </div>
+        <button class="modal-close" onclick="closeSolicitudDetail()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Info Section -->
+        <div class="modal-section">
+          <h3>Información General</h3>
+          <div class="info-grid">
+            <div class="info-box">
+              <span class="info-label">Centro</span>
+              <div class="info-value" id="modalDetailCentro">-</div>
+            </div>
+            <div class="info-box">
+              <span class="info-label">Sector</span>
+              <div class="info-value" id="modalDetailSector">-</div>
+            </div>
+            <div class="info-box">
+              <span class="info-label">Almacén</span>
+              <div class="info-value" id="modalDetailAlmacen">-</div>
+            </div>
+            <div class="info-box">
+              <span class="info-label">Estado</span>
+              <div class="info-value" id="modalDetailStatus">-</div>
+            </div>
+            <div class="info-box">
+              <span class="info-label">Criticidad</span>
+              <div class="info-value" id="modalDetailCriticidad">-</div>
+            </div>
+            <div class="info-box">
+              <span class="info-label">Fecha Necesaria</span>
+              <div class="info-value" id="modalDetailFecha">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Justificación -->
+        <div class="modal-section">
+          <h3>Justificación</h3>
+          <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-default); color: var(--text-primary); line-height: 1.5; font-size: 13px; max-height: 120px; overflow-y: auto;" id="modalDetailJustificacion">-</div>
+        </div>
+
+        <!-- Materials Table -->
+        <div class="modal-section">
+          <h3>Materiales</h3>
+          <div class="materials-table">
+            <table>
+              <thead>
+                <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-default);">
+                  <th style="padding: 10px 12px; text-align: left; color: var(--text-secondary); font-weight: 600;">Material</th>
+                  <th style="padding: 10px 12px; text-align: center; color: var(--text-secondary); font-weight: 600;">Cantidad</th>
+                  <th style="padding: 10px 12px; text-align: right; color: var(--text-secondary); font-weight: 600;">Precio Unit.</th>
+                  <th style="padding: 10px 12px; text-align: right; color: var(--text-secondary); font-weight: 600;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="modalDetailMaterials">
+                <tr>
+                  <td colspan="4" style="padding: 12px; text-align: center; color: var(--text-secondary);">Cargando materiales...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div style="padding: 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%); border: 1px solid #10b981; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 600; color: var(--text-primary); font-size: 14px;">TOTAL A SOLICITAR:</span>
+          <span style="font-size: 18px; font-weight: 700; color: #10b981;" id="modalDetailTotal">$0.00</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeSolicitudDetail()" class="btn-small" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-default);">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOAD COMPONENTS AND INITIALIZE -->
+  <script src="/components/shared-scripts.js"></script>
+  <script>
+    // Cargar componentes
+    async function loadComponents() {
+      try {
+        const navbarResponse = await fetch('/components/navbar.html');
+        const headerResponse = await fetch('/components/header.html');
+        
+        if (navbarResponse.ok) {
+          document.getElementById('navbar').innerHTML = await navbarResponse.text();
+        }
+        
+        if (headerResponse.ok) {
+          document.getElementById('header').innerHTML = await headerResponse.text();
+        }
+        
+        updateActiveNavItem();
+        loadUserInfo();
+        setupLogout();
+        setupNotificationBadge();
+      } catch (error) {
+        console.error('Error loading components:', error);
+      }
+    }
+
+    // Cargar solicitudes
+    async function loadSolicitudes() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/solicitudes/user', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const solicitudes = await response.json();
+          
+          if (solicitudes.length === 0) {
+            document.getElementById('userSolicitudesTable').style.display = 'none';
+            document.getElementById('emptyRequestsState').style.display = 'block';
+            return;
+          }
+
+          const tbody = document.getElementById('userSolicitudesBody');
+          tbody.innerHTML = solicitudes.map(sol => `
+            <tr>
+              <td>#${sol.id}</td>
+              <td>${sol.centro}</td>
+              <td>${sol.sector}</td>
+              <td style="text-align: center;">${sol.items}</td>
+              <td style="text-align: right;">$${parseFloat(sol.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+              <td style="text-align: center;">
+                <span class="status-badge status-${sol.estado.toLowerCase()}">${sol.estado}</span>
+              </td>
+              <td style="text-align: center;">${new Date(sol.fecha).toLocaleDateString('es-AR')}</td>
+              <td style="text-align: center;">
+                <div class="action-buttons">
+                  <button class="btn-small" onclick="showSolicitudDetail(${sol.id})">Ver</button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading solicitudes:', error);
+      }
+    }
+
+    // Mostrar detalle de solicitud
+    async function showSolicitudDetail(solicitudId) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/solicitudes/${solicitudId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          document.getElementById('modalSolicitudId').textContent = `#${data.id}`;
+          document.getElementById('modalDetailCentro').textContent = data.centro;
+          document.getElementById('modalDetailSector').textContent = data.sector;
+          document.getElementById('modalDetailAlmacen').textContent = data.almacen;
+          document.getElementById('modalDetailStatus').textContent = data.estado;
+          document.getElementById('modalDetailCriticidad').textContent = data.criticidad;
+          document.getElementById('modalDetailFecha').textContent = new Date(data.fecha_necesaria).toLocaleDateString('es-AR');
+          document.getElementById('modalDetailJustificacion').textContent = data.justificacion;
+          document.getElementById('modalDetailTotal').textContent = `$${parseFloat(data.monto_total).toLocaleString('es-AR', {minimumFractionDigits: 2})}`;
+
+          // Cargar materiales
+          const materialsHtml = data.materiales.map(mat => `
+            <tr>
+              <td style="padding: 10px 12px;">${mat.nombre}</td>
+              <td style="padding: 10px 12px; text-align: center;">${mat.cantidad}</td>
+              <td style="padding: 10px 12px; text-align: right;">$${parseFloat(mat.precio_unitario).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+              <td style="padding: 10px 12px; text-align: right;">$${parseFloat(mat.subtotal).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+            </tr>
+          `).join('');
+
+          document.getElementById('modalDetailMaterials').innerHTML = materialsHtml;
+          document.getElementById('solicitudDetailModal').classList.add('active');
+        }
+      } catch (error) {
+        console.error('Error loading solicitud detail:', error);
+      }
+    }
+
+    // Cerrar modal
+    function closeSolicitudDetail() {
+      document.getElementById('solicitudDetailModal').classList.remove('active');
+    }
+
+    // Cerrar modal al hacer click fuera
+    document.addEventListener('click', (e) => {
+      const modal = document.getElementById('solicitudDetailModal');
+      if (e.target === modal) {
+        closeSolicitudDetail();
+      }
+    });
+
+    // Inicializar
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        loadComponents();
+        loadSolicitudes();
+      });
+    } else {
+      loadComponents();
+      loadSolicitudes();
+    }
+  </script>
+  </main>
+  <script src="/app.js"></script>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

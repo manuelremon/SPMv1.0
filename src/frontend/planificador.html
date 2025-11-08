@@ -1,409 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SPM · Planificación</title>
-  <link rel="icon" href="/assets/spm-logo.png" type="image/png">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --primary: #7c3aed;
-      --primary-light: #a78bfa;
-      --primary-dark: #5b21b6;
-      --success: #10b981;
-      --success-light: #34d399;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --danger-light: #f87171;
-      
-      --bg-primary: #1a1f35;
-      --bg-secondary: #262d48;
-      --bg-tertiary: #37415d;
-      --bg-canvas: #0f1729;
-      
-      --text-primary: #f3f4f6;
-      --text-secondary: #d1d5db;
-      --text-tertiary: #9ca3af;
-      
-      --border-default: #3f4655;
-      --border-muted: #2d3342;
-      
-      --transition: 0.3s ease;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: linear-gradient(135deg, #0f1729 0%, #1a1f35 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar {
-      display: none;
-    }
-
-    .main-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 0;
-    }
-
-    .header {
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-      border-bottom: 1px solid var(--border-muted);
-      padding: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-
-    .header-content h1 {
-      font-size: 1.875rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin: 0 0 0.25rem 0;
-    }
-
-    .header-content p {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin: 0;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .action-btn {
-      background: rgba(124, 58, 237, 0.2);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      color: var(--text-primary);
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all var(--transition);
-      font-size: 1.25rem;
-    }
-
-    .action-btn:hover {
-      background: rgba(124, 58, 237, 0.3);
-      border-color: rgba(124, 58, 237, 0.5);
-      transform: translateY(-2px);
-    }
-
-    .content {
-      flex: 1;
-      padding: 2rem;
-      overflow-y: auto;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-      border: 1px solid var(--border-muted);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      transition: all var(--transition);
-      cursor: pointer;
-    }
-
-    .stat-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, var(--bg-tertiary) 100%);
-    }
-
-    .stat-card-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    .stat-info {
-      flex: 1;
-    }
-
-    .stat-label {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .stat-icon {
-      font-size: 2rem;
-      opacity: 0.5;
-    }
-
-    .activity-section {
-      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-      border: 1px solid var(--border-muted);
-      border-radius: 0.75rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      backdrop-filter: blur(10px);
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin: 0 0 1.5rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      margin-bottom: 1.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-muted);
-    }
-
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(15, 23, 42, 0.6);
-    }
-
-    .table thead {
-      background: rgba(15, 23, 42, 0.8);
-      border-bottom: 2px solid var(--border-muted);
-    }
-
-    .table th {
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-    }
-
-    .table td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-muted);
-      color: var(--text-primary);
-    }
-
-    .table tbody tr:hover {
-      background: rgba(124, 58, 237, 0.08);
-    }
-
-    .pager {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem 0;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      background: rgba(124, 58, 237, 0.2);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      color: var(--text-primary);
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all var(--transition);
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .btn:hover:not(:disabled) {
-      background: rgba(124, 58, 237, 0.35);
-      border-color: rgba(124, 58, 237, 0.5);
-      transform: translateY(-2px);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn.danger {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.3);
-    }
-
-    .btn.danger:hover:not(:disabled) {
-      background: rgba(239, 68, 68, 0.35);
-      border-color: rgba(239, 68, 68, 0.5);
-    }
-
-    #detailPanel[hidden] {
-      display: none;
-    }
-
-    #detailPanel:not([hidden]) {
-      display: block;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-    }
-
-    .info-item {
-      padding: 1rem;
-      background: rgba(15, 23, 42, 0.6);
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-muted);
-    }
-
-    .info-item label {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 0 0 0.5rem 0;
-      display: block;
-    }
-
-    .info-item div {
-      font-size: 1rem;
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    .optimization-results {
-      background: rgba(15, 23, 42, 0.8);
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      border-left: 3px solid var(--primary);
-    }
-
-    .optimization-results p {
-      margin: 0.5rem 0;
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-    }
-
-    .flex-between {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .actions-row {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 1.5rem;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .status-badge.pending {
-      background: rgba(245, 158, 11, 0.2);
-      color: #f59e0b;
-    }
-
-    .status-badge.in-process {
-      background: rgba(59, 130, 246, 0.2);
-      color: #3b82f6;
-    }
-
-    .status-badge.optimized {
-      background: rgba(124, 58, 237, 0.2);
-      color: #a78bfa;
-    }
-
-    .status-badge.completed {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-    }
-
-    @media (max-width: 768px) {
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .table {
-        font-size: 0.875rem;
-      }
-
-      .table th, .table td {
-        padding: 0.75rem;
-      }
-
-      .content {
-        padding: 1rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
-<body data-page="planificador">
-  <script>
+<body>
+  <header class="app-header">
+    <a href="/dashboard">Dashboard</a>
+    <nav>
+      <a href="/mi-cuenta">Mi Cuenta</a>
+      <a href="/preferencias">Preferencias</a>
+      <a href="/mis-solicitudes">Mis Solicitudes</a>
+      <a href="/crear-solicitud">Crear Solicitud</a>
+      <a href="/materiales">Materiales</a>
+      <a href="/notificaciones">Notificaciones</a>
+      <a href="/presupuesto">Presupuesto</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+  <main class="main-container">
+<main class="main-container">
+<script>
     document.body.classList.add('page-' + (document.body.dataset.page || 'default'));
   </script>
 
   <aside class="sidebar"></aside>
 
   <div class="main-container">
-    <header class="header">
-      <div class="header-content">
-        <h1>Gestión de Planificación</h1>
-        <p>Abastecimiento optimizado de solicitudes de materiales</p>
-      </div>
-      <div class="header-actions">
-        <button class="action-btn" id="btnRefresh" title="Actualizar datos">🔄</button>
-      </div>
-    </header>
+    
 
     <div class="content">
       <div class="dashboard-grid">
@@ -546,5 +172,9 @@
   <script src="/utils/api.js"></script>
   <script src="/app.js"></script>
   <script src="./planificador.js" defer></script>
+  </main>
+  <script src="/app.js"></script>
+  </main>
+  <script src="/app.js"></script>
 </body>
 </html>

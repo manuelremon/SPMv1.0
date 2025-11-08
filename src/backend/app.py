@@ -275,6 +275,67 @@ def create_app() -> Flask:
     def page_admin_materiales():
         return _serve_frontend("admin-materiales.html")
 
+    # Nuevas páginas desanidadas - FASE 2 Refactoring
+    @app.route("/dashboard.html")
+    def page_dashboard():
+        return _serve_frontend("dashboard.html")
+
+    @app.route("/solicitudes.html")
+    def page_solicitudes():
+        return _serve_frontend("solicitudes.html")
+
+    @app.route("/nueva-solicitud.html")
+    def page_nueva_solicitud():
+        return _serve_frontend("nueva-solicitud.html")
+
+    @app.route("/agregar-materiales.html")
+    def page_agregar_materiales():
+        return _serve_frontend("agregar-materiales.html")
+
+    @app.route("/notificaciones.html")
+    def page_notificaciones():
+        return _serve_frontend("notificaciones.html")
+
+    @app.route("/preferencias.html")
+    def page_preferencias_new():
+        return _serve_frontend("preferencias.html")
+
+    @app.route("/usuarios.html")
+    def page_usuarios():
+        return _serve_frontend("usuarios.html")
+
+    @app.route("/materiales.html")
+    def page_materiales():
+        return _serve_frontend("materiales.html")
+
+    @app.route("/centros.html")
+    def page_centros():
+        return _serve_frontend("centros.html")
+
+    @app.route("/almacenes.html")
+    def page_almacenes():
+        return _serve_frontend("almacenes.html")
+
+    @app.route("/reportes.html")
+    def page_reportes():
+        return _serve_frontend("reportes.html")
+
+    @app.route("/planificacion.html")
+    def page_planificacion():
+        return _serve_frontend("planificacion.html")
+
+    @app.route("/ayuda.html")
+    def page_ayuda():
+        return _serve_frontend("ayuda.html")
+
+    # Componentes compartidos
+    @app.route("/components/<path:fname>")
+    def components(fname: str):
+        components_path = FRONTEND_DIR / "components" / fname
+        if not components_path.is_file():
+            abort(404)
+        return send_from_directory(FRONTEND_DIR / "components", fname)
+
     @app.route("/<string:page>.html")
     def page_any_html(page: str):
         return _serve_frontend(f"{page}.html")

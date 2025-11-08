@@ -1,0 +1,96 @@
+<!-- SIDEBAR NAVIGATION COMPONENT -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <img src="/assets/spm-logo.png" alt="SPM Logo">
+    </div>
+    <div class="sidebar-title">SPM</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- MAIN SECTION -->
+    <div class="nav-section">
+      <a href="/dashboard.html" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="/solicitudes.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Mis Solicitudes</span>
+      </a>
+      <a href="/nueva-solicitud.html" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nueva Solicitud</span>
+      </a>
+      <a href="/agregar-materiales.html" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Agregar Materiales</span>
+      </a>
+      <a href="/notificaciones.html" class="nav-item">
+        <span class="nav-icon">🔔</span>
+        <span>Notificaciones</span>
+      </a>
+    </div>
+
+    <!-- ADMIN SECTION -->
+    <div class="nav-section hidden" id="adminSection">
+      <div class="nav-section-title">Administración</div>
+      <a href="/usuarios.html" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Usuarios</span>
+      </a>
+      <a href="/materiales.html" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Materiales</span>
+      </a>
+      <a href="/centros.html" class="nav-item">
+        <span class="nav-icon">🏢</span>
+        <span>Centros</span>
+      </a>
+      <a href="/almacenes.html" class="nav-item">
+        <span class="nav-icon">🏭</span>
+        <span>Almacenes</span>
+      </a>
+      <a href="/reportes.html" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Reportes</span>
+      </a>
+    </div>
+
+    <!-- PLANNER SECTION -->
+    <div class="nav-section hidden" id="plannerSection">
+      <div class="nav-section-title">Planificación</div>
+      <a href="/planificacion.html" class="nav-item">
+        <span class="nav-icon">📈</span>
+        <span>Planificación</span>
+      </a>
+    </div>
+
+    <!-- SETTINGS SECTION -->
+    <div class="nav-section">
+      <a href="/preferencias.html" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Preferencias</span>
+      </a>
+      <a href="/ayuda.html" class="nav-item">
+        <span class="nav-icon">ℹ️</span>
+        <span>Ayuda</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR FOOTER -->
+  <div class="sidebar-footer">
+    <a href="/mi-cuenta.html" class="user-profile">
+      <div class="user-avatar" id="userAvatarSmall">M</div>
+      <div class="user-info">
+        <div class="user-name" id="userNameSidebar">Manuel</div>
+        <div class="user-role" id="userRoleSidebar">Admin</div>
+      </div>
+    </a>
+    <button class="nav-item" id="logoutBtn">
+      <span class="nav-icon">🚪</span>
+      <span>Cerrar Sesión</span>
+    </button>
+  </div>
+</aside>

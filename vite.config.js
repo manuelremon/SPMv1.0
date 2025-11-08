@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  root: '.',
+  root: 'src/frontend',
   server: {
     host: '127.0.0.1',
     port: 5173,
     strictPort: true,
+    // Middleware para servir rutas limpias (SPA routing)
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:5000',
@@ -13,5 +14,7 @@ export default defineConfig({
         secure: false
       }
     }
-  }
+  },
+  // Fallback a index.html para rutas no encontradas
+  appType: 'spa'
 })

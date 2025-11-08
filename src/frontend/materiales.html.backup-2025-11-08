@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materiales - SPM</title>
+  <link rel="icon" href="/assets/spm-logo.png" type="image/png">
+  <link rel="stylesheet" href="/components/shared-styles.css">
+</head>
+<body>
+  <div id="navbar"></div>
+  <div class="main-container">
+    <div id="header"></div>
+    <div class="content">
+      <div class="content-header">
+        <h1 class="page-title">Materiales</h1>
+        <p class="page-subtitle">Página de Materiales</p>
+      </div>
+      <p>Contenido de Materiales - Página en construcción...</p>
+    </div>
+  </div>
+  <script src="/components/shared-scripts.js"></script>
+  <script>
+    async function loadComponents() {
+      const navbar = await fetch('/components/navbar.html');
+      const header = await fetch('/components/header.html');
+      if (navbar.ok) document.getElementById('navbar').innerHTML = await navbar.text();
+      if (header.ok) document.getElementById('header').innerHTML = await header.text();
+      updateActiveNavItem();
+      loadUserInfo();
+      setupLogout();
+      setupNotificationBadge();
+    }
+    document.addEventListener('DOMContentLoaded', loadComponents);
+  </script>
+</body>
+</html>

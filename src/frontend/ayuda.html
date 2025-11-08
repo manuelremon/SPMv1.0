@@ -1,0 +1,173 @@
+<!DOCTYPE html><!DOCTYPE html>
+
+<html lang="es"><html lang="es">
+
+<head><head>
+
+  <meta charset="utf-8">  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ayuda - SPM</title>  <title>Ayuda - SPM</title>
+
+  <link rel="icon" href="/assets/spm-logo.png" type="image/png">  <link rel="icon" href="/assets/spm-logo.png" type="image/png">
+
+  <link rel="stylesheet" href="/styles.css">  <link rel="stylesheet" href="/components/shared-styles.css">
+
+</head></head>
+
+<body><body>
+
+  <!-- NAVBAR PERSISTENTE (incluido en todas las paginas) -->  <div id="navbar"></div>
+
+  <header class="app-header" id="globalNav" data-nav-open="false">  <div class="main-container">
+
+    <div class="app-header__inner">    <div id="header"></div>
+
+      <a class="app-logo" href="/dashboard" aria-label="Ir al inicio">    <div class="content">
+
+        <img src="/assets/spm-logo.png" alt="Logotipo de SPM"/>      <div class="content-header">
+
+      </a>        <h1 class="page-title">Ayuda</h1>
+
+      <button type="button" class="app-header__toggle" id="navToggle" aria-controls="primaryNav" aria-expanded="false">        <p class="page-subtitle">P�gina de Ayuda</p>
+
+        <span class="sr-only">Alternar navegacion</span>      </div>
+
+        <span class="app-header__toggle-bar"></span>      <p>Contenido de Ayuda - P�gina en construcci�n...</p>
+
+        <span class="app-header__toggle-bar"></span>    </div>
+
+        <span class="app-header__toggle-bar"></span>  </div>
+
+      </button>  <script src="/components/shared-scripts.js"></script>
+
+      <nav class="app-nav" id="primaryNav" aria-label="Navegacion principal">  <script>
+
+        <ul class="app-menu">    async function loadComponents() {
+
+          <li class="app-menu__item has-submenu" data-menu="inicio" role="none">      const navbar = await fetch('/components/navbar.html');
+
+            <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">      const header = await fetch('/components/header.html');
+
+              <span>Inicio</span>      if (navbar.ok) document.getElementById('navbar').innerHTML = await navbar.text();
+
+              <span class="app-menu__caret" aria-hidden="true"></span>      if (header.ok) document.getElementById('header').innerHTML = await header.text();
+
+            </button>      updateActiveNavItem();
+
+            <div class="app-submenu" role="menu" hidden aria-hidden="true">      loadUserInfo();
+
+              <a href="/mi-cuenta" class="app-submenu__link" role="menuitem">Mi Cuenta</a>      setupLogout();
+
+              <a href="/preferencias" class="app-submenu__link" role="menuitem">Preferencias</a>      setupNotificationBadge();
+
+              <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesion</button>    }
+
+              <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>    document.addEventListener('DOMContentLoaded', loadComponents);
+
+            </div>  </script>
+
+          </li></body>
+
+          <li class="app-menu__item has-submenu" data-menu="solicitudes" role="none"></html>
+
+            <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+              <span>Solicitudes</span>
+              <span class="app-menu__caret" aria-hidden="true"></span>
+            </button>
+            <div class="app-submenu" role="menu" hidden aria-hidden="true">
+              <a href="/mis-solicitudes" class="app-submenu__link" role="menuitem">Mis solicitudes</a>
+              <a href="/crear-solicitud" class="app-submenu__link" role="menuitem">Crear solicitud</a>
+            </div>
+          </li>
+          <li class="app-menu__item" role="none">
+            <a href="/notificaciones" class="app-menu__link has-badge">Notificaciones <span class="badge hide" id="navNotificationsBadge">0</span></a>
+          </li>
+          <li class="app-menu__item" role="none">
+            <a href="/presupuesto" class="app-menu__link hide" id="navPresupuesto">Presupuesto</a>
+          </li>
+          <li class="app-menu__item has-submenu hide" id="adminMenuItem" data-menu="admin" role="none">
+            <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+              <span>Panel de control</span>
+              <span class="app-menu__caret" aria-hidden="true"></span>
+            </button>
+            <div class="app-submenu" role="menu" hidden aria-hidden="true">
+              <a href="/admin" class="app-submenu__link" role="menuitem">Dashboard</a>
+              <a href="/admin/solicitudes" class="app-submenu__link" role="menuitem">Solicitudes</a>
+              <a href="/admin/usuarios" class="app-submenu__link" role="menuitem">Usuarios</a>
+              <a href="/admin/materiales" class="app-submenu__link" role="menuitem">Materiales</a>
+              <a href="/admin/centros" class="app-submenu__link" role="menuitem">Centros</a>
+              <a href="/admin/almacenes" class="app-submenu__link" role="menuitem">Almacenes</a>
+              <div class="app-submenu__divider" role="separator"></div>
+              <div class="app-submenu__section">
+                <span class="app-submenu__section-title">Reportes y auditoria</span>
+                <a href="/admin/reportes" class="app-submenu__link" role="menuitem">Reportes</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="content">
+    <div class="content-section">
+      <div class="page-header">
+        <h1>Ayuda</h1>
+        <p>Centro de ayuda y soporte del sistema SPM</p>
+      </div>
+
+      <section class="help-section">
+        <h2>Preguntas Frecuentes</h2>
+        <div class="faq-items">
+          <article class="faq-item">
+            <h3>¿Como crear una nueva solicitud?</h3>
+            <p>Para crear una nueva solicitud, debes ir a la seccion "Solicitudes" en el menu superior y seleccionar "Crear solicitud". Completa el formulario con los detalles de los materiales que necesitas.</p>
+          </article>
+          <article class="faq-item">
+            <h3>¿Como ver mis solicitudes?</h3>
+            <p>Puedes ver todas tus solicitudes en "Solicitudes" > "Mis solicitudes". Aqui podras ver el estado de cada una de tus solicitudes.</p>
+          </article>
+          <article class="faq-item">
+            <h3>¿Como buscar materiales?</h3>
+            <p>Utiliza la busqueda por codigo SAP o descripcion en la pagina de materiales. Puedes filtrar por categoria para encontrar mas facilmente lo que necesitas.</p>
+          </article>
+          <article class="faq-item">
+            <h3>¿Que significa el estado de mi solicitud?</h3>
+            <p>Los estados pueden ser: Borrador (no enviada), Pendiente (esperando aprobacion), Aprobada, Rechazada o Completada.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="help-section">
+        <h2>Tutoriales</h2>
+        <ul>
+          <li><a href="#" class="link">Guia de inicio rapido</a></li>
+          <li><a href="#" class="link">Como usar los filtros</a></li>
+          <li><a href="#" class="link">Descarga de reportes</a></li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <h2>Soporte</h2>
+        <p>Si necesitas ayuda adicional, puedes contactar al equipo de soporte a traves de:</p>
+        <ul>
+          <li>Email: <a href="mailto:soporte@ejemplo.com">soporte@ejemplo.com</a></li>
+          <li>Telefono: +34 900 123 456</li>
+          <li>Chat en vivo: disponible de L-V 9:00-18:00</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER (opcional) -->
+  <footer class="app-footer">
+    <!-- Footer content if needed -->
+  </footer>
+
+  <!-- SCRIPTS COMPARTIDOS -->
+  <script src="/app.js"></script>
+</body>
+</html>

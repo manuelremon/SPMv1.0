@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Solicitud - SPM</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <a href="/dashboard">Dashboard</a>
+    <nav>
+      <a href="/mi-cuenta">Mi Cuenta</a>
+      <a href="/preferencias">Preferencias</a>
+      <a href="/mis-solicitudes">Mis Solicitudes</a>
+      <a href="/crear-solicitud">Crear Solicitud</a>
+      <a href="/materiales">Materiales</a>
+      <a href="/notificaciones">Notificaciones</a>
+      <a href="/presupuesto">Presupuesto</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+  <main class="main-container">
+<main class="main-container">
+<div id="navbar"></div>
+  <div class="main-container">
+    <div id="header"></div>
+    <div class="content">
+      <div class="content-header">
+        <h1 class="page-title">Nueva Solicitud</h1>
+        <p class="page-subtitle">Crea una nueva solicitud de materiales en 3 pasos</p>
+      </div>
+
+      <!-- Stepper Progress Indicator -->
+      <div class="stepper-container">
+        <div class="stepper">
+          <div class="stepper-item active" data-step="1">
+            <div class="stepper-circle">1</div>
+            <div class="stepper-label">Información Básica</div>
+          </div>
+          <div class="stepper-line"></div>
+          <div class="stepper-item" data-step="2">
+            <div class="stepper-circle">2</div>
+            <div class="stepper-label">Justificación</div>
+          </div>
+          <div class="stepper-line"></div>
+          <div class="stepper-item" data-step="3">
+            <div class="stepper-circle">3</div>
+            <div class="stepper-label">Revisión</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Container -->
+      <div class="form-container">
+        <form id="solicitudForm">
+          <!-- STEP 1: Información Básica -->
+          <div class="step-content active" id="step1">
+            <div class="step-title">Información Básica</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="centro">Centro *</label>
+                <select id="centro" name="centro" required>
+                  <option value="">Seleccionar centro...</option>
+                </select>
+                <small class="form-help">Selecciona el centro destino</small>
+              </div>
+
+              <div class="form-group">
+                <label for="sector">Sector *</label>
+                <select id="sector" name="sector" required>
+                  <option value="">Seleccionar sector...</option>
+                </select>
+                <small class="form-help">Sector dentro del centro</small>
+              </div>
+
+              <div class="form-group">
+                <label for="almacen">Almacén *</label>
+                <select id="almacen" name="almacen" required>
+                  <option value="">Seleccionar almacén...</option>
+                </select>
+                <small class="form-help">Almacén de destino</small>
+              </div>
+
+              <div class="form-group">
+                <label>Criticidad *</label>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" name="criticidad" value="Baja" required>
+                    <span class="criticidad-badge criticidad-baja">Baja</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="criticidad" value="Media" required>
+                    <span class="criticidad-badge criticidad-media">Media</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="criticidad" value="Alta" required>
+                    <span class="criticidad-badge criticidad-alta">Alta</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Justificación -->
+          <div class="step-content" id="step2">
+            <div class="step-title">Justificación y Detalles</div>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="justificacion">Justificación *</label>
+                <textarea id="justificacion" name="justificacion" rows="4" required 
+                  placeholder="Describe por qué necesitas estos materiales..."></textarea>
+                <small class="form-help">Mínimo 20 caracteres</small>
+              </div>
+
+              <div class="form-group">
+                <label for="fechaNecesaria">Fecha Necesaria *</label>
+                <input type="date" id="fechaNecesaria" name="fechaNecesaria" required>
+                <small class="form-help">¿Cuándo necesitas los materiales?</small>
+              </div>
+
+              <div class="form-group">
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" name="observaciones" rows="3"
+                  placeholder="Añade observaciones adicionales (opcional)..."></textarea>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="archivos">Archivos Adjuntos</label>
+                <div class="file-input-wrapper">
+                  <input type="file" id="archivos" name="archivos" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg">
+                  <button type="button" class="btn btn-secondary" onclick="document.getElementById('archivos').click()">
+                    📎 Seleccionar Archivos
+                  </button>
+                  <div id="filesList" class="files-list"></div>
+                </div>
+                <small class="form-help">Adjunta documentos de apoyo si es necesario</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: Revisión -->
+          <div class="step-content" id="step3">
+            <div class="step-title">Revisión de Solicitud</div>
+            <div class="review-container">
+              <div class="review-section">
+                <h3>Información Básica</h3>
+                <div class="review-grid">
+                  <div class="review-item">
+                    <span class="review-label">Centro:</span>
+                    <span class="review-value" id="review-centro">-</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="review-label">Sector:</span>
+                    <span class="review-value" id="review-sector">-</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="review-label">Almacén:</span>
+                    <span class="review-value" id="review-almacen">-</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="review-label">Criticidad:</span>
+                    <span class="review-value" id="review-criticidad">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="review-section">
+                <h3>Justificación</h3>
+                <div class="review-text" id="review-justificacion">-</div>
+              </div>
+
+              <div class="review-section">
+                <h3>Fecha Necesaria</h3>
+                <div class="review-text" id="review-fechaNecesaria">-</div>
+              </div>
+
+              <div class="review-section" id="review-observaciones-section" style="display: none;">
+                <h3>Observaciones</h3>
+                <div class="review-text" id="review-observaciones">-</div>
+              </div>
+
+              <div id="review-archivos-section" class="review-section" style="display: none;">
+                <h3>Archivos Adjuntos</h3>
+                <div id="review-files-list" class="review-files"></div>
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <strong>ℹ️ Nota:</strong> Puedes guardar como borrador para completar después o enviar directamente.
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="form-navigation">
+            <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+              ← Anterior
+            </button>
+            <div class="nav-spacer"></div>
+            <button type="button" class="btn btn-danger" id="cancelBtn">
+              ✕ Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" id="nextBtn">
+              Siguiente →
+            </button>
+            <button type="button" class="btn btn-secondary" id="draftBtn" style="display: none;">
+              📁 Guardar como Borrador
+            </button>
+            <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+              ✓ Enviar Solicitud
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <style>
+        /* Stepper Styles */
+        .stepper-container {
+          margin-bottom: var(--spacing-2xl);
+        }
+
+        .stepper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--spacing-md);
+        }
+
+        .stepper-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: var(--spacing-xs);
+          opacity: 0.6;
+          transition: all 0.3s ease;
+        }
+
+        .stepper-item.active {
+          opacity: 1;
+        }
+
+        .stepper-circle {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background-color: var(--surface-secondary);
+          border: 2px solid var(--border-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: var(--text-secondary);
+          transition: all 0.3s ease;
+        }
+
+        .stepper-item.active .stepper-circle {
+          background-color: var(--primary);
+          border-color: var(--primary);
+          color: white;
+          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .stepper-item.completed .stepper-circle {
+          background-color: var(--success);
+          border-color: var(--success);
+          color: white;
+        }
+
+        .stepper-line {
+          width: 40px;
+          height: 2px;
+          background-color: var(--border-color);
+          transition: background-color 0.3s ease;
+        }
+
+        .stepper-item.completed ~ .stepper-line {
+          background-color: var(--success);
+        }
+
+        .stepper-label {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          text-align: center;
+          max-width: 100px;
+        }
+
+        .stepper-item.active .stepper-label {
+          color: var(--primary);
+          font-weight: 600;
+        }
+
+        /* Form Styles */
+        .form-container {
+          background: var(--surface-primary);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-lg);
+          padding: var(--spacing-2xl);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .step-content {
+          display: none;
+          animation: slideInUp 0.3s ease;
+        }
+
+        .step-content.active {
+          display: block;
+        }
+
+        .step-title {
+          font-size: 18px;
+          font-weight: 600;
+          margin-bottom: var(--spacing-lg);
+          color: var(--text-primary);
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--spacing-lg);
+          margin-bottom: var(--spacing-xl);
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-xs);
+        }
+
+        .form-group.full-width {
+          grid-column: 1 / -1;
+        }
+
+        .form-group label {
+          font-weight: 500;
+          color: var(--text-primary);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+          padding: var(--spacing-sm) var(--spacing-md);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          font-size: 14px;
+          font-family: var(--font-family);
+          transition: all 0.2s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="date"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: var(--primary);
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-help {
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+
+        .radio-group {
+          display: flex;
+          gap: var(--spacing-md);
+        }
+
+        .radio-label {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-sm);
+          cursor: pointer;
+        }
+
+        .radio-label input[type="radio"] {
+          cursor: pointer;
+        }
+
+        .criticidad-badge {
+          padding: var(--spacing-xs) var(--spacing-sm);
+          border-radius: var(--radius-sm);
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .criticidad-baja {
+          background-color: rgba(34, 197, 94, 0.2);
+          color: #16a34a;
+        }
+
+        .criticidad-media {
+          background-color: rgba(245, 158, 11, 0.2);
+          color: #d97706;
+        }
+
+        .criticidad-alta {
+          background-color: rgba(239, 68, 68, 0.2);
+          color: #dc2626;
+        }
+
+        /* File Input */
+        .file-input-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-sm);
+        }
+
+        .file-input-wrapper input[type="file"] {
+          display: none;
+        }
+
+        .files-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-xs);
+        }
+
+        .file-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: var(--spacing-sm);
+          background-color: var(--surface-secondary);
+          border-radius: var(--radius-sm);
+          font-size: 14px;
+        }
+
+        .file-item-remove {
+          color: var(--danger);
+          cursor: pointer;
+          font-weight: bold;
+        }
+
+        /* Review Section */
+        .review-container {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-lg);
+        }
+
+        .review-section {
+          padding: var(--spacing-lg);
+          background-color: var(--surface-secondary);
+          border-radius: var(--radius-md);
+          border-left: 4px solid var(--primary);
+        }
+
+        .review-section h3 {
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: var(--spacing-md);
+          color: var(--text-primary);
+        }
+
+        .review-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--spacing-md);
+        }
+
+        .review-item {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-xs);
+        }
+
+        .review-label {
+          font-weight: 500;
+          color: var(--text-secondary);
+          font-size: 12px;
+        }
+
+        .review-value {
+          color: var(--text-primary);
+          font-weight: 500;
+        }
+
+        .review-text {
+          color: var(--text-primary);
+          line-height: 1.5;
+          white-space: pre-wrap;
+        }
+
+        .review-files {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-xs);
+        }
+
+        .review-file-item {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-sm);
+          padding: var(--spacing-sm);
+          background-color: var(--surface-primary);
+          border-radius: var(--radius-sm);
+          font-size: 14px;
+        }
+
+        /* Navigation */
+        .form-navigation {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: var(--spacing-md);
+          margin-top: var(--spacing-2xl);
+          padding-top: var(--spacing-lg);
+          border-top: 1px solid var(--border-color);
+        }
+
+        .nav-spacer {
+          flex: 1;
+        }
+
+        .btn {
+          padding: var(--spacing-sm) var(--spacing-lg);
+          border: none;
+          border-radius: var(--radius-md);
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 14px;
+        }
+
+        .btn-primary {
+          background-color: var(--primary);
+          color: white;
+        }
+
+        .btn-primary:hover {
+          background-color: #1d4ed8;
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+          background-color: var(--surface-secondary);
+          color: var(--text-primary);
+          border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+          background-color: var(--surface-tertiary);
+        }
+
+        .btn-danger {
+          background-color: transparent;
+          color: var(--danger);
+          border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+          background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-success {
+          background-color: var(--success);
+          color: white;
+        }
+
+        .btn-success:hover {
+          background-color: #16a34a;
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
+        }
+
+        .btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Alert */
+        .alert {
+          padding: var(--spacing-md) var(--spacing-lg);
+          border-radius: var(--radius-md);
+          margin-bottom: var(--spacing-lg);
+          border-left: 4px solid;
+        }
+
+        .alert-info {
+          background-color: rgba(59, 130, 246, 0.1);
+          border-left-color: var(--primary);
+          color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .stepper {
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+          }
+
+          .stepper-line {
+            display: none;
+          }
+
+          .review-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .form-navigation {
+            flex-direction: column;
+            gap: var(--spacing-sm);
+          }
+
+          .form-navigation button {
+            width: 100%;
+          }
+        }
+
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      </style>
+    </div>
+  </div>
+
+  <script src="/components/shared-scripts.js"></script>
+  <script>
+    // Global state
+    let currentStep = 1;
+    const totalSteps = 3;
+    const formData = {};
+    const selectedFiles = [];
+
+    // Load components
+    async function loadComponents() {
+      const navbar = await fetch('/components/navbar.html');
+      const header = await fetch('/components/header.html');
+      if (navbar.ok) document.getElementById('navbar').innerHTML = await navbar.text();
+      if (header.ok) document.getElementById('header').innerHTML = await header.text();
+      updateActiveNavItem();
+      loadUserInfo();
+      setupLogout();
+      setupNotificationBadge();
+
+      // Load catalogs
+      await loadCatalogs();
+    }
+
+    // Load dropdown catalogs from API
+    async function loadCatalogs() {
+      try {
+        const response = await fetch('/api/catalogos');
+        if (!response.ok) throw new Error('Error loading catalogs');
+        
+        const data = await response.json();
+        
+        // Populate Centro
+        const centroSelect = document.getElementById('centro');
+        if (data.centros) {
+          data.centros.forEach(centro => {
+            const option = document.createElement('option');
+            option.value = centro.id;
+            option.textContent = centro.nombre;
+            centroSelect.appendChild(option);
+          });
+        }
+
+        // Populate Almacén
+        const almacenSelect = document.getElementById('almacen');
+        if (data.almacenes) {
+          data.almacenes.forEach(almacen => {
+            const option = document.createElement('option');
+            option.value = almacen.id;
+            option.textContent = almacen.nombre;
+            almacenSelect.appendChild(option);
+          });
+        }
+
+        // Populate Sector (puede ser dinámico por centro)
+        const sectorSelect = document.getElementById('sector');
+        if (data.sectores) {
+          data.sectores.forEach(sector => {
+            const option = document.createElement('option');
+            option.value = sector.id;
+            option.textContent = sector.nombre;
+            sectorSelect.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading catalogs:', error);
+      }
+    }
+
+    // File input handler
+    document.getElementById('archivos').addEventListener('change', function(e) {
+      selectedFiles.length = 0;
+      selectedFiles.push(...Array.from(e.target.files));
+      updateFilesList();
+    });
+
+    function updateFilesList() {
+      const filesList = document.getElementById('filesList');
+      filesList.innerHTML = '';
+      selectedFiles.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `
+          <span>📄 ${file.name} (${(file.size / 1024).toFixed(2)} KB)</span>
+          <span class="file-item-remove" onclick="removeFile(${index})">✕</span>
+        `;
+        filesList.appendChild(item);
+      });
+    }
+
+    function removeFile(index) {
+      selectedFiles.splice(index, 1);
+      updateFilesList();
+    }
+
+    // Stepper navigation
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        saveStepData();
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateStepDisplay();
+        }
+      }
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepDisplay();
+      }
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      if (confirm('¿Cancelar la creación de la solicitud?')) {
+        window.history.back();
+      }
+    });
+
+    document.getElementById('draftBtn').addEventListener('click', async () => {
+      await saveDraft();
+    });
+
+    document.getElementById('solicitudForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (validateStep(currentStep)) {
+        await submitSolicitud();
+      }
+    });
+
+    function validateStep(step) {
+      const form = document.getElementById('solicitudForm');
+      const inputs = form.querySelectorAll(`#step${step} input[required], #step${step} select[required], #step${step} textarea[required]`);
+      
+      for (let input of inputs) {
+        if (!input.value) {
+          showNotification(`Por favor completa el campo: ${input.previousElementSibling?.textContent || input.name}`, 'error');
+          input.focus();
+          return false;
+        }
+      }
+
+      // Validación específica: justificación mínimo 20 caracteres
+      if (step === 2) {
+        const justificacion = document.getElementById('justificacion').value;
+        if (justificacion.length < 20) {
+          showNotification('La justificación debe tener al menos 20 caracteres', 'error');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function saveStepData() {
+      const form = document.getElementById('solicitudForm');
+      const step = document.getElementById(`step${currentStep}`);
+      const inputs = step.querySelectorAll('input, select, textarea');
+      
+      inputs.forEach(input => {
+        if (input.type === 'radio') {
+          if (input.checked) formData[input.name] = input.value;
+        } else if (input.type !== 'file') {
+          formData[input.name] = input.value;
+        }
+      });
+
+      updateReview();
+    }
+
+    function updateStepDisplay() {
+      // Hide all steps
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      
+      // Show current step
+      document.getElementById(`step${currentStep}`).classList.add('active');
+
+      // Update stepper indicators
+      document.querySelectorAll('.stepper-item').forEach((item, idx) => {
+        const step = idx + 1;
+        item.classList.remove('active', 'completed');
+        if (step === currentStep) {
+          item.classList.add('active');
+        } else if (step < currentStep) {
+          item.classList.add('completed');
+        }
+      });
+
+      // Update button visibility
+      document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
+      document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'block' : 'none';
+      document.getElementById('draftBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+      document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+    }
+
+    function updateReview() {
+      document.getElementById('review-centro').textContent = 
+        document.querySelector('option[value="' + formData.centro + '"]')?.textContent || '-';
+      document.getElementById('review-sector').textContent = 
+        document.querySelector('option[value="' + formData.sector + '"]')?.textContent || '-';
+      document.getElementById('review-almacen').textContent = 
+        document.querySelector('option[value="' + formData.almacen + '"]')?.textContent || '-';
+      document.getElementById('review-criticidad').textContent = formData.criticidad || '-';
+      document.getElementById('review-justificacion').textContent = formData.justificacion || '-';
+      document.getElementById('review-fechaNecesaria').textContent = formData.fechaNecesaria || '-';
+
+      if (formData.observaciones) {
+        document.getElementById('review-observaciones').textContent = formData.observaciones;
+        document.getElementById('review-observaciones-section').style.display = 'block';
+      } else {
+        document.getElementById('review-observaciones-section').style.display = 'none';
+      }
+
+      if (selectedFiles.length > 0) {
+        const filesList = document.getElementById('review-files-list');
+        filesList.innerHTML = '';
+        selectedFiles.forEach(file => {
+          const item = document.createElement('div');
+          item.className = 'review-file-item';
+          item.innerHTML = `📄 ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+          filesList.appendChild(item);
+        });
+        document.getElementById('review-archivos-section').style.display = 'block';
+      } else {
+        document.getElementById('review-archivos-section').style.display = 'none';
+      }
+    }
+
+    async function saveDraft() {
+      if (!validateStep(currentStep)) return;
+      
+      saveStepData();
+      
+      const formDataObj = new FormData();
+      Object.keys(formData).forEach(key => {
+        formDataObj.append(key, formData[key]);
+      });
+      selectedFiles.forEach(file => {
+        formDataObj.append('archivos', file);
+      });
+
+      try {
+        const response = await fetch('/api/solicitudes/drafts', {
+          method: 'POST',
+          body: formDataObj,
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.ok) {
+          showNotification('Solicitud guardada como borrador', 'success');
+          setTimeout(() => window.location.href = '/solicitudes.html', 1500);
+        } else {
+          showNotification('Error al guardar borrador', 'error');
+        }
+      } catch (error) {
+        console.error('Error saving draft:', error);
+        showNotification('Error al guardar borrador', 'error');
+      }
+    }
+
+    async function submitSolicitud() {
+      saveStepData();
+      
+      const formDataObj = new FormData();
+      Object.keys(formData).forEach(key => {
+        formDataObj.append(key, formData[key]);
+      });
+      selectedFiles.forEach(file => {
+        formDataObj.append('archivos', file);
+      });
+
+      try {
+        const response = await fetch('/api/solicitudes', {
+          method: 'POST',
+          body: formDataObj,
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          showNotification('Solicitud creada exitosamente', 'success');
+          setTimeout(() => window.location.href = '/solicitudes.html', 1500);
+        } else {
+          showNotification('Error al crear solicitud', 'error');
+        }
+      } catch (error) {
+        console.error('Error submitting solicitud:', error);
+        showNotification('Error al crear solicitud', 'error');
+      }
+    }
+
+    // Helper to show notifications
+    function showNotification(message, type = 'info') {
+      alert(message); // Reemplazar con toast notification si existe en shared-scripts.js
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadComponents();
+      updateStepDisplay();
+    });
+  </script>
+  </main>
+  <script src="/app.js"></script>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,8 +1,6 @@
-"""Punto de entrada para ejecutar la aplicacion Flask como modulo."""
+"""Punto de entrada para ejecutar la aplicación Flask como módulo."""
 import os
-
 from .app import app
-
 
 if __name__ == "__main__":
     host = os.environ.get("HOST", "0.0.0.0")

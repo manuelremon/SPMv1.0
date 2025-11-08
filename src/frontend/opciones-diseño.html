@@ -1,196 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opciones de Diseño - SPM v1.0</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .header p {
-            font-size: 1.2em;
-            color: #666;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        .option-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-        .option-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-        }
-        .option-card.top {
-            border-top: 4px solid gold;
-        }
-        .option-card.top-1::before {
-            content: "🏆 TOP 1";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: gold;
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        .option-card.top-2::before {
-            content: "🥈 TOP 2";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: silver;
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        .option-card.top-3::before {
-            content: "🥉 TOP 3";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #cd7f32;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        .color-preview {
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3em;
-            font-weight: bold;
-        }
-        .option-content {
-            padding: 20px;
-        }
-        .option-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #333;
-        }
-        .option-details {
-            font-size: 0.95em;
-            color: #666;
-            line-height: 1.6;
-        }
-        .detail-item {
-            margin: 8px 0;
-            display: flex;
-            gap: 10px;
-        }
-        .detail-label {
-            font-weight: 600;
-            color: #333;
-            min-width: 100px;
-        }
-        .detail-value {
-            color: #666;
-        }
-        .palette {
-            display: flex;
-            gap: 4px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #eee;
-        }
-        .palette-item {
-            flex: 1;
-            height: 40px;
-            border-radius: 4px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            font-size: 0.7em;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .recommendations {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 60px;
-        }
-        .recommendations h2 {
-            font-size: 2em;
-            margin-bottom: 30px;
-        }
-        .rec-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .rec-card {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .rec-card h3 {
-            font-size: 1.3em;
-            margin-bottom: 12px;
-        }
-        .rec-card ul {
-            list-style: none;
-            text-align: left;
-        }
-        .rec-card li {
-            margin: 8px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-        .rec-card li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opciones de Diseño - SPM v1.0</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div class="container">
+  <header class="app-header">
+    <a href="/dashboard">Dashboard</a>
+    <nav>
+      <a href="/mi-cuenta">Mi Cuenta</a>
+      <a href="/preferencias">Preferencias</a>
+      <a href="/mis-solicitudes">Mis Solicitudes</a>
+      <a href="/crear-solicitud">Crear Solicitud</a>
+      <a href="/materiales">Materiales</a>
+      <a href="/notificaciones">Notificaciones</a>
+      <a href="/presupuesto">Presupuesto</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+  <main class="main-container">
+<main class="main-container">
+<div class="container">
         <div class="header">
             <h1>🎨 Opciones de Rediseño</h1>
             <p>10 propuestas de cambio de estilo y colores para SPM v1.0</p>
@@ -388,5 +220,9 @@
             grid.appendChild(card);
         });
     </script>
+  </main>
+  <script src="/app.js"></script>
+  </main>
+  <script src="/app.js"></script>
 </body>
 </html>
