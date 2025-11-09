@@ -344,9 +344,9 @@ def create_app() -> Flask:
     def styles():
         return _serve_frontend("styles.css")
 
-    @app.route("/app.js")
-    def app_js():
-        return _serve_frontend("app.js")
+    # @app.route("/app.js")  # Comentado: la ruta genérica /<path:module>.js ya lo sirve
+    # def app_js():
+    #     return _serve_frontend("app.js")
 
     @app.route("/boot.js")
     def boot_js():
