@@ -1,5 +1,5 @@
 # Script para gestionar cambios y backups
-# Uso: .\cambios.ps1 -accion backup|revert|status
+# Uso: .\scripts\dev\cambios.ps1 -accion backup|revert|status
 
 param(
     [string]$accion = "help",
@@ -9,7 +9,7 @@ param(
 
 $proyectoRaiz = "d:\GitHub\SPMv1.0"
 $dirBackups = "$proyectoRaiz\src\frontend\backups"
-$registroCambios = "$proyectoRaiz\CAMBIOS_REGISTRO.md"
+$registroCambios = "$proyectoRaiz\docs\history\CAMBIOS_REGISTRO.md"
 
 # Crear directorio de backups si no existe
 if (-not (Test-Path $dirBackups)) {
@@ -28,32 +28,32 @@ ACCIONES:
   backup [archivo]
     → Crear backup de un archivo específico
     → Si no se especifica, respalda los archivos principales
-    Ejemplo: .\cambios.ps1 -accion backup -archivo "app.js"
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion backup -archivo "app.js"
 
   revert [archivo] [fecha]
     → Revertir un archivo a una versión anterior
     → Si no se especifica fecha, usa el más reciente
-    Ejemplo: .\cambios.ps1 -accion revert -archivo "app.js"
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion revert -archivo "app.js"
 
   status
     → Ver estado: cambios sin respaldar, backups disponibles
-    Ejemplo: .\cambios.ps1 -accion status
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion status
 
   list-backups
     → Listar todos los backups disponibles
-    Ejemplo: .\cambios.ps1 -accion list-backups
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion list-backups
 
   clean-old
     → Eliminar backups más antiguos de 30 días
-    Ejemplo: .\cambios.ps1 -accion clean-old
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion clean-old
 
   git-info
     → Ver información de Git (últimos commits, cambios)
-    Ejemplo: .\cambios.ps1 -accion git-info
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion git-info
 
   help
     → Mostrar esta ayuda
-    Ejemplo: .\cambios.ps1 -accion help
+    Ejemplo: .\scripts\dev\cambios.ps1 -accion help
 
 ═══════════════════════════════════════════════════════════════
 

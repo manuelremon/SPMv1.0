@@ -232,7 +232,7 @@ Contenido principal cambia
 
 Crear backup completo:
 ```powershell
-.\cambios.ps1 -accion backup
+.\scripts\dev\cambios.ps1 -accion backup
 ```
 
 ---

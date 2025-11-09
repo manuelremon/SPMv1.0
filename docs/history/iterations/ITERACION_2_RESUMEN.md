@@ -57,7 +57,7 @@ Todas las páginas tienen backup con sufijo `-2025-11-08`:
 - ✅ Links de navegación actualizados correctamente
 - ✅ Navbar integrada en todas las páginas
 - ✅ Rutas limpias configuradas en Vite
-- ✅ Cambios documentados en CAMBIOS_REGISTRO.md
+- ✅ Cambios documentados en docs/history/CAMBIOS_REGISTRO.md
 
 ---
 
@@ -82,7 +82,7 @@ Todas las páginas tienen backup con sufijo `-2025-11-08`:
 
 ## ✨ CAMBIO REGISTRADO
 
-**[CAMBIO-004]** documentado en `/CAMBIOS_REGISTRO.md`
+**[CAMBIO-004]** documentado en `../CAMBIOS_REGISTRO.md`
 - Descripción detallada
 - Instrucciones de reversión
 - Checklist de validación

@@ -15,8 +15,8 @@
 - Soporte para rutas limpias (sin .html)
 
 ✅ **Testing Framework Establecido**
-- Script: `test-vite-simple.py`
-- Script: `simple-server.py`
+- Script: `tests/manual/test-vite-simple.py`
+- Script: `scripts/dev/simple-server.py`
 - Validación de estructura HTML
 - Verificación de navbar persistencia
 
@@ -84,14 +84,14 @@ Admin:          /admin                  ✅
 ```bash
 # Terminal 1: Servidor HTTP
 cd d:\GitHub\SPMv1.0
-python simple-server.py
+python scripts/dev/simple-server.py
 
 # Terminal 2: Browser Testing
 # Abrir: http://localhost:8080/dashboard
 
 # O ejecutar testing automático
 cd d:\GitHub\SPMv1.0
-python test-vite-simple.py
+python tests/manual/test-vite-simple.py
 ```
 
 ---

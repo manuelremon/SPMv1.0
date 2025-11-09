@@ -48,8 +48,8 @@
 
 ### Scripts de Testing
 ```
-test-api-backend.py      - Test básico de endpoints
-test-api-integration.py  - Test completo con documentación
+tests/manual/test-api-backend.py      - Test básico de endpoints
+tests/manual/test-api-integration.py  - Test completo con documentación
 ```
 
 ---
@@ -138,7 +138,7 @@ http://localhost:5000/dashboard
 ## Resumen Técnico
 
 - ✅ 38/38 páginas convertidas (SPA → Multi-Page)
-- ✅ 36/36 rutas accesibles (simple-server.py)
+- ✅ 36/36 rutas accesibles (scripts/dev/simple-server.py)
 - ✅ 3/4 endpoints API funcionales
 - ✅ Autenticación JWT disponible
 - ⚠️ 1 endpoint con error 500 (/api/materiales)

@@ -66,7 +66,7 @@
 
 ### Fase 1: Conversión Automática (22 páginas)
 ```
-python convert-bulk.py
+python scripts/utilities/conversion/convert-bulk.py
 ├─ 22 exitosas
 ├─ 5 fallos de encoding (latin-1)
 └─ Solución: Reconvertir a UTF-8
@@ -84,7 +84,7 @@ python convert-bulk.py
 
 ### Fase 3: Procesamiento Completo
 ```
-python convert-bulk.py (reintentar)
+python scripts/utilities/conversion/convert-bulk.py (reintentar)
 ├─ 22 exitosas
 ├─ Conflicto: mi-cuenta-page.html → mi-cuenta.html
 └─ Solución: Implementar backup automático
@@ -92,7 +92,7 @@ python convert-bulk.py (reintentar)
 
 ### Fase 4: Correcciones Especializadas
 ```
-python fix-failed.py
+python scripts/utilities/conversion/fix-failed.py
 ├─ DOCTYPE: <!doctype> → <!DOCTYPE>
 ├─ Charset: utf-8 → UTF-8
 ├─ Rutas: .html → rutas limpias
@@ -103,7 +103,7 @@ python fix-failed.py
 
 ### Fase 5: Validación Final
 ```
-python validate-all.py
+python scripts/utilities/conversion/validate-all.py
 ├─ 34/34 páginas validadas ✅
 ├─ 7/7 checks por página
 └─ 100% enlaces limpios
@@ -217,9 +217,9 @@ python validate-all.py
 
 ## 📋 Archivos Generados
 
-1. **convert-bulk.py** - Conversor automático SPA→Multi-Page
-2. **fix-failed.py** - Corrector de páginas fallidas
-3. **validate-all.py** - Validador completo de todas las páginas
+1. **scripts/utilities/conversion/convert-bulk.py** - Conversor automático SPA→Multi-Page
+2. **scripts/utilities/conversion/fix-failed.py** - Corrector de páginas fallidas
+3. **scripts/utilities/conversion/validate-all.py** - Validador completo de todas las páginas
 4. **TESTING_NAVEGACIONAL.md** - Plan de testing
 5. **TESTING_NAVEGACIONAL_COMPLETADO.md** - Resultados de testing
 6. **REFACTORIZACION_COMPLETADA.md** - Resumen ejecutivo

@@ -48,9 +48,9 @@ Páginas a Validar: 5
 ✅ Vite SPA Server:       http://localhost:5173 (port 5173)
 
 ✅ Testing Scripts:
-   - test-responsividad.py
-   - test-api-backend.py
-   - test-api-integration.py
+   - tests/manual/test-responsividad.py
+   - tests/manual/test-api-backend.py
+   - tests/manual/test-api-integration.py
 
 ✅ Documentación:
    - RESPONSIVIDAD_TESTING.md (plantilla de checklist)

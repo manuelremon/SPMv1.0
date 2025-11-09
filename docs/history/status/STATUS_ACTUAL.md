@@ -106,10 +106,10 @@
 ### Scripts de Testing
 
 ```
-test-vite-simple.py        - Validación de rutas HTTP
-test-api-backend.py        - Testing básico de endpoints
-test-api-integration.py    - Testing completo con docs
-BROWSER_TESTING_GUIDE.md   - Guía manual con DevTools
+tests/manual/test-vite-simple.py        - Validación de rutas HTTP
+tests/manual/test-api-backend.py        - Testing básico de endpoints
+tests/manual/test-api-integration.py    - Testing completo con docs
+docs/testing/BROWSER_TESTING_GUIDE.md   - Guía manual con DevTools
 ```
 
 ---
@@ -117,13 +117,13 @@ BROWSER_TESTING_GUIDE.md   - Guía manual con DevTools
 ## 📝 Documentación Generada
 
 ### Fase 1-3 (Completadas)
-- ✅ `CONVERSION_COMPLETADA.md` - Resumen conversión
-- ✅ `PHASE_2_SUMMARY.md` - Testing navegacional
-- ✅ `PHASE_3_SUMMARY.md` - API integration
-- ✅ `BROWSER_TESTING_GUIDE.md` - Guía interactiva
+- ✅ `docs/history/sessions/CONVERSION_COMPLETADA.md` - Resumen conversión
+- ✅ `docs/history/phases/phase2/PHASE_2_SUMMARY.md` - Testing navegacional
+- ✅ `docs/history/phases/phase3/PHASE_3_SUMMARY.md` - API integration
+- ✅ `docs/testing/BROWSER_TESTING_GUIDE.md` - Guía interactiva
 
 ### Fase 4-7 (Pendiente)
-- ⏳ `RESPONSIVIDAD_TESTING.md` - Testing móvil/tablet/desktop
+- ⏳ `docs/testing/RESPONSIVIDAD_TESTING.md` - Testing móvil/tablet/desktop
 - ⏳ `CONSOLE_TESTING.md` - Testing de errores JS
 - ⏳ `PERFORMANCE_REPORT.md` - Métricas de performance
 - ⏳ `FINAL_SUMMARY.md` - Documento final
@@ -142,14 +142,14 @@ python run_backend.py
 ### Terminal 2: HTTP Frontend (Alternativa)
 ```bash
 cd d:\GitHub\SPMv1.0
-python simple-server.py
+python scripts/dev/scripts/dev/simple-server.py
 # ✅ Server HTTP en puerto 8080
 ```
 
 ### Terminal 3: Testing
 ```bash
 cd d:\GitHub\SPMv1.0
-python test-api-integration.py
+python tests/manual/test-api-integration.py
 # ✅ Reporte de API endpoints
 ```
 
@@ -176,7 +176,7 @@ Opción 3 (SPA routing):  http://localhost:5173/dashboard
 | Issue | Severity | Status | Plan |
 |-------|----------|--------|------|
 | /api/materiales error 500 | 🟡 Medium | ⏳ TODO | Revisar DB seed |
-| Vite port binding (Windows) | 🟡 Medium | ✅ SOLUCIONADO | Usar simple-server.py |
+| Vite port binding (Windows) | 🟡 Medium | ✅ SOLUCIONADO | Usar scripts/dev/simple-server.py |
 | Flask imports urllib3 | 🟡 Medium | ✅ SOLUCIONADO | pip upgrade |
 
 ---

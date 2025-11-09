@@ -32,7 +32,7 @@
 ### Servidor Vite (Puerto 5173) - Alternativa
 ```
 ⚠️  Configurado pero con issues de binding
-💡 Alternativa: usar simple-server.py
+💡 Alternativa: usar scripts/dev/simple-server.py
 📝 Archivo de config: vite.config.simple.js
 ```
 

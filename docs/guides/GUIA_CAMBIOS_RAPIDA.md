@@ -4,7 +4,7 @@
 
 ### 1️⃣ Ver estado de cambios
 ```powershell
-.\cambios.ps1 -accion status
+.\scripts\dev\cambios.ps1 -accion status
 ```
 **Resultado:** Te muestra qué cambios hay, qué backups disponibles, etc.
 
@@ -14,10 +14,10 @@
 
 ```powershell
 # Backup de todos los archivos principales
-.\cambios.ps1 -accion backup
+.\scripts\dev\cambios.ps1 -accion backup
 
 # O de un archivo específico
-.\cambios.ps1 -accion backup -archivo "app.js"
+.\scripts\dev\cambios.ps1 -accion backup -archivo "app.js"
 ```
 
 **Resultado:** Crea un archivo `app.js.backup-2025-11-08-143022` en `src/frontend/backups/`
@@ -28,10 +28,10 @@
 
 ```powershell
 # Revertir al backup más reciente
-.\cambios.ps1 -accion revert -archivo "app.js"
+.\scripts\dev\cambios.ps1 -accion revert -archivo "app.js"
 
 # O a una fecha específica
-.\cambios.ps1 -accion revert -archivo "app.js" -fecha "2025-11-08-143022"
+.\scripts\dev\cambios.ps1 -accion revert -archivo "app.js" -fecha "2025-11-08-143022"
 ```
 
 **Resultado:** Restaura el archivo a su estado anterior
@@ -41,7 +41,7 @@
 ### 4️⃣ Ver backups disponibles
 
 ```powershell
-.\cambios.ps1 -accion list-backups
+.\scripts\dev\cambios.ps1 -accion list-backups
 ```
 
 **Resultado:**
@@ -55,7 +55,7 @@
 ### 5️⃣ Ver información de Git
 
 ```powershell
-.\cambios.ps1 -accion git-info
+.\scripts\dev\cambios.ps1 -accion git-info
 ```
 
 **Resultado:**
@@ -69,7 +69,7 @@
 
 ### Paso 1: Crear backup
 ```powershell
-.\cambios.ps1 -accion backup
+.\scripts\dev\cambios.ps1 -accion backup
 ```
 
 ### Paso 2: Hacer el cambio
@@ -80,7 +80,7 @@
 - Revisa que no hay errores (F12)
 
 ### Paso 4: Documentar cambio
-- Abre `CAMBIOS_REGISTRO.md`
+- Abre `docs/history/CAMBIOS_REGISTRO.md`
 - Agrega la entrada [CAMBIO-NNN] ✅ COMPLETADO
 
 ### Paso 5: Commit a Git
@@ -96,7 +96,7 @@ git push
 
 ### Opción 1: Revertir rápidamente (local)
 ```powershell
-.\cambios.ps1 -accion revert -archivo "app.js"
+.\scripts\dev\cambios.ps1 -accion revert -archivo "app.js"
 ```
 
 ### Opción 2: Volver atrás en Git (más seguro)
@@ -124,7 +124,7 @@ git show HEAD:src/frontend/app.js
 
 ## 📝 DOCUMENTACIÓN DE CAMBIOS
 
-Cada cambio va en `CAMBIOS_REGISTRO.md` así:
+Cada cambio va en `docs/history/CAMBIOS_REGISTRO.md` así:
 
 ```markdown
 ## [CAMBIO-001] - 8 de noviembre - ✅ COMPLETADO
@@ -166,7 +166,7 @@ Funcionalidad:
 
 Técnico:
 - [ ] Backup creado
-- [ ] Cambio documentado en CAMBIOS_REGISTRO.md
+- [ ] Cambio documentado en docs/history/CAMBIOS_REGISTRO.md
 - [ ] Código validado
 - [ ] Listo para commit a Git
 ```
@@ -190,15 +190,15 @@ npm run build
 ### Tip 2: Revertir múltiples archivos
 ```powershell
 # Si rompiste varios archivos, revertir todos
-.\cambios.ps1 -accion revert -archivo "app.js"
-.\cambios.ps1 -accion revert -archivo "index.html"
-.\cambios.ps1 -accion revert -archivo "styles.css"
+.\scripts\dev\cambios.ps1 -accion revert -archivo "app.js"
+.\scripts\dev\cambios.ps1 -accion revert -archivo "index.html"
+.\scripts\dev\cambios.ps1 -accion revert -archivo "styles.css"
 ```
 
 ### Tip 3: Limpiar backups viejos
 ```powershell
 # Elimina backups más antiguos de 30 días
-.\cambios.ps1 -accion clean-old
+.\scripts\dev\cambios.ps1 -accion clean-old
 ```
 
 ### Tip 4: Usar Git como "time machine"
@@ -241,9 +241,9 @@ R: Sí, usando Task Scheduler en Windows.
 | Ver cambios | `git status` |
 | Ver historial | `git log` |
 | Deshacer último cambio | `git revert HEAD` |
-| Revertir archivo | `.\cambios.ps1 -accion revert -archivo "app.js"` |
-| Crear backup | `.\cambios.ps1 -accion backup` |
-| Ver backups | `.\cambios.ps1 -accion list-backups` |
+| Revertir archivo | `.\scripts\dev\cambios.ps1 -accion revert -archivo "app.js"` |
+| Crear backup | `.\scripts\dev\cambios.ps1 -accion backup` |
+| Ver backups | `.\scripts\dev\cambios.ps1 -accion list-backups` |
 
 ---
 
