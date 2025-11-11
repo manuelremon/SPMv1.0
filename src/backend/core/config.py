@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import os
@@ -38,20 +39,24 @@ class Settings:
     ACCESS_TOKEN_TTL = int(os.getenv("SPM_ACCESS_TTL", "3600"))
     TOKEN_TTL = int(os.getenv("SPM_TOKEN_TTL", str(ACCESS_TOKEN_TTL)))
 
+    COOKIE_NAME = os.getenv("SPM_COOKIE_NAME", "spm_session")
     COOKIE_SAMESITE = os.getenv("SPM_COOKIE_SAMESITE", "Lax") or "Lax"
-    if os.getenv("SPM_COOKIE_SECURE") is not None:
-        COOKIE_SECURE = _env_flag("SPM_COOKIE_SECURE", "0")
-    else:
-        COOKIE_SECURE = not DEBUG
+    COOKIE_SECURE = _env_flag("SPM_COOKIE_SECURE", "0" if DEBUG else "1")
+    COOKIE_DOMAIN = os.getenv("SPM_COOKIE_DOMAIN") or None
     COOKIE_ARGS = {
         "secure": COOKIE_SECURE,
         "httponly": True,
         "samesite": COOKIE_SAMESITE,
+        "domain": COOKIE_DOMAIN,
     }
 
     REFRESH_GRACE_PERIOD = int(os.getenv("SPM_REFRESH_GRACE_PERIOD", "300"))
 
-    CORS_ORIGINS = _split_csv("SPM_CORS_ORIGINS", "http://127.0.0.1:5173")
+    FRONTEND_ORIGIN = os.getenv("SPM_FRONTEND_ORIGIN", "http://localhost:5173")
+    ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif", "doc", "docx", "xls", "xlsx", "csv"}
+    MAX_CONTENT_LENGTH = int(os.getenv("SPM_MAX_CONTENT_LENGTH", str(16 * 1024 * 1024)))
+
+    CORS_ORIGINS = _split_csv("SPM_CORS_ORIGINS", FRONTEND_ORIGIN)
     OLLAMA_ENDPOINT = os.getenv("SPM_OLLAMA_URL", "http://127.0.0.1:11434")
     OLLAMA_MODEL = os.getenv("SPM_OLLAMA_MODEL", "mistral")
 
@@ -60,10 +65,6 @@ class Settings:
     AI_EMBED_MODEL: str = os.getenv("AI_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
     AI_PRICE_SMOOTHING: float = float(os.getenv("AI_PRICE_SMOOTHING", "0.5"))
     AI_MAX_SUGGESTIONS: int = int(os.getenv("AI_MAX_SUGGESTIONS", "5"))
-
-    # Configuracion de archivos adjuntos
-    MAX_CONTENT_LENGTH = int(os.getenv("SPM_MAX_CONTENT_LENGTH", str(16 * 1024 * 1024)))
-    ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif", "doc", "docx", "xls", "xlsx", "csv"}
 
     STATUS_TIMEOUT_MS = int(os.getenv("STATUS_TIMEOUT_MS", "2000"))
     STATUS_CACHE_SECS = int(os.getenv("STATUS_CACHE_SECS", "30"))
@@ -76,18 +77,3 @@ class Settings:
         os.makedirs(os.path.dirname(cls.DB_PATH), exist_ok=True)
         os.makedirs(os.path.dirname(cls.LOG_PATH), exist_ok=True)
         os.makedirs(cls.UPLOADS_DIR, exist_ok=True)
-
-
-class Config:
-    DEBUG = True
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
-    FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
-    COOKIE_NAME = os.getenv("COOKIE_NAME", "session")
-    COOKIE_SAMESITE = os.getenv("COOKIE_SAMESITE", "Lax")  # Lax|None|Strict
-    COOKIE_SECURE = os.getenv("COOKIE_SECURE", "0") == "1"
-    UPLOAD_DIR = os.path.join(os.path.dirname(__file__), 'uploads')
-    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
-    ALLOWED_EXTS = {'.png','.jpg','.jpeg','.pdf','.csv','.txt'}
-    ALLOWED_MIMES = {
-      'image/png','image/jpeg','application/pdf','text/csv','text/plain'
-    }

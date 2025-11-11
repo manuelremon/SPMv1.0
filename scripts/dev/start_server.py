@@ -2,18 +2,20 @@
 """Simple Flask server starter - Windows compatible"""
 import os
 import sys
+from pathlib import Path
 
-# Add project root to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Ensure project root (two levels up) is on sys.path
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.backend.app import app
 
 if __name__ == "__main__":
-    print("\n" + "="*60)
-    print("🚀 SPM BACKEND SERVER")
-    print("="*60)
+    print("\n" + "=" * 60)
+    print("SPM BACKEND SERVER")
+    print("=" * 60)
     print("URL: http://localhost:5000")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
     
     # Run with threaded mode to handle multiple requests
     app.run(

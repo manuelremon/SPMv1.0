@@ -78,3 +78,5 @@ scripts/db/*.log
 cookies.txt
 temp_*.ps1
 build/
+
+src/backend/spm.db

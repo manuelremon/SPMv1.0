@@ -10,7 +10,7 @@ from flask import Flask, abort, current_app, jsonify, request, send_from_directo
 from flask_cors import CORS
 from werkzeug.utils import safe_join
 
-from .core.config import Settings, Config
+from .core.config import Settings
 from .routes.auth_routes import bp as auth_bp
 from .routes.catalogos import bp as catalogos_bp, almacenes_bp
 from .routes.materiales import bp as materiales_bp
@@ -113,7 +113,7 @@ def _serve_frontend(filename: str):
 
 def _print_routes_once(app: Flask) -> None:
     if getattr(app, "_routes_printed", False):
-            return  # This line is retained for clarity
+        return
     with app.app_context():
         app.logger.info("FRONTEND_DIR=%s", HTML_DIR)
         for rule in sorted(app.url_map.iter_rules(), key=lambda x: x.rule):
@@ -126,28 +126,27 @@ def _print_routes_once(app: Flask) -> None:
                 else:
                     methods = ""
                 app.logger.info("ROUTE %-32s %s", rule.rule, methods)
+    setattr(app, "_routes_printed", True)
 
 
 def create_app() -> Flask:
 
-    _bootstrap_database()
-
     app = Flask(__name__, static_folder=None, static_url_path="")
-    app.config.from_object(Config)
-    app.config["SECRET_KEY"] = Config.SECRET_KEY
-    app.config["FRONTEND_ORIGIN"] = Config.FRONTEND_ORIGIN
-    app.config["COOKIE_NAME"] = Config.COOKIE_NAME
-    app.config["COOKIE_SAMESITE"] = Config.COOKIE_SAMESITE
-    app.config["COOKIE_SECURE"] = Config.COOKIE_SECURE
-    app.config["DEBUG"] = Config.DEBUG
+    app.config["DEBUG"] = Settings.DEBUG
+    app.config["SECRET_KEY"] = Settings.SECRET_KEY
+    app.config["FRONTEND_ORIGIN"] = Settings.FRONTEND_ORIGIN
+    app.config.setdefault("COOKIE_NAME", Settings.COOKIE_NAME)
+    app.config["COOKIE_SAMESITE"] = Settings.COOKIE_SAMESITE
+    app.config["COOKIE_SECURE"] = Settings.COOKIE_SECURE
     app.config["JSON_AS_ASCII"] = False
     app.config["JSONIFY_MIMETYPE"] = "application/json; charset=utf-8"
-    app.config["MAX_CONTENT_LENGTH"] = getattr(Config, "MAX_CONTENT_LENGTH", 16*1024*1024)
+    app.config["MAX_CONTENT_LENGTH"] = Settings.MAX_CONTENT_LENGTH
     app.config.setdefault("ACCESS_TOKEN_TTL", Settings.ACCESS_TOKEN_TTL)
     app.config.setdefault("TOKEN_TTL", Settings.TOKEN_TTL)
     app.config.setdefault("COOKIE_ARGS", dict(Settings.COOKIE_ARGS))
     app.config.setdefault("COOKIE_SECURE", Settings.COOKIE_ARGS["secure"])
     app.config.setdefault("COOKIE_SAMESITE", Settings.COOKIE_ARGS["samesite"])
+    app.config.setdefault("COOKIE_DOMAIN", Settings.COOKIE_DOMAIN)
     app.config.setdefault("SESSION_COOKIE_SECURE", Settings.COOKIE_ARGS["secure"])
     app.config.setdefault("SESSION_COOKIE_SAMESITE", Settings.COOKIE_ARGS["samesite"])
     app.config.setdefault("UPLOAD_DIR", Settings.UPLOADS_DIR)
@@ -421,7 +420,6 @@ def _print_banner(host: str, port: int):
     )
 
 if __name__ == "__main__":
-    from .core.config import Config
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "5000"))
     _print_banner(host, port)
