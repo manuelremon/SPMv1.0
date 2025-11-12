@@ -19,6 +19,110 @@ const $ = (sel) => document.querySelector(sel);
 const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
 
+const THEME_STORAGE_KEY = "spm-theme";
+const VALID_THEMES = new Set(["light", "dark"]);
+const prefersLightQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+
+function readStoredTheme() {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY);
+  } catch (_error) {
+    return null;
+  }
+}
+
+function storeThemePreference(theme) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (_error) {
+    /* Ignorado: almacenamiento no disponible */
+  }
+}
+
+function resolvePreferredTheme() {
+  const stored = readStoredTheme();
+  if (stored && VALID_THEMES.has(stored)) {
+    return stored;
+  }
+  if (prefersLightQuery && typeof prefersLightQuery.matches === "boolean") {
+    return prefersLightQuery.matches ? "light" : "dark";
+  }
+  return "dark";
+}
+
+function updateThemeToggleUi(theme) {
+  const toggle = document.getElementById("themeToggle");
+  if (!toggle) {
+    return;
+  }
+  const isLight = theme === "light";
+  toggle.setAttribute("aria-pressed", String(isLight));
+  toggle.setAttribute("aria-label", isLight ? "Cambiar a tema oscuro" : "Cambiar a tema claro");
+  toggle.dataset.theme = theme;
+
+  const icon = toggle.querySelector(".theme-toggle__icon");
+  if (icon) {
+    icon.textContent = isLight ? "☀️" : "🌙";
+  }
+
+  const text = toggle.querySelector(".theme-toggle__text");
+  if (text) {
+    text.textContent = isLight ? "Tema claro" : "Tema oscuro";
+  }
+}
+
+function applyTheme(theme, { persist = true } = {}) {
+  const selected = VALID_THEMES.has(theme) ? theme : "dark";
+  document.body.dataset.theme = selected;
+  document.documentElement.style.colorScheme = selected;
+  updateThemeToggleUi(selected);
+  if (persist) {
+    storeThemePreference(selected);
+  }
+}
+
+function initThemeToggle() {
+  const toggle = document.getElementById("themeToggle");
+  if (!toggle) {
+    return;
+  }
+
+  let currentTheme = VALID_THEMES.has(document.body.dataset.theme)
+    ? document.body.dataset.theme
+    : resolvePreferredTheme();
+
+  if (!VALID_THEMES.has(document.body.dataset.theme)) {
+    applyTheme(currentTheme, { persist: false });
+  } else {
+    updateThemeToggleUi(currentTheme);
+  }
+
+  toggle.addEventListener("click", () => {
+    currentTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(currentTheme);
+  });
+
+  if (prefersLightQuery) {
+    const systemThemeListener = (event) => {
+      const stored = readStoredTheme();
+      if (stored && VALID_THEMES.has(stored)) {
+        return;
+      }
+      currentTheme = event.matches ? "light" : "dark";
+      applyTheme(currentTheme, { persist: false });
+    };
+
+    if (typeof prefersLightQuery.addEventListener === "function") {
+      prefersLightQuery.addEventListener("change", systemThemeListener);
+    } else if (typeof prefersLightQuery.addListener === "function") {
+      prefersLightQuery.addListener(systemThemeListener);
+    }
+  }
+}
+
+applyTheme(resolvePreferredTheme(), { persist: false });
+
+
 
 function ensureToastsContainer() {
 
@@ -3909,6 +4013,7 @@ function clearSearchFilters() {
 
 // Auto-initialize pages based on detected elements
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
   // Cargar cache de materiales para autocomplete
   loadMaterialsCache();
   
