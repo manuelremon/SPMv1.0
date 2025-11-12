@@ -46,39 +46,42 @@ class MaterialConsumptionAnalyzer:
         cutoff_date = (datetime.now() - timedelta(days=days)).isoformat()
 
         query = """
-            SELECT 
+            SELECT
                 s.centro,
                 s.almacen_virtual,
-                SUM(json_extract(s.data_json, '$.items[*].cantidad')) as total_qty,
-                COUNT(DISTINCT s.id) as num_solicitudes,
-                AVG(json_extract(s.data_json, '$.items[*].cantidad')) as avg_qty,
-                MAX(s.created_at) as last_request
+                SUM(CAST(json_extract(item.value, '$.cantidad') AS REAL)) AS total_qty,
+                COUNT(DISTINCT s.id) AS num_solicitudes,
+                AVG(CAST(json_extract(item.value, '$.cantidad') AS REAL)) AS avg_qty,
+                MAX(s.created_at) AS last_request
             FROM solicitudes s
+            JOIN json_each(s.data_json, '$.items') AS item
             WHERE s.status NOT IN ('draft', 'cancelled')
                 AND s.created_at >= ?
-                AND json_extract(s.data_json, '$.items[?].codigo') = ?
+                AND json_extract(item.value, '$.codigo') = ?
         """
         params = [cutoff_date, material_codigo]
 
         if centro:
             query += " AND s.centro = ?"
             params.append(centro)
-        else:
-            query += " GROUP BY s.centro, s.almacen_virtual"
 
         if almacen:
             query += " AND s.almacen_virtual = ?"
             params.append(almacen)
 
+        query += " GROUP BY s.centro, s.almacen_virtual"
+
         try:
+            rows = self.con.execute(query, params).fetchall()
+
             if centro and almacen:
                 # Específico: centro + almacén
-                row = self.con.execute(query, params).fetchone()
+                row = rows[0] if rows else None
                 if row:
                     return {
-                        "consumo_total": row["total_qty"] or 0,
+                        "consumo_total": (row["total_qty"] or 0),
                         "solicitudes": row["num_solicitudes"] or 0,
-                        "consumo_promedio": row["avg_qty"] or 0,
+                        "consumo_promedio": (row["avg_qty"] or 0),
                         "ultimo_consumo": row["last_request"],
                         "periodo_dias": days,
                         "nivel": self._classify_consumption(row["total_qty"] or 0, days),
@@ -93,7 +96,6 @@ class MaterialConsumptionAnalyzer:
                 }
             else:
                 # Agregado por centro/almacén
-                rows = self.con.execute(query, params).fetchall()
                 results = {}
                 for row in rows:
                     key = f"{row['centro']}/{row['almacen_virtual']}"
@@ -102,6 +104,7 @@ class MaterialConsumptionAnalyzer:
                         "solicitudes": row["num_solicitudes"] or 0,
                         "consumo_promedio": row["avg_qty"] or 0,
                         "ultimo_consumo": row["last_request"],
+                        "periodo_dias": days,
                         "nivel": self._classify_consumption(row["total_qty"] or 0, days),
                     }
                 return results
@@ -231,17 +234,18 @@ class SolicitudAnalyzer:
         """Obtiene solicitudes en curso para el mismo material."""
         try:
             query = """
-                SELECT 
+                SELECT
                     s.id,
                     s.id_usuario,
                     s.centro,
                     s.criticidad,
                     s.status,
                     s.created_at,
-                    json_extract(s.data_json, '$.items[?].cantidad') as cantidad
+                    json_extract(item.value, '$.cantidad') as cantidad
                 FROM solicitudes s
+                JOIN json_each(s.data_json, '$.items') AS item
                 WHERE s.status NOT IN ('draft', 'cancelled', 'completed')
-                    AND json_extract(s.data_json, '$.items[?].codigo') = ?
+                    AND json_extract(item.value, '$.codigo') = ?
                 ORDER BY s.created_at DESC
                 LIMIT 5
             """
