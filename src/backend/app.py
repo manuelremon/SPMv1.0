@@ -205,6 +205,11 @@ def create_app() -> Flask:
             if "charset" not in content_type.lower():
                 resp.headers["Content-Type"] = "text/html; charset=utf-8"
             resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        # No cache para JS y CSS en desarrollo
+        if any(x in content_type for x in ["javascript", "css"]):
+            resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            resp.headers["Pragma"] = "no-cache"
+            resp.headers["Expires"] = "0"
         return resp
 
     app.register_blueprint(catalogos_bp)
