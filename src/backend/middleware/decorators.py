@@ -62,3 +62,40 @@ def require_roles(*allowed):
             return fn(*args, **kwargs)
         return wrapper
     return deco
+
+
+def legacy_endpoint(fn: F) -> F:
+    """
+    Decorator para marcar endpoints legacy.
+    
+    Agrega header X-Legacy-Endpoint: true y log warning.
+    Estas rutas están marcadas para deprecación y deberían migrarse a v2.0.
+    """
+    @wraps(fn)
+    def wrapper(*args: Any, **kwargs: Any):
+        from flask import current_app, make_response
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "Legacy endpoint accessed: %s %s - Consider migrating to v2.0",
+            request.method,
+            request.path
+        )
+        
+        response = fn(*args, **kwargs)
+        
+        # Si la respuesta es una tupla (body, status), crear respuesta
+        if isinstance(response, tuple):
+            body, status = response
+            resp = make_response(body, status)
+        else:
+            resp = make_response(response)
+        
+        # Agregar header legacy
+        resp.headers['X-Legacy-Endpoint'] = 'true'
+        resp.headers['X-Legacy-Deprecation'] = 'Migrate to v2.0 API'
+        
+        return resp
+    
+    return wrapper  # type: ignore[return-value]

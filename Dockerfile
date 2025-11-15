@@ -7,8 +7,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PYTHONPATH=/app \
     SPM_ENV=development \
-    SPM_DEBUG=1 \
-    SPM_SECRET_KEY=dev-key-12345
+    SPM_DEBUG=1
+# SPM_SECRET_KEY debe ser proporcionada como variable de entorno en producción
+# Ejemplo: docker run -e SPM_SECRET_KEY=your-secret-key ...
 
 WORKDIR /app
 

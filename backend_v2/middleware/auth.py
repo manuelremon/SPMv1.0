@@ -143,6 +143,62 @@ def require_permission(permission: str) -> Callable:
     return require_role(*allowed_roles)
 
 
+def auth_required(f: Callable) -> Callable:
+    """
+    Decorator que requiere autenticación (cualquier usuario).
+    
+    Lee token JWT desde cookie, valida, e inyecta user_payload.
+    Similar a require_role() pero más simple y compatible con routes/auth.py
+    
+    Uso:
+        @app.get('/api/protected')
+        @auth_required
+        def protected_route(user_payload):
+            return {"user_id": user_payload["sub"]}
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        from core.config import settings
+        
+        # Leer token desde cookie
+        token = request.cookies.get(settings.JWT_COOKIE_NAME)
+        
+        if not token:
+            return jsonify({
+                "ok": False,
+                "error": {
+                    "code": "unauthorized",
+                    "message": "Authentication required"
+                }
+            }), 401
+        
+        # Verificar token
+        payload = jwt_manager.verify_token(token)
+        
+        if not payload:
+            return jsonify({
+                "ok": False,
+                "error": {
+                    "code": "invalid_token",
+                    "message": "Invalid or expired token"
+                }
+            }), 401
+        
+        # Guardar user en flask.g
+        g.user = {
+            "id": payload.get("uid"),
+            "username": payload.get("id_spm"),
+            "role": payload.get("rol", payload.get("role")),
+            "roles": payload.get("roles", []),
+            "email": payload.get("email"),
+        }
+        
+        # Inyectar payload como primer argumento después de self/cls (si existen)
+        return f(payload, *args, **kwargs)
+    
+    return decorated_function
+
+
 def admin_required(f: Callable) -> Callable:
     """
     Decorator que requiere rol de Administrador.

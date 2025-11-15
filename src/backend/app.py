@@ -18,12 +18,13 @@ from .routes.preferences import bp as preferences_bp
 from .routes.solicitudes import bp as solicitudes_bp
 from .routes.solicitudes_archivos import bp as bp_up
 from .routes.planner_routes import bp as planner_bp
-# from .routes.form_intelligence_routes import bp as form_intelligence_bp  # DESACTIVADO: AI Assistant removido
-# from .routes.form_intelligence_routes_v2 import bp as form_intelligence_v2_bp  # DESACTIVADO: AI Assistant removido
+# from .routes.form_intelligence_routes import bp as form_intelligence_bp  # ARCHIVADO: Movido a docs/_archive/form_intelligence/
+# from .routes.form_intelligence_routes_v2 import bp as form_intelligence_v2_bp  # ARCHIVADO: Movido a docs/_archive/form_intelligence/
 # from .export_solicitudes import bp as export_bp  # TODO: Crear este módulo o agregar funciones al blueprint
 # from .files import files_bp  # TODO: Descomentar cuando el módulo exista
 from .services.auth.jwt_utils import verify_token
 from .core.db import get_db
+from .middleware.decorators import legacy_endpoint
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
@@ -171,8 +172,21 @@ def create_app() -> Flask:
 
     @app.before_request
     def _dev_login_bypass():
+        """
+        Development bypass: Solo funciona en desarrollo (SPM_ENV=development) y localhost.
+        NUNCA debe activarse en producción.
+        """
         try:
-            if os.environ.get("AUTH_BYPASS") == "1" and request.host.startswith(("127.0.0.1", "localhost")):
+            auth_bypass = os.environ.get("AUTH_BYPASS", "0")
+            env = os.environ.get("SPM_ENV", "development").lower()
+            is_localhost = request.host.startswith(("127.0.0.1", "localhost"))
+            
+            # Validación estricta: solo en desarrollo y localhost
+            if auth_bypass == "1" and env == "development" and is_localhost:
+                # Log warning para desarrollo
+                current_app.logger.warning(
+                    "AUTH_BYPASS is active - This should NEVER be enabled in production!"
+                )
                 # populate g with the shape expected by auth helpers
                 g.user = {
                     "id": _DevAdmin.id,
@@ -192,6 +206,13 @@ def create_app() -> Flask:
                 except Exception:
                     # session may not be available in some contexts, ignore silently
                     pass
+            elif auth_bypass == "1" and env != "development":
+                # Error crítico si se intenta usar en producción
+                current_app.logger.error(
+                    "AUTH_BYPASS=1 is set but SPM_ENV=%s is not 'development' - "
+                    "This is a SECURITY RISK and will be ignored!",
+                    env
+                )
         except Exception:
             # defensive: don't break the app if anything goes wrong here
             current_app.logger.debug("dev login bypass check failed", exc_info=True)
@@ -220,8 +241,8 @@ def create_app() -> Flask:
     app.register_blueprint(solicitudes_bp)
     app.register_blueprint(bp_up)
     app.register_blueprint(planner_bp)
-    # app.register_blueprint(form_intelligence_bp)  # DESACTIVADO: AI Assistant removido
-    # app.register_blueprint(form_intelligence_v2_bp)  # DESACTIVADO: AI Assistant removido
+    # app.register_blueprint(form_intelligence_bp)  # ARCHIVADO: Movido a docs/_archive/form_intelligence/
+    # app.register_blueprint(form_intelligence_v2_bp)  # ARCHIVADO: Movido a docs/_archive/form_intelligence/
     # app.register_blueprint(export_bp)  # TODO: Descomentar cuando se cree el módulo
     # app.register_blueprint(files_bp)  # TODO: Descomentar cuando el módulo exista
 
@@ -394,7 +415,12 @@ def create_app() -> Flask:
         return "Not Found", 404
 
     @app.put('/api/users/me')
+    @legacy_endpoint
     def update_me():
+        """
+        Legacy endpoint: /api/users/me (PUT)
+        DEPRECATED: Use /api/auth/me/fields (PATCH) instead
+        """
         token = request.cookies.get('spm_token')
         payload = verify_token(token) if token else None
         if not payload:

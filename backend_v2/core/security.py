@@ -1,6 +1,7 @@
 """
 Backend v2.0 - Security helpers
-CSRF protection y rate limiting
+CSRF protection (deprecated - use middleware instead)
+Rate limiting (moved to core.rate_limiter)
 """
 from __future__ import annotations
 
@@ -8,11 +9,12 @@ import hashlib
 import hmac
 import secrets
 from functools import wraps
-from typing import Callable
+from typing import Callable, Optional
 
-from flask import request, jsonify
+from flask import request, jsonify, g
 
 from core.config import settings
+from core.rate_limiter import require_rate_limit as _require_rate_limit
 
 
 class CSRFProtection:
@@ -73,16 +75,15 @@ class CSRFProtection:
 
 class RateLimiter:
     """
-    Placeholder para rate limiting.
+    DEPRECATED: Use require_rate_limit decorator desde core.rate_limiter en su lugar.
     
-    TODO FASE 4: Implementar con Redis o en-memory cache
-    Por ahora solo valida si está habilitado.
+    Esta clase se mantiene por compatibilidad pero no se usa.
+    Fue reemplazada por un módulo dedicado con soporte para Redis.
     """
     
     def __init__(self):
         self.enabled = settings.RATE_LIMIT_ENABLED
         self.limit = settings.RATE_LIMIT_PER_MINUTE
-        # TODO: Agregar storage (Redis client o LRU cache)
     
     def check_limit(self, identifier: str) -> bool:
         """
@@ -159,38 +160,35 @@ def require_csrf(f: Callable) -> Callable:
 
 def require_rate_limit(f: Callable) -> Callable:
     """
-    Decorator para endpoints con rate limiting.
+    DEPRECATED: Usar require_rate_limit desde core.rate_limiter en su lugar.
     
-    Usa IP del cliente como identificador.
-    
-    Uso:
-        @app.post('/api/auth/login')
-        @require_rate_limit
-        def login():
-            ...
+    Este decorator se mantiene solo para compatibilidad hacia atrás.
     """
-    limiter = RateLimiter()
-    
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        # Obtener IP del cliente
-        identifier = request.remote_addr or "unknown"
-        
-        if not limiter.check_limit(identifier):
-            return jsonify({
-                "ok": False,
-                "error": {
-                    "code": "rate_limit_exceeded",
-                    "message": f"Rate limit exceeded. Max {settings.RATE_LIMIT_PER_MINUTE} requests per minute."
-                }
-            }), 429
-        
-        limiter.record_request(identifier)
-        return f(*args, **kwargs)
-    
-    return decorated_function
+    return _require_rate_limit(f)
 
 
 # Singletons globales
 csrf = CSRFProtection()
 rate_limiter = RateLimiter()
+
+
+def get_current_user_id() -> Optional[str]:
+    """
+    Obtiene el username del usuario autenticado desde flask.g
+    
+    Requiere que el endpoint tenga @require_role decorator aplicado,
+    que es quien popula g.user.
+    
+    Returns:
+        Username del usuario autenticado o None si no está autenticado
+    
+    Uso:
+        @require_role("Solicitante")
+        def create_solicitud():
+            user_id = get_current_user_id()
+            # user_id = "jperez"
+    """
+    user = getattr(g, "user", None)
+    if not user:
+        return None
+    return user.get("username")

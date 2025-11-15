@@ -12,7 +12,9 @@ from flask_cors import CORS
 
 from core.config import settings
 from core.db import init_db
-from routes import health, auth
+from core.csrf import init_csrf_protection
+from core.security_headers import init_security_headers
+from routes import health, auth, solicitudes, planner
 
 
 def create_app(config_override: dict | None = None) -> Flask:
@@ -40,6 +42,9 @@ def create_app(config_override: dict | None = None) -> Flask:
         SECRET_KEY=settings.SECRET_KEY,
         DEBUG=settings.DEBUG,
         ENV=settings.ENV,
+        SESSION_COOKIE_SECURE=settings.JWT_COOKIE_SECURE,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE=settings.JWT_COOKIE_SAMESITE,
     )
     
     if config_override:
@@ -47,6 +52,12 @@ def create_app(config_override: dict | None = None) -> Flask:
     
     # Logging
     _configure_logging(app)
+    
+    # Protección CSRF
+    init_csrf_protection(app)
+    
+    # Security headers
+    init_security_headers(app)
     
     # CORS
     CORS(
@@ -64,7 +75,9 @@ def create_app(config_override: dict | None = None) -> Flask:
     
     # Registrar blueprints
     app.register_blueprint(health.bp)
-    app.register_blueprint(auth.bp, url_prefix="/auth")
+    app.register_blueprint(auth.bp, url_prefix="/api/auth")
+    app.register_blueprint(solicitudes.bp)  # Ya tiene url_prefix="/api/solicitudes" en blueprint
+    app.register_blueprint(planner.planner_bp, url_prefix="/api/planner")  # Agregado prefijo /api
     
     # Error handlers
     _register_error_handlers(app)

@@ -32,10 +32,10 @@
   }
 
   async function tryLogin(body) {
-    // intenta /api/auth/login y /auth/login
+    // Usar rutas relativas para que funcione con proxy de Vite
     const paths = [
-      `${BASE}/api/auth/login`,
-      `${BASE}/auth/login`,
+      '/api/auth/login',
+      '/auth/login',
     ];
     let lastErr;
     for (const p of paths) {
@@ -51,7 +51,7 @@
   const api = {
     login: tryLogin,
     logout: async function() {
-      const url = `${BASE}/api/auth/logout`;
+      const url = '/api/auth/logout';  // Ruta relativa para proxy
       await xfetch(url, { headers: _csrfHeaders() });
     }
   };

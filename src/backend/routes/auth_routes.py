@@ -123,7 +123,27 @@ def me_v2():
 @bp.route("/usuarios/me", methods=["GET"])
 @auth_required
 def me_legacy():
-    return me_v2()
+    """
+    Legacy endpoint: /api/auth/usuarios/me (GET)
+    DEPRECATED: Use /api/auth/me (GET) instead
+    """
+    import logging
+    from flask import make_response
+    logger = logging.getLogger(__name__)
+    logger.warning(
+        "Legacy endpoint accessed: GET /api/auth/usuarios/me - Consider migrating to /api/auth/me"
+    )
+    response = me_v2()
+    # Agregar headers legacy manualmente (legacy_endpoint no se puede usar aquí
+    # porque auth_required debe ejecutarse primero)
+    if isinstance(response, tuple):
+        body, status = response
+        resp = make_response(body, status)
+    else:
+        resp = make_response(response)
+    resp.headers['X-Legacy-Endpoint'] = 'true'
+    resp.headers['X-Legacy-Deprecation'] = 'Migrate to /api/auth/me'
+    return resp
 
 
 def _update_profile_fields(data: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]], Optional[Tuple[str, str, int]]]:

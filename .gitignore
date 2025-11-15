@@ -40,6 +40,7 @@ htmlcov/
 # Logs
 *.log
 logs/
+src/backend/logs/
 
 # Database
 *.db

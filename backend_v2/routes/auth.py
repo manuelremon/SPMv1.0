@@ -12,7 +12,7 @@ from pydantic import ValidationError
 
 from core.config import settings
 from core.jwt_manager import jwt_manager
-from core.security import require_rate_limit
+from core.rate_limiter import require_rate_limit
 from schemas.user_schema import (
     UserLogin,
     UserRegister,
@@ -155,12 +155,20 @@ def login():
         }
     )
     
+    # Crear refresh token
+    refresh_token = jwt_manager.create_refresh_token(
+        payload={
+            "sub": str(user.id),
+        }
+    )
+    
     # Crear respuesta con schema usando to_dict() para compatibilidad con Pydantic
     user_response = UserResponse.model_validate(user.to_dict())
     login_response = LoginResponse(ok=True, user=user_response)
     
     response = make_response(jsonify(login_response.model_dump()))
-    jwt_manager.set_token_cookie(response, token)
+    jwt_manager.set_token_cookie(response, token, token_type="access")
+    jwt_manager.set_token_cookie(response, refresh_token, token_type="refresh")
     
     return response, 200
 
@@ -309,3 +317,92 @@ def logout(user_payload: dict):
     jwt_manager.clear_token_cookie(response)
     
     return response, 200
+
+
+@bp.post("/refresh")
+def refresh_token():
+    """
+    Refresca el access token usando un refresh token válido.
+    
+    Endpoint para mantener sesiones activas sin re-autenticación.
+    El refresh token se obtiene automáticamente en login y se almacena en cookie.
+    
+    Response (éxito):
+        {
+            "ok": true,
+            "user": {...}
+        }
+        + Cookie: spm_token=<nuevo JWT>
+    
+    Response (error):
+        {
+            "ok": false,
+            "error": {
+                "code": "invalid_token",
+                "message": "Refresh token invalid or expired"
+            }
+        }
+    """
+    # Leer refresh token desde cookie
+    refresh_token_value = request.cookies.get(f"{settings.JWT_COOKIE_NAME}_refresh")
+    
+    if not refresh_token_value:
+        error = ErrorResponse(
+            ok=False,
+            error={
+                "code": "no_refresh_token",
+                "message": "Refresh token missing"
+            }
+        )
+        return jsonify(error.model_dump()), 401
+    
+    # Verificar refresh token (asegurar que es de tipo "refresh")
+    payload = jwt_manager.verify_token(
+        refresh_token_value,
+        token_type=jwt_manager.TOKEN_TYPE_REFRESH
+    )
+    
+    if not payload:
+        error = ErrorResponse(
+            ok=False,
+            error={
+                "code": "invalid_token",
+                "message": "Refresh token invalid or expired"
+            }
+        )
+        return jsonify(error.model_dump()), 401
+    
+    # Obtener user_id del payload
+    user_id = int(payload.get("sub", 0))
+    
+    # Consultar usuario desde database
+    user = AuthService.get_user_by_id(user_id)
+    
+    if not user:
+        error = ErrorResponse(
+            ok=False,
+            error={"code": "user_not_found", "message": "User not found"}
+        )
+        return jsonify(error.model_dump()), 404
+    
+    # Crear nuevo access token
+    new_access_token = jwt_manager.create_access_token(
+        payload={
+            "sub": str(user.id),
+            "uid": user.id,
+            "id_spm": user.username,
+            "rol": user.role,
+            "roles": [user.role],
+            "email": user.email,
+        }
+    )
+    
+    # Crear respuesta con usuario actualizado
+    user_response = UserResponse.model_validate(user.to_dict())
+    login_response = LoginResponse(ok=True, user=user_response)
+    
+    response = make_response(jsonify(login_response.model_dump()))
+    jwt_manager.set_token_cookie(response, new_access_token, token_type="access")
+    
+    return response, 200
+
