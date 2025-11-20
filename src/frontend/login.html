@@ -3,320 +3,660 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPM - Solicitudes Puntuales de Materiales</title>
+  <title>SPM - Iniciar Sesión</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Estilos específicos para la página de login */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      margin: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-left {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 4rem 3rem;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-left::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .login-left-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-section {
+      margin-bottom: 3rem;
+    }
+
+    .logo-section h1 {
+      font-size: 3rem;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .logo-section p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0;
+    }
+
+    .features-list li {
+      padding: 0.75rem 0;
+      font-size: 1rem;
+      opacity: 0.95;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .features-list li::before {
+      content: '✓';
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-weight: bold;
+    }
+
+    .login-right {
+      padding: 4rem 3rem;
+      background: #ffffff;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .login-header h2 {
+      font-size: 2rem;
+      margin: 0 0 0.5rem 0;
+      color: #1a202c;
+      font-weight: 600;
+    }
+
+    .login-header p {
+      color: #718096;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert.error {
+      background: #fed7d7;
+      color: #c53030;
+      border-left: 4px solid #c53030;
+    }
+
+    .alert.success {
+      background: #c6f6d5;
+      color: #22543d;
+      border-left: 4px solid #22543d;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 0.875rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: #f7fafc;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #a0aec0;
+    }
+
+    .submit-btn {
+      padding: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toggle-mode {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .toggle-mode button {
+      background: none;
+      border: none;
+      color: #667eea;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .toggle-mode button:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+      color: #718096;
+      font-size: 0.875rem;
+    }
+
+    .login-footer a {
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .login-footer a:hover {
+      color: #764ba2;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .login-wrapper {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+      }
+
+      .login-left {
+        display: none;
+      }
+
+      .login-right {
+        padding: 3rem 2rem;
+      }
+    }
+
+    /* Credenciales de prueba */
+    .test-credentials {
+      background: #edf2f7;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .test-credentials h4 {
+      margin: 0 0 0.75rem 0;
+      color: #2d3748;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .test-credentials code {
+      background: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .test-credentials p {
+      margin: 0.5rem 0;
+      color: #4a5568;
+    }
+  </style>
 </head>
 <body>
-  <header class="app-header">
-    <a href="/dashboard">Dashboard</a>
-    <nav>
-      <a href="/mi-cuenta">Mi Cuenta</a>
-      <a href="/preferencias">Preferencias</a>
-      <a href="/mis-solicitudes">Mis Solicitudes</a>
-      <a href="/crear-solicitud">Crear Solicitud</a>
-      <a href="/materiales">Materiales</a>
-      <a href="/notificaciones">Notificaciones</a>
-      <a href="/presupuesto">Presupuesto</a>
-      <a href="/admin">Admin</a>
-    </nav>
-  </header>
-  <main class="main-container">
-    <div class="login-container">
-        <div class="login-header">
-            <img src="/assets/spm-logo.png" alt="Logo SPM" onerror="this.style.display='none'">
-            <h1>SPM</h1>
-            <p>Solicitudes Puntuales de Materiales</p>
+  <div class="login-wrapper">
+    <!-- Left Panel -->
+    <div class="login-left">
+      <div class="login-left-content">
+        <div class="logo-section">
+          <h1>SPM</h1>
+          <p>Solicitudes Puntuales de Materiales</p>
         </div>
 
-        <div id="alertContainer"></div>
-
-        <!-- Login Form -->
-        <form id="loginForm" class="login-form">
-            <div class="form-group">
-                <label for="username">Usuario o Email</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    name="username" 
-                    placeholder="ej. mjimenez o juan@empresa.com"
-                    required
-                    autocomplete="username"
-                >
-                <div class="error-message">Por favor ingresa tu usuario o email</div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="Tu contraseña"
-                    required
-                    autocomplete="current-password"
-                >
-                <div class="error-message">Por favor ingresa tu contraseña</div>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <span id="btnText">INGRESAR</span>
-                <span id="btnSpinner" class="spinner hidden"></span>
-            </button>
-        </form>
-
-        <div class="toggle-mode">
-            <button type="button" id="toggleRegister">¿No tienes cuenta? Regístrate</button>
-        </div>
-
-        <!-- Register Form (Hidden) -->
-        <form id="registerForm" class="login-form hidden">
-            <div class="form-group">
-                <label for="regUsername">Usuario o Email</label>
-                <input 
-                    type="text" 
-                    id="regUsername" 
-                    name="username" 
-                    placeholder="ej. mjimenez o juan@empresa.com"
-                    required
-                    autocomplete="username"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="regPassword">Contraseña</label>
-                <input 
-                    type="password" 
-                    id="regPassword" 
-                    name="password" 
-                    placeholder="Mínimo 6 caracteres"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="nombre">Nombre</label>
-                <input 
-                    type="text" 
-                    id="nombre" 
-                    name="nombre" 
-                    placeholder="Tu nombre"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="apellido">Apellido</label>
-                <input 
-                    type="text" 
-                    id="apellido" 
-                    name="apellido" 
-                    placeholder="Tu apellido"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="rol">Rol</label>
-                <select id="rol" name="rol" required>
-                    <option value="">Selecciona tu rol</option>
-                    <option value="Solicitante">Solicitante</option>
-                    <option value="Aprobador">Aprobador</option>
-                    <option value="Administrador">Administrador</option>
-                </select>
-            </div>
-
-            <button type="submit" class="submit-btn" id="registerSubmitBtn">
-                <span id="regBtnText">CREAR CUENTA</span>
-                <span id="regBtnSpinner" class="spinner hidden"></span>
-            </button>
-
-            <div class="toggle-mode">
-                <button type="button" id="toggleLogin">¿Ya tienes cuenta? Inicia sesión</button>
-            </div>
-        </form>
-
-        <div class="login-footer">
-            <p>SPM v1.0</p>
-            <p>
-                <a href="mailto:manuelremon@live.com.ar">Contacto</a> • 
-                <a href="tel:+5492994673102">+54 9 299 467 3102</a>
-            </p>
-        </div>
+        <ul class="features-list">
+          <li>Gestión eficiente de solicitudes</li>
+          <li>Aprobaciones en tiempo real</li>
+          <li>Control de presupuesto integrado</li>
+          <li>Reportes y análisis avanzados</li>
+          <li>Sistema multiusuario con roles</li>
+        </ul>
 
         <div class="version">
-            © 2025 SPM - Neuquén, Patagonia, Argentina
+          <p style="opacity: 0.7; font-size: 0.875rem; margin-top: 2rem;">
+            © 2025 SPM v1.0<br>
+            Neuquén, Patagonia, Argentina
+          </p>
         </div>
+      </div>
     </div>
 
-    <script>
-        const API_BASE = window.location.origin;
+    <!-- Right Panel -->
+    <div class="login-right">
+      <div class="login-header">
+        <h2>Bienvenido</h2>
+        <p>Ingresa tus credenciales para continuar</p>
+      </div>
 
-        // DOM Elements
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const toggleRegister = document.getElementById('toggleRegister');
-        const toggleLogin = document.getElementById('toggleLogin');
-        const alertContainer = document.getElementById('alertContainer');
-        const submitBtn = document.getElementById('submitBtn');
-        const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+      <div id="alertContainer"></div>
 
-        // Toggle between login and register
-        toggleRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.classList.add('hidden');
-            registerForm.classList.remove('hidden');
-            alertContainer.innerHTML = '';
+      <!-- Login Form -->
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="username">Usuario o Email</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="admin o admin@spm.com"
+            required
+            autocomplete="username"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Ingresa tu contraseña"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span id="btnText">INGRESAR</span>
+          <span id="btnSpinner" class="spinner hidden"></span>
+        </button>
+      </form>
+
+      <div class="toggle-mode">
+        <button type="button" id="toggleRegister">¿No tienes cuenta? Regístrate aquí</button>
+      </div>
+
+      <!-- Register Form (Hidden) -->
+      <form id="registerForm" class="login-form hidden">
+        <div class="form-group">
+          <label for="regUsername">Usuario o Email</label>
+          <input
+            type="text"
+            id="regUsername"
+            name="username"
+            placeholder="ej. jperez o juan@empresa.com"
+            required
+            autocomplete="username"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="regPassword">Contraseña</label>
+          <input
+            type="password"
+            id="regPassword"
+            name="password"
+            placeholder="Mínimo 6 caracteres"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            placeholder="Tu nombre"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input
+            type="text"
+            id="apellido"
+            name="apellido"
+            placeholder="Tu apellido"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="rol">Rol</label>
+          <select id="rol" name="rol" required>
+            <option value="">Selecciona tu rol</option>
+            <option value="Solicitante">Solicitante</option>
+            <option value="Aprobador">Aprobador</option>
+            <option value="Administrador">Administrador</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn" id="registerSubmitBtn">
+          <span id="regBtnText">CREAR CUENTA</span>
+          <span id="regBtnSpinner" class="spinner hidden"></span>
+        </button>
+
+        <div class="toggle-mode" style="margin-top: 1rem; padding-top: 0; border-top: none;">
+          <button type="button" id="toggleLogin">¿Ya tienes cuenta? Inicia sesión</button>
+        </div>
+      </form>
+
+      <!-- Credenciales de prueba -->
+      <div class="test-credentials">
+        <h4>🔑 Credenciales de Prueba</h4>
+        <p><strong>Admin:</strong> <code>admin</code> / <code>test123</code></p>
+        <p><strong>Coordinador:</strong> <code>coordinador</code> / <code>test123</code></p>
+        <p><strong>Usuario:</strong> <code>usuario</code> / <code>test123</code></p>
+      </div>
+
+      <div class="login-footer">
+        <p>
+          <a href="mailto:manuelremon@live.com.ar">Contacto</a> •
+          <a href="tel:+5492994673102">+54 9 299 467 3102</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+
+    // DOM Elements
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const toggleRegister = document.getElementById('toggleRegister');
+    const toggleLogin = document.getElementById('toggleLogin');
+    const alertContainer = document.getElementById('alertContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+
+    // Toggle between login and register
+    toggleRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.add('hidden');
+      registerForm.classList.remove('hidden');
+      alertContainer.innerHTML = '';
+    });
+
+    toggleLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      alertContainer.innerHTML = '';
+    });
+
+    // Show alert
+    function showAlert(message, type = 'error') {
+      alertContainer.innerHTML = `
+        <div class="alert ${type}">
+          ${message}
+        </div>
+      `;
+    }
+
+    // Handle login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        showAlert('Por favor completa todos los campos', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      document.getElementById('btnText').classList.add('hidden');
+      document.getElementById('btnSpinner').classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            username: username,
+            password: password
+          })
         });
 
-        toggleLogin.addEventListener('click', (e) => {
-            e.preventDefault();
+        const data = await response.json();
+
+        if (response.ok) {
+          showAlert('✓ Login exitoso. Redirigiendo...', 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1000);
+        } else {
+          showAlert(data.message || 'Usuario o contraseña incorrectos', 'error');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showAlert('Error de conexión. Verifica que el servidor esté ejecutándose.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        document.getElementById('btnText').classList.remove('hidden');
+        document.getElementById('btnSpinner').classList.add('hidden');
+      }
+    });
+
+    // Handle registration
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
+      const rol = document.getElementById('rol').value.trim();
+
+      if (!username || !password || !nombre || !apellido || !rol) {
+        showAlert('Por favor completa todos los campos', 'error');
+        return;
+      }
+
+      if (password.length < 6) {
+        showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
+        return;
+      }
+
+      registerSubmitBtn.disabled = true;
+      document.getElementById('regBtnText').classList.add('hidden');
+      document.getElementById('regBtnSpinner').classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            username: username,
+            password: password,
+            nombre: nombre,
+            apellido: apellido,
+            rol: rol
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAlert('✓ Cuenta creada exitosamente. Redirigiendo...', 'success');
+          setTimeout(() => {
             registerForm.classList.add('hidden');
             loginForm.classList.remove('hidden');
-            alertContainer.innerHTML = '';
-        });
-
-        // Show alert
-        function showAlert(message, type = 'error') {
-            alertContainer.innerHTML = `
-                <div class="alert ${type}">
-                    ${message}
-                </div>
-            `;
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = '';
+            showAlert('Completa el login para continuar', 'success');
+          }, 1500);
+        } else {
+          showAlert(data.message || 'Error al crear la cuenta', 'error');
         }
+      } catch (error) {
+        console.error('Register error:', error);
+        showAlert('Error de conexión. Verifica que el servidor esté ejecutándose.', 'error');
+      } finally {
+        registerSubmitBtn.disabled = false;
+        document.getElementById('regBtnText').classList.remove('hidden');
+        document.getElementById('regBtnSpinner').classList.add('hidden');
+      }
+    });
 
-        // Handle login
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            if (!username || !password) {
-                showAlert('Por favor completa todos los campos', 'error');
-                return;
-            }
-
-            submitBtn.disabled = true;
-            document.getElementById('btnText').classList.add('hidden');
-            document.getElementById('btnSpinner').classList.remove('hidden');
-
-            try {
-                const response = await fetch(`${API_BASE}/api/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showAlert('✓ Login exitoso. Redirigiendo...', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/home.html';
-                    }, 1000);
-                } else {
-                    showAlert(data.message || 'Usuario o contraseña incorrectos', 'error');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showAlert('Error de conexión. Verifica que el servidor esté ejecutándose.', 'error');
-            } finally {
-                submitBtn.disabled = false;
-                document.getElementById('btnText').classList.remove('hidden');
-                document.getElementById('btnSpinner').classList.add('hidden');
-            }
-        });
-
-        // Handle registration
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById('regUsername').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-            const nombre = document.getElementById('nombre').value.trim();
-            const apellido = document.getElementById('apellido').value.trim();
-            const rol = document.getElementById('rol').value.trim();
-
-            if (!username || !password || !nombre || !apellido || !rol) {
-                showAlert('Por favor completa todos los campos', 'error');
-                return;
-            }
-
-            if (password.length < 6) {
-                showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
-                return;
-            }
-
-            registerSubmitBtn.disabled = true;
-            document.getElementById('regBtnText').classList.add('hidden');
-            document.getElementById('regBtnSpinner').classList.remove('hidden');
-
-            try {
-                const response = await fetch(`${API_BASE}/api/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        username: username,
-                        password: password,
-                        nombre: nombre,
-                        apellido: apellido,
-                        rol: rol
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showAlert('✓ Cuenta creada exitosamente. Redirigiendo...', 'success');
-                    setTimeout(() => {
-                        registerForm.classList.add('hidden');
-                        loginForm.classList.remove('hidden');
-                        document.getElementById('username').value = username;
-                        document.getElementById('password').value = '';
-                        showAlert('Completa el login para continuar', 'success');
-                    }, 1500);
-                } else {
-                    showAlert(data.message || 'Error al crear la cuenta', 'error');
-                }
-            } catch (error) {
-                console.error('Register error:', error);
-                showAlert('Error de conexión. Verifica que el servidor esté ejecutándose.', 'error');
-            } finally {
-                registerSubmitBtn.disabled = false;
-                document.getElementById('regBtnText').classList.remove('hidden');
-                document.getElementById('regBtnSpinner').classList.add('hidden');
-            }
-        });
-
-        // Test API connection
-        async function testConnection() {
-            try {
-                const response = await fetch(`${API_BASE}/api/health`);
-                if (response.ok) {
-                    console.log('✓ Conexión con servidor establecida');
-                }
-            } catch (error) {
-                console.warn('⚠ No se pudo conectar con el servidor:', error);
-                showAlert('⚠ Advertencia: No se puede conectar con el servidor. Verifica que esté ejecutándose en http://localhost:5000', 'error');
-            }
+    // Test API connection
+    async function testConnection() {
+      try {
+        const response = await fetch(`${API_BASE}/api/health`);
+        if (response.ok) {
+          console.log('✓ Conexión con servidor establecida');
         }
+      } catch (error) {
+        console.warn('⚠ No se pudo conectar con el servidor:', error);
+      }
+    }
 
-        // Test connection on load
-        testConnection();
+    // Test connection on load
+    testConnection();
 
-        // Focus on first input
-        document.getElementById('username').focus();
-    </script>
-  </main>
+    // Focus on first input
+    document.getElementById('username').focus();
+  </script>
   <script src="/app.js"></script>
 </body>
 </html>

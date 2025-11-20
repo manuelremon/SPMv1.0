@@ -1,28 +1,1067 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mis Solicitudes - SPM</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #0f172a;
+      --bg-darker: #020617;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-primary: #38bdf8;
+      --accent-secondary: #818cf8;
+      --border-color: #334155;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --transition-fast: 0.2s ease;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .app-header {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .app-header__inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      font-weight: 700;
+      transition: var(--transition-fast);
+    }
+
+    .app-logo:hover {
+      color: var(--accent-primary);
+    }
+
+    .app-logo img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .app-nav {
+      flex: 1;
+    }
+
+    .app-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .app-menu__link {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: var(--transition-fast);
+    }
+
+    .app-menu__link:hover {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-primary);
+    }
+
+    .app-menu__link.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-primary);
+    }
+
+    .theme-toggle {
+      padding: 0.5rem;
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1.25rem;
+      transition: var(--transition-fast);
+    }
+
+    .theme-toggle:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent-primary);
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* Filters Section */
+    .filters-section {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .filters-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+      transition: var(--transition-fast);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      background: rgba(30, 41, 59, 0.9);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 0.5rem 1rem;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-pill:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .filter-pill.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .filter-pill__count {
+      padding: 0.125rem 0.5rem;
+      background: rgba(56, 189, 248, 0.2);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent-primary);
+    }
+
+    /* Solicitudes Grid */
+    .solicitudes-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .solicitud-card {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .solicitud-card:hover {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(56, 189, 248, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
+    }
+
+    .solicitud-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .solicitud-card__id {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge--draft { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+    .status-badge--submitted { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+    .status-badge--approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .status-badge--rejected { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .status-badge--processing { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .status-badge--dispatched { background: rgba(129, 140, 248, 0.2); color: #818cf8; }
+
+    .solicitud-card__body {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .solicitud-card__field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .solicitud-card__label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .solicitud-card__value {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .solicitud-card__footer {
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .solicitud-card__date {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .solicitud-card__actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.375rem 0.875rem;
+      font-size: 0.8125rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal__content {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal__header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+    }
+
+    .modal__close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+      transition: var(--transition-fast);
+    }
+
+    .modal__close:hover {
+      color: var(--accent-primary);
+    }
+
+    .modal__body {
+      padding: 1.5rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .detail-section {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .detail-section__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .items-table th,
+    .items-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .items-table th {
+      background: rgba(30, 41, 59, 0.5);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .items-table td {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+    }
+
+    .items-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state__icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state__title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .empty-state__text {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Loading State */
+    .loading-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(56, 189, 248, 0.2);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-header__inner {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .app-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .solicitud-card__body {
+        grid-template-columns: 1fr;
+      }
+
+      .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Header -->
   <header class="app-header">
-    <a href="/dashboard">Dashboard</a>
-    <nav>
-      <a href="/mi-cuenta">Mi Cuenta</a>
-      <a href="/preferencias">Preferencias</a>
-      <a href="/mis-solicitudes">Mis Solicitudes</a>
-      <a href="/crear-solicitud">Crear Solicitud</a>
-      <a href="/materiales">Materiales</a>
-      <a href="/notificaciones">Notificaciones</a>
-      <a href="/admin">Admin</a>
-    </nav>
+    <div class="app-header__inner">
+      <a href="/dashboard.html" class="app-logo">
+        <img src="/assets/spm-logo.png" alt="SPM Logo" />
+        <span>SPM</span>
+      </a>
+      <nav class="app-nav">
+        <ul class="app-menu">
+          <li class="app-menu__item">
+            <a href="/dashboard.html" class="app-menu__link">Dashboard</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/mis-solicitudes.html" class="app-menu__link active">Mis Solicitudes</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/crear-solicitud.html" class="app-menu__link">Crear Solicitud</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/materiales.html" class="app-menu__link">Materiales</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/admin.html" class="app-menu__link">Admin</a>
+          </li>
+        </ul>
+      </nav>
+      <button type="button" class="theme-toggle" id="themeToggle">
+        <span class="theme-toggle__icon">🌙</span>
+      </button>
+    </div>
   </header>
+
+  <!-- Main Content -->
   <main class="main-container">
-    <h1>Mis Solicitudes</h1>
-    <p>Lista de tus solicitudes</p>
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Mis Solicitudes</h1>
+      <p class="page-subtitle">Gestiona y consulta todas tus solicitudes de materiales</p>
+    </div>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+      <div class="filters-row">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Buscar por ID, centro o sector..." />
+        </div>
+      </div>
+      <div class="filter-pills">
+        <button type="button" class="filter-pill active" data-status="">
+          Todas
+          <span class="filter-pill__count" id="countAll">0</span>
+        </button>
+        <button type="button" class="filter-pill" data-status="draft">
+          Borradores
+          <span class="filter-pill__count" id="countDraft">0</span>
+        </button>
+        <button type="button" class="filter-pill" data-status="submitted">
+          Enviadas
+          <span class="filter-pill__count" id="countSubmitted">0</span>
+        </button>
+        <button type="button" class="filter-pill" data-status="approved">
+          Aprobadas
+          <span class="filter-pill__count" id="countApproved">0</span>
+        </button>
+        <button type="button" class="filter-pill" data-status="rejected">
+          Rechazadas
+          <span class="filter-pill__count" id="countRejected">0</span>
+        </button>
+        <button type="button" class="filter-pill" data-status="processing">
+          En Proceso
+          <span class="filter-pill__count" id="countProcessing">0</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="action-bar__info">
+        <span id="resultCount" style="color: var(--text-secondary); font-size: 0.9375rem;">0 solicitudes</span>
+      </div>
+      <div class="action-bar__actions">
+        <a href="/crear-solicitud.html" class="btn btn-primary">
+          + Nueva Solicitud
+        </a>
+        <button type="button" class="btn btn-secondary" id="exportBtn">
+          📊 Exportar
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando solicitudes...</p>
+    </div>
+
+    <!-- Solicitudes Grid -->
+    <div id="solicitudesGrid" class="solicitudes-grid" style="display: none;">
+      <!-- Cards will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-state__icon">📋</div>
+      <h2 class="empty-state__title">No hay solicitudes</h2>
+      <p class="empty-state__text">Aún no has creado ninguna solicitud de materiales</p>
+      <a href="/crear-solicitud.html" class="btn btn-primary">Crear primera solicitud</a>
+    </div>
   </main>
-  <script src="/app.js"></script>
+
+  <!-- Modal for Details -->
+  <div id="detailModal" class="modal">
+    <div class="modal__content">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalTitle">Detalles de Solicitud</h2>
+        <button type="button" class="modal__close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal__body" id="modalBody">
+        <!-- Details will be inserted here by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // API Base URL
+    const API_BASE = 'http://localhost:5000';
+
+    // State
+    let allSolicitudes = [];
+    let currentFilter = '';
+
+    // DOM Elements
+    const loadingState = document.getElementById('loadingState');
+    const solicitudesGrid = document.getElementById('solicitudesGrid');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const detailModal = document.getElementById('detailModal');
+    const modalClose = document.getElementById('modalClose');
+    const resultCount = document.getElementById('resultCount');
+
+    // Status translations
+    const statusLabels = {
+      'draft': 'Borrador',
+      'submitted': 'Enviada',
+      'approved': 'Aprobada',
+      'rejected': 'Rechazada',
+      'processing': 'En Proceso',
+      'dispatched': 'Despachada',
+      'closed': 'Cerrada'
+    };
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSolicitudes();
+      setupEventListeners();
+    });
+
+    // Setup Event Listeners
+    function setupEventListeners() {
+      // Filter pills
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          const status = pill.dataset.status;
+          filterPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentFilter = status;
+          filterSolicitudes();
+        });
+      });
+
+      // Search input
+      searchInput.addEventListener('input', debounce(filterSolicitudes, 300));
+
+      // Modal close
+      modalClose.addEventListener('click', closeModal);
+      detailModal.addEventListener('click', (e) => {
+        if (e.target === detailModal) closeModal();
+      });
+    }
+
+    // Load Solicitudes from API
+    async function loadSolicitudes() {
+      try {
+        showLoading();
+
+        const response = await fetch(`${API_BASE}/api/solicitudes`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        allSolicitudes = data.solicitudes || [];
+
+        updateCounts();
+        filterSolicitudes();
+
+      } catch (error) {
+        console.error('Error loading solicitudes:', error);
+        showEmpty('Error al cargar solicitudes', 'Por favor, intenta recargar la página');
+      }
+    }
+
+    // Update Counts
+    function updateCounts() {
+      const counts = {
+        all: allSolicitudes.length,
+        draft: allSolicitudes.filter(s => s.status === 'draft').length,
+        submitted: allSolicitudes.filter(s => s.status === 'submitted').length,
+        approved: allSolicitudes.filter(s => s.status === 'approved').length,
+        rejected: allSolicitudes.filter(s => s.status === 'rejected').length,
+        processing: allSolicitudes.filter(s => s.status === 'processing').length
+      };
+
+      document.getElementById('countAll').textContent = counts.all;
+      document.getElementById('countDraft').textContent = counts.draft;
+      document.getElementById('countSubmitted').textContent = counts.submitted;
+      document.getElementById('countApproved').textContent = counts.approved;
+      document.getElementById('countRejected').textContent = counts.rejected;
+      document.getElementById('countProcessing').textContent = counts.processing;
+    }
+
+    // Filter Solicitudes
+    function filterSolicitudes() {
+      let filtered = [...allSolicitudes];
+
+      // Filter by status
+      if (currentFilter) {
+        filtered = filtered.filter(s => s.status === currentFilter);
+      }
+
+      // Filter by search
+      const search = searchInput.value.toLowerCase();
+      if (search) {
+        filtered = filtered.filter(s =>
+          String(s.id).includes(search) ||
+          s.centro?.toLowerCase().includes(search) ||
+          s.sector?.toLowerCase().includes(search) ||
+          s.justificacion?.toLowerCase().includes(search)
+        );
+      }
+
+      renderSolicitudes(filtered);
+    }
+
+    // Render Solicitudes
+    function renderSolicitudes(solicitudes) {
+      hideLoading();
+
+      if (solicitudes.length === 0) {
+        showEmpty();
+        return;
+      }
+
+      solicitudesGrid.style.display = 'grid';
+      emptyState.style.display = 'none';
+      resultCount.textContent = `${solicitudes.length} solicitud${solicitudes.length !== 1 ? 'es' : ''}`;
+
+      solicitudesGrid.innerHTML = solicitudes.map(sol => `
+        <div class="solicitud-card" onclick="showDetails(${sol.id})">
+          <div class="solicitud-card__header">
+            <div class="solicitud-card__id">Solicitud #${sol.id}</div>
+            <span class="status-badge status-badge--${sol.status}">
+              ${statusLabels[sol.status] || sol.status}
+            </span>
+          </div>
+          <div class="solicitud-card__body">
+            <div class="solicitud-card__field">
+              <span class="solicitud-card__label">Centro</span>
+              <span class="solicitud-card__value">${sol.centro || 'N/A'}</span>
+            </div>
+            <div class="solicitud-card__field">
+              <span class="solicitud-card__label">Sector</span>
+              <span class="solicitud-card__value">${sol.sector || 'N/A'}</span>
+            </div>
+            <div class="solicitud-card__field">
+              <span class="solicitud-card__label">Criticidad</span>
+              <span class="solicitud-card__value">${sol.criticidad || 'Normal'}</span>
+            </div>
+            <div class="solicitud-card__field">
+              <span class="solicitud-card__label">Monto Total</span>
+              <span class="solicitud-card__value">$${parseFloat(sol.total_monto || 0).toFixed(2)}</span>
+            </div>
+          </div>
+          <div class="solicitud-card__footer">
+            <div class="solicitud-card__date">
+              ${formatDate(sol.created_at)}
+            </div>
+            <div class="solicitud-card__actions">
+              <button type="button" class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); showDetails(${sol.id})">
+                Ver Detalles
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Show Details Modal
+    async function showDetails(id) {
+      try {
+        const sol = allSolicitudes.find(s => s.id === id);
+        if (!sol) return;
+
+        let items = [];
+        try {
+          const dataJson = typeof sol.data_json === 'string' ? JSON.parse(sol.data_json) : sol.data_json;
+          items = dataJson?.items || [];
+        } catch (e) {
+          console.error('Error parsing data_json:', e);
+        }
+
+        document.getElementById('modalTitle').textContent = `Solicitud #${sol.id}`;
+        document.getElementById('modalBody').innerHTML = `
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h3 class="detail-section__title">Información General</h3>
+              <div class="solicitud-card__body">
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Estado</span>
+                  <span class="solicitud-card__value">
+                    <span class="status-badge status-badge--${sol.status}">
+                      ${statusLabels[sol.status] || sol.status}
+                    </span>
+                  </span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Centro</span>
+                  <span class="solicitud-card__value">${sol.centro || 'N/A'}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Sector</span>
+                  <span class="solicitud-card__value">${sol.sector || 'N/A'}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Criticidad</span>
+                  <span class="solicitud-card__value">${sol.criticidad || 'Normal'}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Centro de Costos</span>
+                  <span class="solicitud-card__value">${sol.centro_costos || 'N/A'}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Almacén Virtual</span>
+                  <span class="solicitud-card__value">${sol.almacen_virtual || 'N/A'}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Fecha de Necesidad</span>
+                  <span class="solicitud-card__value">${sol.fecha_necesidad || 'N/A'}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Monto Total</span>
+                  <span class="solicitud-card__value">$${parseFloat(sol.total_monto || 0).toFixed(2)}</span>
+                </div>
+              </div>
+              <div class="solicitud-card__field" style="margin-top: 1rem;">
+                <span class="solicitud-card__label">Justificación</span>
+                <span class="solicitud-card__value">${sol.justificacion || 'N/A'}</span>
+              </div>
+            </div>
+
+            ${items.length > 0 ? `
+            <div class="detail-section">
+              <h3 class="detail-section__title">Materiales (${items.length})</h3>
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${items.map(item => `
+                    <tr>
+                      <td>${item.codigo || 'N/A'}</td>
+                      <td>${item.descripcion || 'N/A'}</td>
+                      <td>${item.cantidad || 0}</td>
+                      <td>$${parseFloat(item.precio_unitario || 0).toFixed(2)}</td>
+                      <td>$${(parseFloat(item.cantidad || 0) * parseFloat(item.precio_unitario || 0)).toFixed(2)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            ` : ''}
+
+            <div class="detail-section">
+              <h3 class="detail-section__title">Fechas</h3>
+              <div class="solicitud-card__body">
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Creada</span>
+                  <span class="solicitud-card__value">${formatDateTime(sol.created_at)}</span>
+                </div>
+                <div class="solicitud-card__field">
+                  <span class="solicitud-card__label">Actualizada</span>
+                  <span class="solicitud-card__value">${formatDateTime(sol.updated_at)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        detailModal.classList.add('active');
+      } catch (error) {
+        console.error('Error showing details:', error);
+        alert('Error al cargar los detalles de la solicitud');
+      }
+    }
+
+    // Close Modal
+    function closeModal() {
+      detailModal.classList.remove('active');
+    }
+
+    // Show Loading
+    function showLoading() {
+      loadingState.style.display = 'block';
+      solicitudesGrid.style.display = 'none';
+      emptyState.style.display = 'none';
+    }
+
+    // Hide Loading
+    function hideLoading() {
+      loadingState.style.display = 'none';
+    }
+
+    // Show Empty State
+    function showEmpty(title = 'No hay solicitudes', text = 'No se encontraron solicitudes con los filtros aplicados') {
+      solicitudesGrid.style.display = 'none';
+      emptyState.style.display = 'block';
+      emptyState.querySelector('.empty-state__title').textContent = title;
+      emptyState.querySelector('.empty-state__text').textContent = text;
+      resultCount.textContent = '0 solicitudes';
+    }
+
+    // Format Date
+    function formatDate(dateStr) {
+      if (!dateStr) return 'N/A';
+      try {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('es-AR', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    // Format DateTime
+    function formatDateTime(dateStr) {
+      if (!dateStr) return 'N/A';
+      try {
+        const date = new Date(dateStr);
+        return date.toLocaleString('es-AR', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    // Debounce utility
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Export functionality
+    document.getElementById('exportBtn')?.addEventListener('click', async () => {
+      try {
+        window.open(`${API_BASE}/api/solicitudes/export/excel`, '_blank');
+      } catch (error) {
+        console.error('Error exporting:', error);
+        alert('Error al exportar las solicitudes');
+      }
+    });
+  </script>
 </body>
 </html>

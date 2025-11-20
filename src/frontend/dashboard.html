@@ -1,25 +1,531 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - SPM</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Dashboard specific styles */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(30,41,59,.95), rgba(15,23,42,.95));
+      border: 1px solid rgba(56,189,248,.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(30%, -30%);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(56,189,248,.25);
+      border-color: rgba(56,189,248,.4);
+    }
+
+    .stat-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-card__icon {
+      font-size: 2rem;
+      opacity: 0.9;
+    }
+
+    .stat-card__title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .stat-card__value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--txt);
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-card__change {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .stat-card__change--positive {
+      color: var(--ok);
+    }
+
+    .stat-card__change--negative {
+      color: var(--err);
+    }
+
+    .stat-card--primary {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      border-color: rgba(14,165,233,.45);
+      color: #02111f;
+    }
+
+    .stat-card--primary .stat-card__title,
+    .stat-card--primary .stat-card__value {
+      color: #02111f;
+    }
+
+    .stat-card--success {
+      background: linear-gradient(135deg, rgba(34,197,94,.2), rgba(34,197,94,.1));
+      border-color: rgba(34,197,94,.4);
+    }
+
+    .stat-card--warning {
+      background: linear-gradient(135deg, rgba(250,204,21,.2), rgba(250,204,21,.1));
+      border-color: rgba(250,204,21,.4);
+    }
+
+    .stat-card--danger {
+      background: linear-gradient(135deg, rgba(239,68,68,.2), rgba(239,68,68,.1));
+      border-color: rgba(239,68,68,.4);
+    }
+
+    .recent-activity {
+      background: rgba(15,23,42,.65);
+      border: 1px solid #334155;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .recent-activity__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .recent-activity__title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.85rem;
+      background: rgba(30,41,59,.5);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,.15);
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .activity-item:hover {
+      background: rgba(30,41,59,.7);
+      transform: translateX(4px);
+    }
+
+    .activity-item__icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(56,189,248,.15);
+      color: #38bdf8;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .activity-item__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-item__title {
+      font-weight: 600;
+      margin: 0 0 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .activity-item__description {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .activity-item__time {
+      font-size: 0.8rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .chart-container {
+      background: rgba(15,23,42,.65);
+      border: 1px solid #334155;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-top: 2rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .chart-placeholder {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(30,41,59,.5);
+      border-radius: var(--radius-md);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(15,23,42,.65);
+      border: 1px solid #334155;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--txt);
+      transition: all var(--transition-fast);
+    }
+
+    .quick-action:hover {
+      background: rgba(30,41,59,.7);
+      border-color: rgba(56,189,248,.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56,189,248,.2);
+    }
+
+    .quick-action__icon {
+      font-size: 1.5rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(56,189,248,.15);
+      border-radius: var(--radius-md);
+      color: #38bdf8;
+    }
+
+    .quick-action__text {
+      flex: 1;
+    }
+
+    .quick-action__title {
+      font-weight: 600;
+      margin: 0 0 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .quick-action__subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="app-header">
-    <a href="/dashboard">Dashboard</a>
-    <nav>
-      <a href="/mis-solicitudes">Mis Solicitudes</a>
-      <a href="/crear-solicitud">Crear Solicitud</a>
-      <a href="/materiales">Materiales</a>
-      <a href="/admin">Admin</a>
-    </nav>
+    <div class="app-header__inner">
+      <a href="/dashboard" class="app-logo">
+        <img src="/assets/spm-logo.png" alt="SPM Logo" />
+        <span>SPM</span>
+      </a>
+      <nav class="app-nav">
+        <ul class="app-menu">
+          <li class="app-menu__item">
+            <a href="/dashboard.html" class="app-menu__link active">Dashboard</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/mis-solicitudes.html" class="app-menu__link">Mis Solicitudes</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/crear-solicitud.html" class="app-menu__link">Crear Solicitud</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/materiales.html" class="app-menu__link">Materiales</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/admin.html" class="app-menu__link">Admin</a>
+          </li>
+        </ul>
+      </nav>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Cambiar a tema claro">
+        <span class="theme-toggle__icon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
   </header>
-  <main class="main-container">
-    <h1>Dashboard</h1>
-    <p>Bienvenido a SPM</p>
+
+  <main class="content">
+    <div class="content-section content-section--wide">
+      <!-- Welcome Section -->
+      <div class="page-header">
+        <div>
+          <h1>Bienvenido a SPM</h1>
+          <p class="muted">Sistema de Solicitudes Puntuales de Materiales</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <a href="/crear-solicitud.html" class="quick-action">
+          <div class="quick-action__icon">✏️</div>
+          <div class="quick-action__text">
+            <h3 class="quick-action__title">Nueva Solicitud</h3>
+            <p class="quick-action__subtitle">Crear solicitud de materiales</p>
+          </div>
+        </a>
+        <a href="/mis-solicitudes.html" class="quick-action">
+          <div class="quick-action__icon">📋</div>
+          <div class="quick-action__text">
+            <h3 class="quick-action__title">Mis Solicitudes</h3>
+            <p class="quick-action__subtitle">Ver solicitudes</p>
+          </div>
+        </a>
+        <a href="/materiales.html" class="quick-action">
+          <div class="quick-action__icon">📦</div>
+          <div class="quick-action__text">
+            <h3 class="quick-action__title">Materiales</h3>
+            <p class="quick-action__subtitle">Catálogo de materiales</p>
+          </div>
+        </a>
+        <a href="/reportes.html" class="quick-action">
+          <div class="quick-action__icon">📊</div>
+          <div class="quick-action__text">
+            <h3 class="quick-action__title">Reportes</h3>
+            <p class="quick-action__subtitle">Análisis y estadísticas</p>
+          </div>
+        </a>
+      </section>
+
+      <!-- Statistics Cards -->
+      <section class="dashboard-grid">
+        <div class="stat-card stat-card--primary">
+          <div class="stat-card__header">
+            <h3 class="stat-card__title">Total Solicitudes</h3>
+            <div class="stat-card__icon">📋</div>
+          </div>
+          <p class="stat-card__value" id="totalSolicitudes">0</p>
+          <div class="stat-card__change stat-card__change--positive">
+            <span>↗</span>
+            <span id="totalChange">+0%</span>
+            <span style="color: rgba(0,0,0,0.6); margin-left: 0.25rem;">este mes</span>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card--warning">
+          <div class="stat-card__header">
+            <h3 class="stat-card__title">Pendientes</h3>
+            <div class="stat-card__icon">⏳</div>
+          </div>
+          <p class="stat-card__value" id="pendientesSolicitudes">0</p>
+          <div class="stat-card__change">
+            <span id="pendientesDesc">Esperando aprobación</span>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card--success">
+          <div class="stat-card__header">
+            <h3 class="stat-card__title">Aprobadas</h3>
+            <div class="stat-card__icon">✅</div>
+          </div>
+          <p class="stat-card__value" id="aprobadasSolicitudes">0</p>
+          <div class="stat-card__change stat-card__change--positive">
+            <span id="aprobadasPercentage">0%</span>
+            <span style="margin-left: 0.25rem;">tasa de aprobación</span>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card--danger">
+          <div class="stat-card__header">
+            <h3 class="stat-card__title">Rechazadas</h3>
+            <div class="stat-card__icon">❌</div>
+          </div>
+          <p class="stat-card__value" id="rechazadasSolicitudes">0</p>
+          <div class="stat-card__change">
+            <span id="rechazadasDesc">Última semana</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Activity -->
+      <section class="recent-activity">
+        <div class="recent-activity__header">
+          <h2 class="recent-activity__title">Actividad Reciente</h2>
+          <a href="/mis-solicitudes" class="btn sec">Ver todas</a>
+        </div>
+        <ul class="activity-list" id="activityList">
+          <li class="activity-item">
+            <div class="activity-item__icon">📋</div>
+            <div class="activity-item__content">
+              <h4 class="activity-item__title">No hay actividad reciente</h4>
+              <p class="activity-item__description">Crea una solicitud para comenzar</p>
+            </div>
+            <div class="activity-item__time">-</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Chart Section -->
+      <section class="chart-container">
+        <div class="chart-header">
+          <h2 class="chart-title">Solicitudes por Estado</h2>
+          <select id="chartPeriod" class="chart-filter">
+            <option value="week">Última semana</option>
+            <option value="month" selected>Último mes</option>
+            <option value="quarter">Último trimestre</option>
+            <option value="year">Último año</option>
+          </select>
+        </div>
+        <div class="chart-placeholder" id="chartContainer">
+          <span>Cargando estadísticas...</span>
+        </div>
+      </section>
+    </div>
   </main>
+
   <script src="/app.js"></script>
+  <script>
+    // Dashboard initialization
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadDashboardStats();
+    });
+
+    async function loadDashboardStats() {
+      try {
+        // Fetch dashboard statistics from API
+        const response = await fetch('/api/auth/dashboard/stats');
+        if (!response.ok) {
+          console.warn('Failed to load dashboard stats');
+          return;
+        }
+
+        const data = await response.json();
+
+        // Update statistics cards
+        if (data.stats) {
+          document.getElementById('totalSolicitudes').textContent = data.stats.total_solicitudes || 0;
+          document.getElementById('pendientesSolicitudes').textContent = data.stats.pending || 0;
+          document.getElementById('aprobadasSolicitudes').textContent = data.stats.approved || 0;
+          document.getElementById('rechazadasSolicitudes').textContent = data.stats.rejected || 0;
+
+          // Calculate approval rate
+          const total = data.stats.total_solicitudes || 0;
+          const approved = data.stats.approved || 0;
+          const rate = total > 0 ? Math.round((approved / total) * 100) : 0;
+          document.getElementById('aprobadasPercentage').textContent = `${rate}%`;
+        }
+
+        // Update recent activity
+        if (data.activity && data.activity.length > 0) {
+          const activityList = document.getElementById('activityList');
+          activityList.innerHTML = data.activity.map(item => `
+            <li class="activity-item">
+              <div class="activity-item__icon">${getActivityIcon(item.type)}</div>
+              <div class="activity-item__content">
+                <h4 class="activity-item__title">${item.title}</h4>
+                <p class="activity-item__description">${item.description}</p>
+              </div>
+              <div class="activity-item__time">${item.time}</div>
+            </li>
+          `).join('');
+        }
+
+        // Update chart (placeholder for now)
+        const chartContainer = document.getElementById('chartContainer');
+        chartContainer.innerHTML = `
+          <div style="text-align: center;">
+            <p>Visualización de gráficos disponible próximamente</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">Pendientes: ${data.stats?.pending || 0} | Aprobadas: ${data.stats?.approved || 0} | Rechazadas: ${data.stats?.rejected || 0}</p>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading dashboard stats:', error);
+      }
+    }
+
+    function getActivityIcon(type) {
+      const icons = {
+        created: '✏️',
+        approved: '✅',
+        rejected: '❌',
+        updated: '🔄',
+        comment: '💬'
+      };
+      return icons[type] || '📋';
+    }
+  </script>
 </body>
 </html>

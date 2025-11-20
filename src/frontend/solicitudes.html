@@ -5,304 +5,606 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mis Solicitudes - SPM</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    .filters-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 160px;
+    }
+
+    .filter-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .filter-group select,
+    .filter-group input {
+      padding: 0.55rem 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .status-filter {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .status-filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,.25);
+      background: rgba(15,23,42,.65);
+      color: var(--txt);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .status-filter-btn:hover {
+      border-color: rgba(56,189,248,.35);
+      background: rgba(30,41,59,.7);
+    }
+
+    .status-filter-btn.active {
+      background: linear-gradient(90deg,#0ea5e9,#38bdf8);
+      border-color: rgba(14,165,233,.45);
+      color: #02111f;
+      font-weight: 600;
+    }
+
+    .solicitud-card {
+      background: rgba(15,23,42,.65);
+      border: 1px solid #334155;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .solicitud-card:hover {
+      background: rgba(30,41,59,.7);
+      border-color: rgba(56,189,248,.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56,189,248,.15);
+    }
+
+    .solicitud-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .solicitud-card__id {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .solicitud-card__title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0.25rem 0 0.5rem;
+    }
+
+    .solicitud-card__info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .solicitud-card__info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .solicitud-card__info-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .solicitud-card__info-value {
+      font-size: 0.9rem;
+      color: var(--txt);
+    }
+
+    .solicitud-card__footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(148,163,184,.15);
+    }
+
+    .solicitud-card__monto {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: rgba(15,23,42,.65);
+      border: 1px solid #334155;
+      border-radius: var(--radius-lg);
+    }
+
+    .empty-state__icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state__title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+    }
+
+    .empty-state__description {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-group,
+      .search-box {
+        min-width: 100%;
+      }
+
+      .solicitud-card__info {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="app-header">
-    <a href="/dashboard">Dashboard</a>
-    <nav>
-      <a href="/mi-cuenta">Mi Cuenta</a>
-      <a href="/preferencias">Preferencias</a>
-      <a href="/mis-solicitudes">Mis Solicitudes</a>
-      <a href="/crear-solicitud">Crear Solicitud</a>
-      <a href="/materiales">Materiales</a>
-      <a href="/notificaciones">Notificaciones</a>
-      <a href="/presupuesto">Presupuesto</a>
-      <a href="/admin">Admin</a>
-    </nav>
+    <div class="app-header__inner">
+      <a href="/dashboard" class="app-logo">
+        <img src="/assets/spm-logo.png" alt="SPM Logo" />
+        <span>SPM</span>
+      </a>
+      <nav class="app-nav">
+        <ul class="app-menu">
+          <li class="app-menu__item">
+            <a href="/dashboard.html" class="app-menu__link">Dashboard</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/mis-solicitudes.html" class="app-menu__link active">Mis Solicitudes</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/crear-solicitud.html" class="app-menu__link">Crear Solicitud</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/materiales.html" class="app-menu__link">Materiales</a>
+          </li>
+          <li class="app-menu__item">
+            <a href="/admin.html" class="app-menu__link">Admin</a>
+          </li>
+        </ul>
+      </nav>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Cambiar a tema claro">
+        <span class="theme-toggle__icon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
   </header>
-  <main class="main-container">
-<main class="main-container">
-<!-- NAVBAR -->
-  <div id="navbar"></div>
 
-  <!-- MAIN CONTAINER -->
-  <div class="main-container">
-    <!-- HEADER -->
-    <div id="header"></div>
-
-    <!-- CONTENT -->
-    <div class="content">
-      <div class="content-header">
-        <h1 class="page-title">Mis Solicitudes</h1>
-        <p class="page-subtitle">Visualiza y gestiona tus solicitudes</p>
+  <main class="content">
+    <div class="content-section content-section--wide">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h1>Mis Solicitudes</h1>
+          <p class="muted">Visualiza y gestiona todas tus solicitudes de materiales</p>
+        </div>
+        <a href="/crear-solicitud.html" class="btn pri">
+          <span>✏️</span>
+          <span>Nueva Solicitud</span>
+        </a>
       </div>
 
-      <!-- BORRADORES PENDIENTES -->
-      <div id="draftsAlert" class="alert-section" style="display: none;">
-        <span>💾</span>
-        <div>
-          <strong>Borradores Pendientes</strong>
-          <p>Tienes <span id="draftCount">0</span> solicitud(es) guardada(s) como borrador que puedes continuar editando.</p>
+      <!-- Filters -->
+      <section class="filters-bar">
+        <div class="filter-group search-box">
+          <label for="searchInput">Buscar</label>
+          <input type="text" id="searchInput" placeholder="Buscar por ID, centro, sector..." />
+        </div>
+
+        <div class="filter-group">
+          <label for="statusFilter">Estado</label>
+          <select id="statusFilter">
+            <option value="">Todos los estados</option>
+            <option value="draft">Borrador</option>
+            <option value="pendiente_de_aprobacion">Pendiente</option>
+            <option value="aprobada">Aprobada</option>
+            <option value="rechazada">Rechazada</option>
+            <option value="finalizada">Finalizada</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sortBy">Ordenar por</label>
+          <select id="sortBy">
+            <option value="recent">Más recientes</option>
+            <option value="oldest">Más antiguas</option>
+            <option value="amount-high">Monto mayor</option>
+            <option value="amount-low">Monto menor</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Status Filter Pills -->
+      <section class="status-filter">
+        <button class="status-filter-btn active" data-status="">
+          Todas <span id="countAll">0</span>
+        </button>
+        <button class="status-filter-btn" data-status="pendiente_de_aprobacion">
+          Pendientes <span id="countPending">0</span>
+        </button>
+        <button class="status-filter-btn" data-status="aprobada">
+          Aprobadas <span id="countApproved">0</span>
+        </button>
+        <button class="status-filter-btn" data-status="rechazada">
+          Rechazadas <span id="countRejected">0</span>
+        </button>
+        <button class="status-filter-btn" data-status="draft">
+          Borradores <span id="countDrafts">0</span>
+        </button>
+      </section>
+
+      <!-- Solicitudes List -->
+      <section id="solicitudesList">
+        <div style="text-align: center; padding: 3rem; color: var(--muted);">
+          <p>Cargando solicitudes...</p>
+        </div>
+      </section>
+
+      <!-- Empty State -->
+      <section id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state__icon">📋</div>
+        <h2 class="empty-state__title">No tienes solicitudes aún</h2>
+        <p class="empty-state__description">Crea tu primera solicitud de materiales para comenzar</p>
+        <a href="/crear-solicitud.html" class="btn pri">
+          <span>✏️</span>
+          <span>Crear Primera Solicitud</span>
+        </a>
+      </section>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <div id="solicitudDetailModal" class="modal hide">
+    <div class="modal-content large">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="margin: 0 0 0.25rem;">Solicitud <span id="modalId">#-</span></h2>
+        <p class="muted" style="margin: 0;">Detalles completos de la solicitud</p>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-section">
+          <h3>Centro</h3>
+          <p id="modalCentro">-</p>
+        </div>
+        <div class="detail-section">
+          <h3>Sector</h3>
+          <p id="modalSector">-</p>
+        </div>
+        <div class="detail-section">
+          <h3>Almacén</h3>
+          <p id="modalAlmacen">-</p>
+        </div>
+        <div class="detail-section">
+          <h3>Estado</h3>
+          <p id="modalStatus">-</p>
+        </div>
+        <div class="detail-section">
+          <h3>Criticidad</h3>
+          <p id="modalCriticidad">-</p>
+        </div>
+        <div class="detail-section">
+          <h3>Fecha Necesaria</h3>
+          <p id="modalFecha">-</p>
         </div>
       </div>
 
-      <!-- SOLICITUDES TABLE -->
-      <div class="solicitudes-card">
-        <h2>
-          <span>📋</span> Mis Solicitudes
-        </h2>
+      <div class="detail-section" style="margin-top: 1.5rem;">
+        <h3>Justificación</h3>
+        <p class="detail-just" id="modalJustificacion">-</p>
+      </div>
 
-        <div style="overflow-x: auto; margin-bottom: 16px;">
-          <table id="userSolicitudesTable">
+      <div class="detail-section" style="margin-top: 1.5rem;">
+        <h3>Materiales Solicitados</h3>
+        <div class="table" style="margin-top: 0.75rem;">
+          <table>
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Centro</th>
-                <th>Sector</th>
-                <th style="text-align: center;">Items</th>
-                <th style="text-align: right;">Monto Total</th>
-                <th style="text-align: center;">Estado</th>
-                <th style="text-align: center;">Fecha</th>
-                <th style="text-align: center;">Acciones</th>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th style="text-align: center;">Cantidad</th>
+                <th style="text-align: right;">Precio Unit.</th>
+                <th style="text-align: right;">Subtotal</th>
               </tr>
             </thead>
-            <tbody id="userSolicitudesBody">
+            <tbody id="modalMaterials">
               <tr>
-                <td colspan="8" style="text-align: center; color: #9ca3af; padding: 24px;">Cargando solicitudes...</td>
+                <td colspan="5" style="text-align: center; padding: 1.5rem;">Cargando...</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- EMPTY STATE -->
-      <div id="emptyRequestsState" class="empty-state" style="display: none;">
-        <div class="empty-state-icon">📋</div>
-        <h3>Sin solicitudes</h3>
-        <p>No tienes solicitudes creadas aún.</p>
-        <a href="//nueva-solicitud" class="btn-primary">Crear Nueva Solicitud</a>
+      <div style="margin-top: 1.5rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(37, 99, 235, 0.08) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 600; font-size: 1rem;">MONTO TOTAL:</span>
+        <span style="font-size: 1.75rem; font-weight: 700; color: #10b981;" id="modalTotal">$0.00</span>
+      </div>
+
+      <div class="actions">
+        <button onclick="closeModal()" class="btn sec">Cerrar</button>
       </div>
     </div>
   </div>
 
-  <!-- DETAIL MODAL -->
-  <div id="solicitudDetailModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div>
-          <h2>Detalles de Solicitud</h2>
-          <p>ID: <span id="modalSolicitudId" style="font-weight: 600;">#-</span></p>
-        </div>
-        <button class="modal-close" onclick="closeSolicitudDetail()">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Info Section -->
-        <div class="modal-section">
-          <h3>Información General</h3>
-          <div class="info-grid">
-            <div class="info-box">
-              <span class="info-label">Centro</span>
-              <div class="info-value" id="modalDetailCentro">-</div>
-            </div>
-            <div class="info-box">
-              <span class="info-label">Sector</span>
-              <div class="info-value" id="modalDetailSector">-</div>
-            </div>
-            <div class="info-box">
-              <span class="info-label">Almacén</span>
-              <div class="info-value" id="modalDetailAlmacen">-</div>
-            </div>
-            <div class="info-box">
-              <span class="info-label">Estado</span>
-              <div class="info-value" id="modalDetailStatus">-</div>
-            </div>
-            <div class="info-box">
-              <span class="info-label">Criticidad</span>
-              <div class="info-value" id="modalDetailCriticidad">-</div>
-            </div>
-            <div class="info-box">
-              <span class="info-label">Fecha Necesaria</span>
-              <div class="info-value" id="modalDetailFecha">-</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Justificación -->
-        <div class="modal-section">
-          <h3>Justificación</h3>
-          <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-default); color: var(--text-primary); line-height: 1.5; font-size: 13px; max-height: 120px; overflow-y: auto;" id="modalDetailJustificacion">-</div>
-        </div>
-
-        <!-- Materials Table -->
-        <div class="modal-section">
-          <h3>Materiales</h3>
-          <div class="materials-table">
-            <table>
-              <thead>
-                <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-default);">
-                  <th style="padding: 10px 12px; text-align: left; color: var(--text-secondary); font-weight: 600;">Material</th>
-                  <th style="padding: 10px 12px; text-align: center; color: var(--text-secondary); font-weight: 600;">Cantidad</th>
-                  <th style="padding: 10px 12px; text-align: right; color: var(--text-secondary); font-weight: 600;">Precio Unit.</th>
-                  <th style="padding: 10px 12px; text-align: right; color: var(--text-secondary); font-weight: 600;">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody id="modalDetailMaterials">
-                <tr>
-                  <td colspan="4" style="padding: 12px; text-align: center; color: var(--text-secondary);">Cargando materiales...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Total -->
-        <div style="padding: 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%); border: 1px solid #10b981; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-weight: 600; color: var(--text-primary); font-size: 14px;">TOTAL A SOLICITAR:</span>
-          <span style="font-size: 18px; font-weight: 700; color: #10b981;" id="modalDetailTotal">$0.00</span>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button onclick="closeSolicitudDetail()" class="btn-small" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-default);">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOAD COMPONENTS AND INITIALIZE -->
-  <script src="/components/shared-scripts.js"></script>
+  <script src="/app.js"></script>
   <script>
-    // Cargar componentes
-    async function loadComponents() {
-      try {
-        const navbarResponse = await fetch('/components/navbar.html');
-        const headerResponse = await fetch('/components/header.html');
-        
-        if (navbarResponse.ok) {
-          document.getElementById('navbar').innerHTML = await navbarResponse.text();
-        }
-        
-        if (headerResponse.ok) {
-          document.getElementById('header').innerHTML = await headerResponse.text();
-        }
-        
-        updateActiveNavItem();
-        loadUserInfo();
-        setupLogout();
-        setupNotificationBadge();
-      } catch (error) {
-        console.error('Error loading components:', error);
-      }
-    }
+    let allSolicitudes = [];
+    let currentFilter = '';
 
-    // Cargar solicitudes
-    async function loadSolicitudes() {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/solicitudes/user', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const solicitudes = await response.json();
-          
-          if (solicitudes.length === 0) {
-            document.getElementById('userSolicitudesTable').style.display = 'none';
-            document.getElementById('emptyRequestsState').style.display = 'block';
-            return;
-          }
-
-          const tbody = document.getElementById('userSolicitudesBody');
-          tbody.innerHTML = solicitudes.map(sol => `
-            <tr>
-              <td>#${sol.id}</td>
-              <td>${sol.centro}</td>
-              <td>${sol.sector}</td>
-              <td style="text-align: center;">${sol.items}</td>
-              <td style="text-align: right;">$${parseFloat(sol.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
-              <td style="text-align: center;">
-                <span class="status-badge status-${sol.estado.toLowerCase()}">${sol.estado}</span>
-              </td>
-              <td style="text-align: center;">${new Date(sol.fecha).toLocaleDateString('es-AR')}</td>
-              <td style="text-align: center;">
-                <div class="action-buttons">
-                  <button class="btn-small" onclick="showSolicitudDetail(${sol.id})">Ver</button>
-                </div>
-              </td>
-            </tr>
-          `).join('');
-        }
-      } catch (error) {
-        console.error('Error loading solicitudes:', error);
-      }
-    }
-
-    // Mostrar detalle de solicitud
-    async function showSolicitudDetail(solicitudId) {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`/api/solicitudes/${solicitudId}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          
-          document.getElementById('modalSolicitudId').textContent = `#${data.id}`;
-          document.getElementById('modalDetailCentro').textContent = data.centro;
-          document.getElementById('modalDetailSector').textContent = data.sector;
-          document.getElementById('modalDetailAlmacen').textContent = data.almacen;
-          document.getElementById('modalDetailStatus').textContent = data.estado;
-          document.getElementById('modalDetailCriticidad').textContent = data.criticidad;
-          document.getElementById('modalDetailFecha').textContent = new Date(data.fecha_necesaria).toLocaleDateString('es-AR');
-          document.getElementById('modalDetailJustificacion').textContent = data.justificacion;
-          document.getElementById('modalDetailTotal').textContent = `$${parseFloat(data.monto_total).toLocaleString('es-AR', {minimumFractionDigits: 2})}`;
-
-          // Cargar materiales
-          const materialsHtml = data.materiales.map(mat => `
-            <tr>
-              <td style="padding: 10px 12px;">${mat.nombre}</td>
-              <td style="padding: 10px 12px; text-align: center;">${mat.cantidad}</td>
-              <td style="padding: 10px 12px; text-align: right;">$${parseFloat(mat.precio_unitario).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
-              <td style="padding: 10px 12px; text-align: right;">$${parseFloat(mat.subtotal).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
-            </tr>
-          `).join('');
-
-          document.getElementById('modalDetailMaterials').innerHTML = materialsHtml;
-          document.getElementById('solicitudDetailModal').classList.add('active');
-        }
-      } catch (error) {
-        console.error('Error loading solicitud detail:', error);
-      }
-    }
-
-    // Cerrar modal
-    function closeSolicitudDetail() {
-      document.getElementById('solicitudDetailModal').classList.remove('active');
-    }
-
-    // Cerrar modal al hacer click fuera
-    document.addEventListener('click', (e) => {
-      const modal = document.getElementById('solicitudDetailModal');
-      if (e.target === modal) {
-        closeSolicitudDetail();
-      }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadSolicitudes();
+      setupFilters();
     });
 
-    // Inicializar
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        loadComponents();
-        loadSolicitudes();
-      });
-    } else {
-      loadComponents();
-      loadSolicitudes();
+    async function loadSolicitudes() {
+      try {
+        const response = await fetch('/api/solicitudes');
+        if (!response.ok) {
+          throw new Error('Failed to load solicitudes');
+        }
+
+        const data = await response.json();
+        allSolicitudes = data.solicitudes || [];
+
+        updateCounts();
+        renderSolicitudes(allSolicitudes);
+      } catch (error) {
+        console.error('Error loading solicitudes:', error);
+        document.getElementById('solicitudesList').innerHTML = `
+          <div style="text-align: center; padding: 3rem; color: var(--err);">
+            <p>Error al cargar solicitudes. Por favor, intenta nuevamente.</p>
+          </div>
+        `;
+      }
     }
+
+    function updateCounts() {
+      document.getElementById('countAll').textContent = allSolicitudes.length;
+      document.getElementById('countPending').textContent = allSolicitudes.filter(s => s.status === 'pendiente_de_aprobacion').length;
+      document.getElementById('countApproved').textContent = allSolicitudes.filter(s => s.status === 'aprobada').length;
+      document.getElementById('countRejected').textContent = allSolicitudes.filter(s => s.status === 'rechazada').length;
+      document.getElementById('countDrafts').textContent = allSolicitudes.filter(s => s.status === 'draft').length;
+    }
+
+    function renderSolicitudes(solicitudes) {
+      const container = document.getElementById('solicitudesList');
+      const emptyState = document.getElementById('emptyState');
+
+      if (!solicitudes || solicitudes.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'block';
+      emptyState.style.display = 'none';
+
+      container.innerHTML = solicitudes.map(sol => `
+        <div class="solicitud-card" onclick="showDetail(${sol.id})">
+          <div class="solicitud-card__header">
+            <div>
+              <div class="solicitud-card__id">SOL-${String(sol.id).padStart(4, '0')}</div>
+              <h3 class="solicitud-card__title">${sol.centro} - ${sol.sector}</h3>
+            </div>
+            <span class="status-pill status-${sol.status}">${getStatusLabel(sol.status)}</span>
+          </div>
+
+          <div class="solicitud-card__info">
+            <div class="solicitud-card__info-item">
+              <span class="solicitud-card__info-label">Almacén</span>
+              <span class="solicitud-card__info-value">${sol.almacen_virtual || '-'}</span>
+            </div>
+            <div class="solicitud-card__info-item">
+              <span class="solicitud-card__info-label">Criticidad</span>
+              <span class="solicitud-card__info-value">${sol.criticidad || 'Normal'}</span>
+            </div>
+            <div class="solicitud-card__info-item">
+              <span class="solicitud-card__info-label">Items</span>
+              <span class="solicitud-card__info-value">${sol.items_count || 0} materiales</span>
+            </div>
+            <div class="solicitud-card__info-item">
+              <span class="solicitud-card__info-label">Fecha</span>
+              <span class="solicitud-card__info-value">${formatDate(sol.created_at)}</span>
+            </div>
+          </div>
+
+          <div class="solicitud-card__footer">
+            <span class="solicitud-card__monto">$${formatMoney(sol.total_monto)}</span>
+            <button class="btn sec" onclick="event.stopPropagation(); showDetail(${sol.id})">
+              Ver Detalles →
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setupFilters() {
+      // Status filter pills
+      document.querySelectorAll('.status-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.status-filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const status = btn.dataset.status;
+          currentFilter = status;
+          filterSolicitudes();
+        });
+      });
+
+      // Status dropdown
+      document.getElementById('statusFilter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        filterSolicitudes();
+      });
+
+      // Search
+      document.getElementById('searchInput').addEventListener('input', filterSolicitudes);
+
+      // Sort
+      document.getElementById('sortBy').addEventListener('change', filterSolicitudes);
+    }
+
+    function filterSolicitudes() {
+      let filtered = [...allSolicitudes];
+
+      // Filter by status
+      if (currentFilter) {
+        filtered = filtered.filter(s => s.status === currentFilter);
+      }
+
+      // Filter by search
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      if (search) {
+        filtered = filtered.filter(s =>
+          String(s.id).includes(search) ||
+          s.centro?.toLowerCase().includes(search) ||
+          s.sector?.toLowerCase().includes(search)
+        );
+      }
+
+      // Sort
+      const sortBy = document.getElementById('sortBy').value;
+      filtered.sort((a, b) => {
+        switch (sortBy) {
+          case 'recent':
+            return new Date(b.created_at) - new Date(a.created_at);
+          case 'oldest':
+            return new Date(a.created_at) - new Date(b.created_at);
+          case 'amount-high':
+            return (b.total_monto || 0) - (a.total_monto || 0);
+          case 'amount-low':
+            return (a.total_monto || 0) - (b.total_monto || 0);
+          default:
+            return 0;
+        }
+      });
+
+      renderSolicitudes(filtered);
+    }
+
+    async function showDetail(id) {
+      try {
+        const response = await fetch(`/api/solicitudes/${id}`);
+        if (!response.ok) throw new Error('Failed to load details');
+
+        const sol = await response.json();
+
+        document.getElementById('modalId').textContent = `#${String(id).padStart(4, '0')}`;
+        document.getElementById('modalCentro').textContent = sol.centro || '-';
+        document.getElementById('modalSector').textContent = sol.sector || '-';
+        document.getElementById('modalAlmacen').textContent = sol.almacen_virtual || '-';
+        document.getElementById('modalStatus').innerHTML = `<span class="status-pill status-${sol.status}">${getStatusLabel(sol.status)}</span>`;
+        document.getElementById('modalCriticidad').textContent = sol.criticidad || 'Normal';
+        document.getElementById('modalFecha').textContent = formatDate(sol.fecha_necesidad);
+        document.getElementById('modalJustificacion').textContent = sol.justificacion || '-';
+        document.getElementById('modalTotal').textContent = `$${formatMoney(sol.total_monto)}`;
+
+        // Render materials
+        const items = sol.data_json?.items || [];
+        document.getElementById('modalMaterials').innerHTML = items.map(item => `
+          <tr>
+            <td>${item.codigo}</td>
+            <td>${item.descripcion || '-'}</td>
+            <td style="text-align: center;">${item.cantidad}</td>
+            <td style="text-align: right;">$${formatMoney(item.precio_unitario)}</td>
+            <td style="text-align: right;">$${formatMoney(item.cantidad * item.precio_unitario)}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('solicitudDetailModal').classList.remove('hide');
+      } catch (error) {
+        console.error('Error loading detail:', error);
+        alert('Error al cargar los detalles de la solicitud');
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('solicitudDetailModal').classList.add('hide');
+    }
+
+    function getStatusLabel(status) {
+      const labels = {
+        'draft': 'Borrador',
+        'pendiente_de_aprobacion': 'Pendiente',
+        'aprobada': 'Aprobada',
+        'rechazada': 'Rechazada',
+        'finalizada': 'Finalizada'
+      };
+      return labels[status] || status;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      return new Date(dateStr).toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function formatMoney(amount) {
+      return Number(amount || 0).toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // Close modal on click outside
+    document.getElementById('solicitudDetailModal').addEventListener('click', (e) => {
+      if (e.target.id === 'solicitudDetailModal') {
+        closeModal();
+      }
+    });
   </script>
-  </main>
-  <script src="/app.js"></script>
-  </main>
-  <script src="/app.js"></script>
 </body>
 </html>

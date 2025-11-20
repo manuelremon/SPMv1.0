@@ -7,18 +7,22 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header class="app-header">
-    <a href="/dashboard">Dashboard</a>
-    <nav>
-      <a href="/mi-cuenta">Mi Cuenta</a>
-      <a href="/preferencias">Preferencias</a>
-      <a href="/mis-solicitudes">Mis Solicitudes</a>
-      <a href="/crear-solicitud">Crear Solicitud</a>
-      <a href="/materiales">Materiales</a>
-      <a href="/notificaciones">Notificaciones</a>
-      <a href="/presupuesto">Presupuesto</a>
-      <a href="/admin">Admin</a>
-    </nav>
+  <!-- Header with consistent styling -->
+  <header class="app-header" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100;">
+    <div class="app-header__inner" style="max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem;">
+      <a href="/dashboard.html" class="app-logo" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #f8fafc; font-size: 1.25rem; font-weight: 700;">
+        <span>📋 SPM</span>
+      </a>
+      <nav class="app-nav" style="flex: 1;">
+        <ul class="app-menu" style="display: flex; align-items: center; gap: 0.5rem; list-style: none; margin: 0; padding: 0;">
+          <li><a href="/dashboard.html" style="padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; color: #94a3b8; font-size: 0.9375rem; font-weight: 500; transition: 0.2s;">Dashboard</a></li>
+          <li><a href="/mis-solicitudes.html" style="padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; color: #94a3b8; font-size: 0.9375rem; font-weight: 500; transition: 0.2s;">Mis Solicitudes</a></li>
+          <li><a href="/nueva-solicitud.html" style="padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.9375rem; font-weight: 500; transition: 0.2s;">Crear Solicitud</a></li>
+          <li><a href="/materiales.html" style="padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; color: #94a3b8; font-size: 0.9375rem; font-weight: 500; transition: 0.2s;">Materiales</a></li>
+          <li><a href="/admin.html" style="padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; color: #94a3b8; font-size: 0.9375rem; font-weight: 500; transition: 0.2s;">Admin</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
   <main class="main-container">
 <main class="main-container">
@@ -75,7 +79,7 @@
               </div>
 
               <div class="form-group">
-                <label for="almacen">Almacén *</label>
+                <label for="almacen">Almacén Virtual *</label>
                 <select id="almacen" name="almacen" required>
                   <option value="">Seleccionar almacén...</option>
                 </select>
@@ -83,21 +87,24 @@
               </div>
 
               <div class="form-group">
+                <label for="centro_costos">Centro de Costos *</label>
+                <input type="text" id="centro_costos" name="centro_costos" required placeholder="Ej: CC001">
+                <small class="form-help">Código del centro de costos</small>
+              </div>
+
+              <div class="form-group">
                 <label>Criticidad *</label>
                 <div class="radio-group">
                   <label class="radio-label">
-                    <input type="radio" name="criticidad" value="Baja" required>
-                    <span class="criticidad-badge criticidad-baja">Baja</span>
-                  </label>
-                  <label class="radio-label">
-                    <input type="radio" name="criticidad" value="Media" required>
-                    <span class="criticidad-badge criticidad-media">Media</span>
+                    <input type="radio" name="criticidad" value="Normal" required checked>
+                    <span class="criticidad-badge criticidad-baja">Normal</span>
                   </label>
                   <label class="radio-label">
                     <input type="radio" name="criticidad" value="Alta" required>
                     <span class="criticidad-badge criticidad-alta">Alta</span>
                   </label>
                 </div>
+                <small class="form-help">Selecciona la prioridad de esta solicitud</small>
               </div>
             </div>
           </div>
@@ -155,8 +162,12 @@
                     <span class="review-value" id="review-sector">-</span>
                   </div>
                   <div class="review-item">
-                    <span class="review-label">Almacén:</span>
+                    <span class="review-label">Almacén Virtual:</span>
                     <span class="review-value" id="review-almacen">-</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="review-label">Centro de Costos:</span>
+                    <span class="review-value" id="review-centro-costos">-</span>
                   </div>
                   <div class="review-item">
                     <span class="review-label">Criticidad:</span>
@@ -654,45 +665,72 @@
     // Load dropdown catalogs from API
     async function loadCatalogs() {
       try {
-        const response = await fetch('/api/catalogos');
-        if (!response.ok) throw new Error('Error loading catalogs');
-        
-        const data = await response.json();
-        
+        const response = await fetch('http://localhost:5000/api/catalogos', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          console.error('Error loading catalogs:', response.status);
+          showNotification('Error al cargar catálogos. Por favor recarga la página.', 'error');
+          return;
+        }
+
+        const result = await response.json();
+        console.log('Catalogs response:', result); // Debug
+
+        // La API devuelve {ok: true, data: {centros: [...], sectores: [...], almacenes: [...]}}
+        const data = result.data || result;
+
         // Populate Centro
         const centroSelect = document.getElementById('centro');
-        if (data.centros) {
+        if (data.centros && Array.isArray(data.centros)) {
           data.centros.forEach(centro => {
             const option = document.createElement('option');
-            option.value = centro.id;
+            option.value = centro.codigo || centro.id;
             option.textContent = centro.nombre;
             centroSelect.appendChild(option);
           });
+          console.log(`Loaded ${data.centros.length} centros`);
+        } else {
+          console.warn('No centros found in response');
         }
 
         // Populate Almacén
         const almacenSelect = document.getElementById('almacen');
-        if (data.almacenes) {
+        if (data.almacenes && Array.isArray(data.almacenes)) {
           data.almacenes.forEach(almacen => {
             const option = document.createElement('option');
-            option.value = almacen.id;
+            option.value = almacen.codigo || almacen.id;
             option.textContent = almacen.nombre;
             almacenSelect.appendChild(option);
           });
+          console.log(`Loaded ${data.almacenes.length} almacenes`);
+        } else {
+          console.warn('No almacenes found in response');
         }
 
-        // Populate Sector (puede ser dinámico por centro)
+        // Populate Sector
         const sectorSelect = document.getElementById('sector');
-        if (data.sectores) {
+        if (data.sectores && Array.isArray(data.sectores)) {
           data.sectores.forEach(sector => {
             const option = document.createElement('option');
-            option.value = sector.id;
+            option.value = sector.nombre || sector.id;
             option.textContent = sector.nombre;
             sectorSelect.appendChild(option);
           });
+          console.log(`Loaded ${data.sectores.length} sectores`);
+        } else {
+          console.warn('No sectores found in response');
         }
+
+        showNotification('Catálogos cargados correctamente', 'success');
       } catch (error) {
         console.error('Error loading catalogs:', error);
+        showNotification('Error al cargar catálogos: ' + error.message, 'error');
       }
     }
 
@@ -823,12 +861,13 @@
     }
 
     function updateReview() {
-      document.getElementById('review-centro').textContent = 
-        document.querySelector('option[value="' + formData.centro + '"]')?.textContent || '-';
-      document.getElementById('review-sector').textContent = 
-        document.querySelector('option[value="' + formData.sector + '"]')?.textContent || '-';
-      document.getElementById('review-almacen').textContent = 
-        document.querySelector('option[value="' + formData.almacen + '"]')?.textContent || '-';
+      document.getElementById('review-centro').textContent =
+        document.querySelector('#centro option[value="' + formData.centro + '"]')?.textContent || '-';
+      document.getElementById('review-sector').textContent =
+        document.querySelector('#sector option[value="' + formData.sector + '"]')?.textContent || '-';
+      document.getElementById('review-almacen').textContent =
+        document.querySelector('#almacen option[value="' + formData.almacen + '"]')?.textContent || '-';
+      document.getElementById('review-centro-costos').textContent = formData.centro_costos || '-';
       document.getElementById('review-criticidad').textContent = formData.criticidad || '-';
       document.getElementById('review-justificacion').textContent = formData.justificacion || '-';
       document.getElementById('review-fechaNecesaria').textContent = formData.fechaNecesaria || '-';

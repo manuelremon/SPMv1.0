@@ -5,17 +5,22 @@ Contraseña por defecto: "test123" para todos los usuarios
 """
 
 import sqlite3
-import bcrypt
+import base64
+import os
+from hashlib import pbkdf2_hmac
 from pathlib import Path
 
 DB_PATH = Path("src/backend/spm.db")
 DEFAULT_PASSWORD = "test123"
+_ITER = 390_000
+_SALT = 16
 
 def hash_password(password: str) -> str:
-    """Hash de contraseña usando bcrypt"""
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
+    """Hash de contraseña usando PBKDF2 (igual que el backend)"""
+    password = (password or "").strip()
+    salt = os.urandom(_SALT)
+    dig = pbkdf2_hmac("sha256", password.encode("utf-8"), salt, _ITER)
+    return base64.b64encode(salt + dig).decode("ascii")
 
 def create_test_users():
     """Crea/actualiza usuarios de prueba"""
