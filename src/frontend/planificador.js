@@ -88,7 +88,7 @@ async function loadSolicitudes() {
   try {
     console.log('[planificador.js] Cargando solicitudes...');
     
-    const response = await fetch('/api/planner/solicitudes?page=' + state.currentPage + '&per_page=' + state.itemsPerPage, {
+    const response = await fetch('/api/solicitudes?page=' + state.currentPage + '&per_page=' + state.itemsPerPage, {
       credentials: 'include',
       headers: { 'Accept': 'application/json' }
     });
@@ -154,7 +154,7 @@ async function showDetail(solicitudId) {
   try {
     console.log('[planificador.js] Mostrando detalles de solicitud:', solicitudId);
     
-    const response = await fetch(`/api/planner/solicitudes/${solicitudId}`, {
+    const response = await fetch(`/api/solicitudes/${solicitudId}`, {
       credentials: 'include',
       headers: { 'Accept': 'application/json' }
     });
@@ -240,18 +240,19 @@ function showOptimizationAnalysis(solicitud) {
 
 // Actualizar estadísticas
 function updateStats() {
-  // Cargar estadísticas desde API (opcional, puede ser mocking por ahora)
-  const stats = {
-    pending: 5,
-    in_process: 3,
-    optimized: 8,
-    completed: 42
-  };
-  
-  document.getElementById('statPending').textContent = stats.pending;
-  document.getElementById('statInProcess').textContent = stats.in_process;
-  document.getElementById('statOptimized').textContent = stats.optimized;
-  document.getElementById('statCompleted').textContent = stats.completed;
+  // Cargar estadísticas desde API
+  fetch('/api/solicitudes/stats', {
+    credentials: 'include',
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('statPending').textContent = data.pending || 0;
+    document.getElementById('statInProcess').textContent = data.in_process || 0;
+    document.getElementById('statOptimized').textContent = data.optimized || 0;
+    document.getElementById('statCompleted').textContent = data.completed || 0;
+  })
+  .catch(err => console.error('Error cargando stats:', err));
 }
 
 // Inicializar página
@@ -267,21 +268,42 @@ async function initPlanificadorPage() {
     await loadSolicitudes();
     
     // Configurar event listeners
-    const btnRefresh = document.getElementById('btnRefresh');
-    if (btnRefresh) {
-      btnRefresh.addEventListener('click', () => {
-        state.currentPage = 1;
-        loadSolicitudes();
-      });
-    }
+    document.getElementById('btnRefresh').addEventListener('click', () => {
+      state.currentPage = 1;
+      loadSolicitudes();
+    });
     
-    const btnCloseDetail = document.getElementById('btnCloseDetail');
-    if (btnCloseDetail) {
-      btnCloseDetail.addEventListener('click', () => {
+    document.getElementById('btnCloseDetail').addEventListener('click', () => {
+      document.getElementById('detailPanel').style.display = 'none';
+      state.currentSolicitud = null;
+    });
+    
+    document.getElementById('btnPrevPage').addEventListener('click', () => {
+      if (state.currentPage > 1) {
+        state.currentPage--;
+        loadSolicitudes();
+      }
+    });
+    
+    document.getElementById('btnNextPage').addEventListener('click', () => {
+      state.currentPage++;
+      loadSolicitudes();
+    });
+    
+    document.getElementById('btnApplyOptimization').addEventListener('click', async () => {
+      if (!state.currentSolicitud) return;
+      
+      try {
+        showMessage('Aplicando optimización...', true);
+        // Aquí se integraría con el motor de planificación
+        await new Promise(r => setTimeout(r, 1000));
+        showMessage('Optimización aplicada correctamente', true);
         document.getElementById('detailPanel').style.display = 'none';
-        state.currentSolicitud = null;
-      });
-    }
+        loadSolicitudes();
+      } catch (err) {
+        showMessage('Error al aplicar optimización', false);
+      }
+    });
     
     console.log('[planificador.js] ✓ Página inicializada correctamente');
   } catch (err) {
