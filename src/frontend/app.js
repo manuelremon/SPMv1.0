@@ -4021,6 +4021,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('codeSearch') && document.getElementById('btnAdd')) {
     initAddMaterialsPage();
   }
+
+  finalizePage();
 });
 
 // Integrar boot.js

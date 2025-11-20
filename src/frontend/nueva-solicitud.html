@@ -911,8 +911,9 @@
 
         if (response.ok) {
           const data = await response.json();
-          showNotification('Solicitud creada exitosamente', 'success');
-          setTimeout(() => window.location.href = '/solicitudes.html', 1500);
+          showNotification('Solicitud creada exitosamente. Redirigiendo a selección de materiales...', 'success');
+          // Redirect to Add Materials page with the new ID
+          setTimeout(() => window.location.href = `/agregar-materiales.html?id=${data.id}`, 1500);
         } else {
           showNotification('Error al crear solicitud', 'error');
         }

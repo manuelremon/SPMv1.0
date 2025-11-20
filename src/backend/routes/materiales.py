@@ -28,9 +28,10 @@ def search_materiales():
         args.extend([like_any, like_any])
 
     if not clauses:
-        return []
-
-    where = " AND ".join(clauses)
+        # Si no hay filtros, devolver todos (limitados)
+        where = "1=1"
+    else:
+        where = " AND ".join(clauses)
     limit = params.limit
 
     with get_connection() as con:

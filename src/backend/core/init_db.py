@@ -6,8 +6,8 @@ import sqlite3
 import unicodedata
 from typing import Callable, Iterable, Sequence
 
-from ..config import Settings
-from ..db import get_connection
+from .config import Settings
+from .db import get_connection
 from ..services.db.security import hash_password
 
 MigrationFn = Callable[[sqlite3.Connection], None]

@@ -198,13 +198,12 @@
     // Cargar solicitudes
     async function loadSolicitudes() {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/solicitudes/user', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        // Usar el endpoint correcto: /api/solicitudes
+        const response = await fetch('/api/solicitudes');
 
         if (response.ok) {
-          const solicitudes = await response.json();
+          const data = await response.json();
+          const solicitudes = data.items || [];
           
           if (solicitudes.length === 0) {
             document.getElementById('userSolicitudesTable').style.display = 'none';
@@ -213,27 +212,35 @@
           }
 
           const tbody = document.getElementById('userSolicitudesBody');
-          tbody.innerHTML = solicitudes.map(sol => `
+          tbody.innerHTML = solicitudes.map(sol => {
+             // Add Edit button for drafts
+             let actions = `<button class="btn-small" onclick="showSolicitudDetail(${sol.id})">Ver</button>`;
+             if (sol.status === 'draft' || sol.status === 'borrador') {
+               actions += ` <button class="btn-small btn-secondary" onclick="window.location.href='/agregar-materiales.html?id=${sol.id}'">Editar Items</button>`;
+             }
+
+             return `
             <tr>
               <td>#${sol.id}</td>
-              <td>${sol.centro}</td>
-              <td>${sol.sector}</td>
-              <td style="text-align: center;">${sol.items}</td>
-              <td style="text-align: right;">$${parseFloat(sol.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+              <td>${sol.centro || '-'}</td>
+              <td>${sol.sector || '-'}</td>
+              <td style="text-align: center;">${(sol.items || []).length}</td>
+              <td style="text-align: right;">$${parseFloat(sol.total_monto || 0).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
               <td style="text-align: center;">
-                <span class="status-badge status-${sol.estado.toLowerCase()}">${sol.estado}</span>
+                <span class="status-badge status-${(sol.status || '').toLowerCase()}">${sol.status || 'Desconocido'}</span>
               </td>
-              <td style="text-align: center;">${new Date(sol.fecha).toLocaleDateString('es-AR')}</td>
+              <td style="text-align: center;">${new Date(sol.created_at).toLocaleDateString('es-AR')}</td>
               <td style="text-align: center;">
                 <div class="action-buttons">
-                  <button class="btn-small" onclick="showSolicitudDetail(${sol.id})">Ver</button>
+                  ${actions}
                 </div>
               </td>
             </tr>
-          `).join('');
+          `}).join('');
         }
       } catch (error) {
         console.error('Error loading solicitudes:', error);
+        document.getElementById('userSolicitudesBody').innerHTML = `<tr><td colspan="8" style="text-align:center; color:red">Error al cargar: ${error.message}</td></tr>`;
       }
     }
 
