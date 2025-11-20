@@ -71,7 +71,15 @@ def get_solicitud(solicitud_id):
 @bp.route('', methods=['POST'])
 def create_solicitud():
     """Crear una nueva solicitud"""
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
+    if not isinstance(data, dict):
+        return jsonify({
+            "ok": False,
+            "error": {
+                "code": "validation_error",
+                "message": "Invalid JSON payload"
+            }
+        }), 400
     
     new_id = max(s['id'] for s in SOLICITUDES_DB) + 1 if SOLICITUDES_DB else 1
     
@@ -109,7 +117,15 @@ def update_solicitud(solicitud_id):
             }
         }), 404
     
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
+    if not isinstance(data, dict):
+        return jsonify({
+            "ok": False,
+            "error": {
+                "code": "validation_error",
+                "message": "Invalid JSON payload"
+            }
+        }), 400
     solicitud.update(data)
     
     return jsonify({

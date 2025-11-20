@@ -5,16 +5,16 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 let isRefreshing = false
 let failedQueue = []
 
-const onRefreshed = (cb) => {
-  failedQueue.push(cb)
+const onRefreshed = (resolve, reject) => {
+  failedQueue.push({ resolve, reject })
 }
 
-const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
+const processQueue = (error) => {
+  failedQueue.forEach(promise => {
     if (error) {
-      prom.reject(error)
+      promise.reject(error)
     } else {
-      prom.resolve(token)
+      promise.resolve()
     }
   })
   failedQueue = []
@@ -46,9 +46,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
-          onRefreshed(() => resolve(api(originalRequest)))
-            .catch(err => reject(err))
-        }).catch(err => {
+          onRefreshed(resolve, reject)
+        })
+        .then(() => api(originalRequest))
+        .catch(err => {
           window.location.href = '/login'
           return Promise.reject(err)
         })
@@ -61,14 +62,14 @@ api.interceptors.response.use(
         await axios.post(`${API_BASE_URL.replace('/api', '')}/api/auth/refresh`, {}, {
           withCredentials: true
         })
-        isRefreshing = false
         processQueue(null)
         return api(originalRequest)
       } catch (err) {
-        isRefreshing = false
-        processQueue(err, null)
+        processQueue(err)
         window.location.href = '/login'
         return Promise.reject(err)
+      } finally {
+        isRefreshing = false
       }
     }
 
