@@ -1,7 +1,7 @@
 """
 Authentication routes
 """
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
 import bcrypt
 from datetime import datetime, timedelta
 import jwt
@@ -193,3 +193,22 @@ def register():
             "message": "Registration endpoint not available in demo"
         }
     }), 501
+
+
+@bp.route('/csrf', methods=['GET'])
+def get_csrf_token():
+    """Obtener token CSRF para formularios POST"""
+    token = g.get('csrf_token')
+    if not token:
+        return jsonify({
+            "ok": False,
+            "error": {
+                "code": "csrf_error",
+                "message": "Unable to generate CSRF token"
+            }
+        }), 500
+    
+    return jsonify({
+        "ok": True,
+        "csrf_token": token
+    }), 200
