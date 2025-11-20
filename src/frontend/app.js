@@ -4016,11 +4016,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   // Cargar cache de materiales para autocomplete
   loadMaterialsCache();
-  
+
   // Detect agregar-materiales page
   if (document.getElementById('codeSearch') && document.getElementById('btnAdd')) {
     initAddMaterialsPage();
   }
+
+  // Finalizar página: marcar body como listo
+  finalizePage();
 });
 
 // Integrar boot.js
