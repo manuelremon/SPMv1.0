@@ -284,8 +284,11 @@ def _set_cookie(resp, token: str):
 
 
 @auth_bp.post("/login")
+@auth_bp.route("/login", methods=["POST", "OPTIONS"])
 @limit(key='auth_login', limit=1, window=60)
 def login():
+    if request.method == "OPTIONS":
+        return "", 204
     data = request.get_json(silent=True) or {}
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
