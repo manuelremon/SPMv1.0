@@ -1,3 +1,6 @@
+from backend_v2.routes.auth import bp as bp  # noqa: E402
+
+__all__ = ["bp"]
 from __future__ import annotations
 
 import json

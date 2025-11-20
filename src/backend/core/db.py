@@ -1,3 +1,26 @@
+import sqlite3
+from backend_v2.core.config import Settings  # noqa: E402
+from urllib.parse import urlparse
+import os
+
+
+def get_connection():
+    """Compatibility wrapper that returns a sqlite3 connection for tests that use `get_connection`.
+
+    If `Settings.DB_URL` is a sqlite file URL of the form `sqlite:///./file`, then open that file.
+    Otherwise, raise NotImplementedError (Postgres support not implemented by shim).
+    """
+    db_url = Settings.DB_URL
+    if db_url.startswith("sqlite:///"):
+        path = db_url.replace("sqlite:///", "")
+        # ensure directory exists
+        base = os.path.dirname(path)
+        if base and not os.path.exists(base):
+            os.makedirs(base, exist_ok=True)
+        conn = sqlite3.connect(path)
+        conn.row_factory = sqlite3.Row
+        return conn
+    raise NotImplementedError("get_connection only supports sqlite in test shim")
 from __future__ import annotations
 import sqlite3, threading
 from contextlib import contextmanager
