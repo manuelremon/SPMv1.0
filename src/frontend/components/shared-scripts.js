@@ -52,7 +52,7 @@ function setupLogout() {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login.html';
+      window.location.href = '/index.html';
     });
   }
 }
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function checkAuth() {
   const token = localStorage.getItem('token');
   if (!token) {
-    window.location.href = '/login.html';
+    window.location.href = '/index.html';
   }
 }
 

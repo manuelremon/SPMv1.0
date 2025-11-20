@@ -4,8 +4,8 @@ Gestión de abastecimiento de Solicitudes de Materiales
 """
 
 from flask import Blueprint, request, jsonify, current_app
-from src.backend.services.auth.auth import auth_required, get_current_user
-from src.backend.core.db import get_connection
+from ..services.auth.auth import auth_required, get_current_user
+from ..core.db import get_connection
 import logging
 
 bp = Blueprint('planner', __name__, url_prefix='/api/planner')

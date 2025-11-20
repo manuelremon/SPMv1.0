@@ -39,6 +39,10 @@ class Settings:
     ACCESS_TOKEN_TTL = int(os.getenv("SPM_ACCESS_TTL", "3600"))
     TOKEN_TTL = int(os.getenv("SPM_TOKEN_TTL", str(ACCESS_TOKEN_TTL)))
 
+    # JWT Configuration (reuse SECRET_KEY for JWT signing)
+    JWT_SECRET = SECRET_KEY
+    REFRESH_TOKEN_TTL = ACCESS_TOKEN_TTL * 24  # 24 hours
+
     COOKIE_NAME = os.getenv("SPM_COOKIE_NAME", "spm_session")
     COOKIE_SAMESITE = os.getenv("SPM_COOKIE_SAMESITE", "Lax") or "Lax"
     COOKIE_SECURE = _env_flag("SPM_COOKIE_SECURE", "0" if DEBUG else "1")
