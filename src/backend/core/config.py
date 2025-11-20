@@ -61,20 +61,11 @@ class Settings:
     MAX_CONTENT_LENGTH = int(os.getenv("SPM_MAX_CONTENT_LENGTH", str(16 * 1024 * 1024)))
 
     CORS_ORIGINS = _split_csv("SPM_CORS_ORIGINS", FRONTEND_ORIGIN)
-    OLLAMA_ENDPOINT = os.getenv("SPM_OLLAMA_URL", "http://127.0.0.1:11434")
-    OLLAMA_MODEL = os.getenv("SPM_OLLAMA_MODEL", "mistral")
-
-    # Configuracion de IA
-    AI_ENABLE: bool = bool(int(os.getenv("AI_ENABLE", "1")))
-    AI_EMBED_MODEL: str = os.getenv("AI_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-    AI_PRICE_SMOOTHING: float = float(os.getenv("AI_PRICE_SMOOTHING", "0.5"))
-    AI_MAX_SUGGESTIONS: int = int(os.getenv("AI_MAX_SUGGESTIONS", "5"))
 
     STATUS_TIMEOUT_MS = int(os.getenv("STATUS_TIMEOUT_MS", "2000"))
     STATUS_CACHE_SECS = int(os.getenv("STATUS_CACHE_SECS", "30"))
     STATUS_CHECK_GITHUB = os.getenv("STATUS_CHECK_GITHUB", "1").strip().lower() not in {"0", "false", "no"}
     STATUS_CHECK_RENDER = os.getenv("STATUS_CHECK_RENDER", "1").strip().lower() not in {"0", "false", "no"}
-    STATUS_CHECK_OLLAMA = os.getenv("STATUS_CHECK_OLLAMA", "1").strip().lower() not in {"0", "false", "no"}
 
     @classmethod
     def ensure_dirs(cls) -> None:

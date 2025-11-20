@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Materiales - SPM</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .materials-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--spacing-lg);
+    }
+
+    .materials-search {
+      background: var(--surface-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-box {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .search-input {
+      flex: 1;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+
+    .materials-list {
+      display: grid;
+      gap: var(--spacing-md);
+    }
+
+    .material-card {
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .material-info h3 {
+      margin: 0 0 var(--spacing-xs) 0;
+      font-size: 1rem;
+    }
+
+    .material-meta {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .request-summary {
+      background: var(--surface-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+      height: fit-content;
+    }
+
+    .summary-items {
+      margin: var(--spacing-lg) 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-total {
+      border-top: 2px solid var(--border-color);
+      padding-top: var(--spacing-md);
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+    }
+
+    .actions-bar {
+      margin-top: var(--spacing-xl);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-md);
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <a href="/dashboard">Dashboard</a>
+    <nav>
+      <a href="/mi-cuenta">Mi Cuenta</a>
+      <a href="/mis-solicitudes">Mis Solicitudes</a>
+      <a href="/crear-solicitud">Crear Solicitud</a>
+      <a href="/materiales">Materiales</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <div class="content-header">
+      <h1 class="page-title">Agregar Materiales</h1>
+      <p class="page-subtitle">Solicitud #<span id="solicitudId">-</span></p>
+    </div>
+
+    <div class="materials-container">
+      <!-- Search & List -->
+      <div class="materials-search">
+        <div class="search-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar material por código o descripción...">
+          <button class="btn btn-secondary" id="searchBtn">Buscar</button>
+        </div>
+
+        <div id="materialsList" class="materials-list">
+          <!-- Material cards will be inserted here -->
+          <div class="loading">Cargando materiales...</div>
+        </div>
+      </div>
+
+      <!-- Request Summary -->
+      <div class="request-summary">
+        <h3>Resumen de Solicitud</h3>
+        <div class="summary-items" id="selectedItems">
+          <!-- Selected items will be listed here -->
+        </div>
+        <div class="summary-total">
+          <span>Total Estimado</span>
+          <span id="totalAmount">$0.00</span>
+        </div>
+
+        <div class="actions-bar">
+          <button class="btn btn-secondary" onclick="window.location.href='/solicitudes.html'">Guardar y Salir</button>
+          <button class="btn btn-primary" id="finalizeBtn">Finalizar Solicitud</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/boot.js"></script>
+  <script src="/utils/api.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const solicitudId = urlParams.get('id');
+    let currentSolicitud = null;
+    let allMaterials = [];
+
+    if (!solicitudId) {
+      alert('No se especificó una solicitud');
+      window.location.href = '/crear-solicitud';
+    }
+
+    document.getElementById('solicitudId').textContent = solicitudId;
+
+    // Load Data
+    async function init() {
+      try {
+        // Load Solicitud
+        const solRes = await window.API.xfetch(`/api/solicitudes/${solicitudId}`, { method: 'GET' }); // using xfetch wrapper from api.js if available or fetch directly
+        // api.js defines xfetch but doesn't expose it directly on window.API usually, it exposes methods.
+        // Let's use standard fetch with auth headers
+
+        const response = await fetch(`/api/solicitudes/${solicitudId}`);
+        if (!response.ok) throw new Error('Error cargando solicitud');
+        const data = await response.json();
+        currentSolicitud = data.solicitud;
+
+        renderSummary();
+
+        // Load Materials
+        const matRes = await fetch('/api/materiales');
+        const matData = await matRes.json();
+        allMaterials = matData.items || []; // Assuming standard pagination structure or list
+        if(Array.isArray(matData)) allMaterials = matData; // fallback
+
+        renderMaterials(allMaterials);
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error cargando datos: ' + error.message);
+      }
+    }
+
+    function renderMaterials(materials) {
+      const container = document.getElementById('materialsList');
+      container.innerHTML = '';
+
+      if (materials.length === 0) {
+        container.innerHTML = '<p>No se encontraron materiales.</p>';
+        return;
+      }
+
+      materials.forEach(mat => {
+        const card = document.createElement('div');
+        card.className = 'material-card';
+        card.innerHTML = `
+          <div class="material-info">
+            <h3>${mat.descripcion}</h3>
+            <div class="material-meta">
+              Code: ${mat.codigo} | Unidad: ${mat.unidad} | Precio: $${mat.precio_usd}
+            </div>
+          </div>
+          <div class="material-actions">
+            <button class="btn btn-sm btn-secondary" onclick="addMaterial('${mat.codigo}')">
+              Agregar
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderSummary() {
+      const container = document.getElementById('selectedItems');
+      const totalEl = document.getElementById('totalAmount');
+
+      container.innerHTML = '';
+      let total = 0;
+
+      (currentSolicitud.items || []).forEach((item, index) => {
+        const subtotal = item.cantidad * item.precio_unitario;
+        total += subtotal;
+
+        const div = document.createElement('div');
+        div.className = 'summary-item';
+        div.innerHTML = `
+          <div>
+            <div>${item.descripcion}</div>
+            <small>${item.cantidad} x $${item.precio_unitario}</small>
+          </div>
+          <div style="text-align: right">
+            <div>$${subtotal.toFixed(2)}</div>
+            <small style="color: var(--danger); cursor: pointer" onclick="removeItem(${index})">Eliminar</small>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      totalEl.textContent = `$${total.toFixed(2)}`;
+    }
+
+    async function addMaterial(codigo) {
+      const material = allMaterials.find(m => m.codigo === codigo);
+      if (!material) return;
+
+      const qty = prompt(`Cantidad para ${material.descripcion}:`, "1");
+      if (!qty || isNaN(qty) || qty <= 0) return;
+
+      const newItem = {
+        codigo: material.codigo,
+        descripcion: material.descripcion,
+        cantidad: parseInt(qty),
+        precio_unitario: material.precio_usd,
+        unidad: material.unidad
+      };
+
+      // Update local state
+      if (!currentSolicitud.items) currentSolicitud.items = [];
+
+      // Check if exists to update quantity or add new
+      const existing = currentSolicitud.items.find(i => i.codigo === codigo);
+      if (existing) {
+        existing.cantidad += parseInt(qty);
+      } else {
+        currentSolicitud.items.push(newItem);
+      }
+
+      // Save to backend
+      await saveSolicitud();
+    }
+
+    async function removeItem(index) {
+      if (!confirm('¿Eliminar este ítem?')) return;
+      currentSolicitud.items.splice(index, 1);
+      await saveSolicitud();
+    }
+
+    async function saveSolicitud() {
+      try {
+        // Solicitudes endpoint expects { items: [...] } and other fields.
+        // We are in draft mode usually or updating an existing one.
+        // The backend endpoint for update is PUT /solicitudes/<id> which finalizes it, or PATCH /solicitudes/<id>/draft for drafts.
+        // Let's assume we are editing a draft.
+
+        const endpoint = `/api/solicitudes/${solicitudId}/draft`;
+
+        // Calculate total
+        const total = currentSolicitud.items.reduce((sum, i) => sum + (i.cantidad * i.precio_unitario), 0);
+
+        const payload = {
+          items: currentSolicitud.items,
+          total_monto: total
+        };
+
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('Error guardando cambios');
+
+        renderSummary();
+        // Optional: show toast
+
+      } catch (e) {
+        console.error(e);
+        alert('Error guardando: ' + e.message);
+      }
+    }
+
+    document.getElementById('finalizeBtn').addEventListener('click', async () => {
+      if (!confirm('¿Finalizar y enviar solicitud para aprobación?')) return;
+
+      try {
+         const res = await fetch(`/api/solicitudes/${solicitudId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...currentSolicitud,
+            status: 'pendiente_de_aprobacion' // explicit status or let backend handle
+          })
+        });
+
+        if (res.ok) {
+          alert('Solicitud enviada exitosamente');
+          window.location.href = '/solicitudes.html';
+        } else {
+          const err = await res.json();
+          throw new Error(err.error?.message || 'Error desconocido');
+        }
+      } catch (e) {
+        alert('Error finalizando: ' + e.message);
+      }
+    });
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allMaterials.filter(m =>
+        m.codigo.toLowerCase().includes(term) ||
+        m.descripcion.toLowerCase().includes(term)
+      );
+      renderMaterials(filtered);
+    });
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>

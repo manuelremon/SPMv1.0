@@ -24,9 +24,7 @@ class MaterialSearchQuery(BaseModel):
 
     @model_validator(mode="after")
     def _check_filters(self) -> "MaterialSearchQuery":
-        provided = [self.q, self.codigo, self.descripcion]
-        if not any(value for value in provided if isinstance(value, str) and value.strip()):
-            raise ValueError("Debe indicar código, descripción o un término de búsqueda")
+        # Removed mandatory check to allow listing all materials
         return self
 
 class SolicitudItem(BaseModel):
