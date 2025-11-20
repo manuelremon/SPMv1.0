@@ -49,7 +49,7 @@ class User:
         self.username = username
         self.password_hash = password_hash
     def check_password(self, password):
-        from ..security import verify_password
+        from ..services.db.security import verify_password
         valid, _ = verify_password(self.password_hash, password)
         return valid
 

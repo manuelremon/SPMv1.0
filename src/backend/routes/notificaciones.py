@@ -5,7 +5,7 @@ from flask import Blueprint, request
 from ..core.db import get_connection
 from ..models.schemas import CentroRequestDecision
 from ..services.auth.auth import authenticate_request, get_current_user_id
-from ..solicitudes import STATUS_PENDING
+from .solicitudes import STATUS_PENDING
 
 bp = Blueprint("notificaciones", __name__, url_prefix="/api")
 

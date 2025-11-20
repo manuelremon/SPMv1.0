@@ -20,6 +20,14 @@ from .routes.solicitudes_archivos import bp as bp_up
 from .routes.planner_routes import bp as planner_bp
 # V1 removed - using V2 only
 from .routes.form_intelligence_routes_v2 import bp as form_intelligence_v2_bp
+# Additional blueprints
+from .routes.admin import bp as admin_bp
+from .routes.usuarios import bp as usuarios_bp, bp_me as usuarios_me_bp
+from .routes.presupuestos import bp as presupuestos_bp
+from .routes.notificaciones import bp as notificaciones_bp
+from .routes.abastecimiento import bp as abastecimiento_bp
+from .routes.archivos import bp as archivos_bp
+from .routes.chatbot import bp as chatbot_bp
 # from .export_solicitudes import bp as export_bp  # TODO: Crear este módulo o agregar funciones al blueprint
 # from .files import files_bp  # TODO: Descomentar cuando el módulo exista
 from .services.auth.jwt_utils import verify_token
@@ -222,6 +230,15 @@ def create_app() -> Flask:
     app.register_blueprint(planner_bp)
     # V1 removed - using V2 only
     app.register_blueprint(form_intelligence_v2_bp)
+    # Additional blueprints
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(usuarios_bp)
+    app.register_blueprint(usuarios_me_bp)
+    app.register_blueprint(presupuestos_bp)
+    app.register_blueprint(notificaciones_bp)
+    app.register_blueprint(abastecimiento_bp)
+    app.register_blueprint(archivos_bp)
+    app.register_blueprint(chatbot_bp)
     # app.register_blueprint(export_bp)  # TODO: Descomentar cuando se cree el módulo
     # app.register_blueprint(files_bp)  # TODO: Descomentar cuando el módulo exista
 

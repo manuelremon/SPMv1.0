@@ -126,6 +126,7 @@ const AuthAPI = {
   }
 };
 
-// Exponer para depuración
+// Export as both AuthAPI and API for compatibility
 window.AuthAPI = AuthAPI;
+window.API = AuthAPI;  // Alias for compatibility with boot.js and other code
 })();
