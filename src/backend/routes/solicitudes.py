@@ -54,6 +54,46 @@ def _coerce_str(value: Any) -> str:
     return str(value).strip() if value is not None else ""
 
 
+def _map_criticidad(value: Any) -> str | None:
+    """Normaliza valores de criticidad del frontend a lo que espera el modelo Pydantic."""
+    v = _coerce_str(value).lower()
+    if not v:
+        return None
+    if v in {"alta", "high", "crítica", "critica"}:
+        return "Alta"
+    return "Normal"
+
+
+def _get_payload_from_request() -> dict[str, Any]:
+    """Unifica la lectura del payload: JSON o FormData."""
+    content_type = (request.content_type or "").lower()
+
+    if "application/json" in content_type:
+        return request.get_json(force=True, silent=False) or {}
+
+    # FormData case
+    form = request.form.to_dict(flat=True)
+    payload = {
+        "centro": form.get("centro"),
+        "sector": form.get("sector"),
+        "justificacion": form.get("justificacion"),
+        "almacen_virtual": form.get("almacen_virtual") or form.get("almacen"),
+        "fecha_necesidad": form.get("fecha_necesidad") or form.get("fechaNecesaria") or form.get("fecha_necesaria"),
+        "centro_costos": form.get("centro_costos") or form.get("centroCostos"),
+        "criticidad": _map_criticidad(form.get("criticidad")),
+    }
+
+    # Handle items - FormData sends items as a JSON string
+    items_str = form.get("items")
+    if items_str:
+        try:
+            payload["items"] = json.loads(items_str)
+        except (json.JSONDecodeError, TypeError):
+            payload["items"] = []
+
+    return payload
+
+
 def _fetch_user(con, uid: str | None):
     if not uid:
         return None
@@ -718,7 +758,8 @@ def crear_borrador():
     uid = _require_auth()
     if not uid:
         return _json_error("NOAUTH", "No autenticado", 401)
-    payload = request.get_json(force=True, silent=False) or {}
+    # NUEVO: unificamos la lectura del cuerpo
+    payload = _get_payload_from_request()
     try:
         draft_data = _parse_draft_payload(uid, payload)
     except Exception as exc:  # validation error
@@ -784,7 +825,8 @@ def actualizar_borrador(sol_id: int):
     uid = _require_auth()
     if not uid:
         return _json_error("NOAUTH", "No autenticado", 401)
-    payload = request.get_json(force=True, silent=False) or {}
+    # NUEVO: unificamos la lectura del cuerpo
+    payload = _get_payload_from_request()
     try:
         draft_data = _parse_full_payload(uid, payload, expect_items=False)
     except ValueError as exc:
@@ -970,8 +1012,9 @@ def crear_solicitud():
     uid = _require_auth()
     if not uid:
         return _json_error("NOAUTH", "No autenticado", 401)
-    payload = request.get_json(force=True, silent=False) or {}
-    
+    # NUEVO: unificamos la lectura del cuerpo
+    payload = _get_payload_from_request()
+
     with get_connection() as con:
         con.row_factory = lambda cursor, row: {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
         try:

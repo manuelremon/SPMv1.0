@@ -1,7 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)"
+      "Bash(Select-Object ProcessName, Id, CPU)",
+      "Bash(Get-NetTCPConnection)",
+      "Bash(Where-Object { $_ocalPort -eq 5000 -or $_ocalPort -eq 5173 })",
+      "Bash(Select-Object LocalPort, State, OwningProcess)",
+      "Bash(netstat:*)",
+      "Bash(ss:*)",
+      "Bash(test:*)",
+      "Bash(py:*)",
+      "Bash(python -m venv:*)",
+      "Bash(. .venv/Scripts/activate)",
+      "Bash(pip --version:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(curl:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": [],
     "ask": []
