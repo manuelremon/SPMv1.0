@@ -149,3 +149,13 @@ def _register_error_handlers(app: Flask) -> None:
                 "message": "Method not allowed"
             }
         }), 405
+
+
+if __name__ == "__main__":
+    app = create_app()
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=True,
+        use_reloader=True
+    )
