@@ -18,8 +18,8 @@ from .routes.preferences import bp as preferences_bp
 from .routes.solicitudes import bp as solicitudes_bp
 from .routes.solicitudes_archivos import bp as bp_up
 from .routes.planner_routes import bp as planner_bp
-# from .routes.form_intelligence_routes import bp as form_intelligence_bp  # DESACTIVADO: AI Assistant removido
-# from .routes.form_intelligence_routes_v2 import bp as form_intelligence_v2_bp  # DESACTIVADO: AI Assistant removido
+# V1 removed - using V2 only
+from .routes.form_intelligence_routes_v2 import bp as form_intelligence_v2_bp
 # from .export_solicitudes import bp as export_bp  # TODO: Crear este módulo o agregar funciones al blueprint
 # from .files import files_bp  # TODO: Descomentar cuando el módulo exista
 from .services.auth.jwt_utils import verify_token
@@ -220,8 +220,8 @@ def create_app() -> Flask:
     app.register_blueprint(solicitudes_bp)
     app.register_blueprint(bp_up)
     app.register_blueprint(planner_bp)
-    # app.register_blueprint(form_intelligence_bp)  # DESACTIVADO: AI Assistant removido
-    # app.register_blueprint(form_intelligence_v2_bp)  # DESACTIVADO: AI Assistant removido
+    # V1 removed - using V2 only
+    app.register_blueprint(form_intelligence_v2_bp)
     # app.register_blueprint(export_bp)  # TODO: Descomentar cuando se cree el módulo
     # app.register_blueprint(files_bp)  # TODO: Descomentar cuando el módulo exista
 
