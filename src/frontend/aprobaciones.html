@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Aprobaciones - SPM</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color, #e5e7eb);
+      text-align: left;
+    }
+    .actions button {
+      margin-right: 6px;
+    }
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-items {
+      margin-top: 12px;
+    }
+    .modal-items table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .modal-items th, .modal-items td {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <a href="/dashboard.html">Dashboard</a>
+    <nav>
+      <a href="/solicitudes.html">Mis Solicitudes</a>
+      <a href="/aprobaciones.html" class="active">Mis Aprobaciones</a>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <div class="content-header">
+      <h1 class="page-title">Mis aprobaciones pendientes</h1>
+      <p class="page-subtitle">Solicitudes asignadas para tu decisión</p>
+    </div>
+
+    <section class="card">
+      <table class="table" id="tablaAprobaciones">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Centro</th>
+            <th>Sector</th>
+            <th>Solicitante</th>
+            <th>Monto</th>
+            <th>Criticidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="7">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modalDetalle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitulo">Detalle solicitud</h3>
+        <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+      </div>
+      <div id="modalContenido">
+        <!-- Detalle dinámico -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const headersAuth = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+    async function loadPendingApprovals() {
+      const tbody = document.querySelector('#tablaAprobaciones tbody');
+      tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
+      try {
+        const res = await fetch('/api/solicitudes?status=pendiente_de_aprobacion', {
+          headers: { 'Accept': 'application/json', ...headersAuth },
+          credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Error obteniendo aprobaciones');
+        const data = await res.json();
+        const items = data.items || data.solicitudes || [];
+        if (!items.length) {
+          tbody.innerHTML = '<tr><td colspan="7">Sin solicitudes pendientes</td></tr>';
+          return;
+        }
+        tbody.innerHTML = '';
+        items.forEach(sol => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${sol.id}</td>
+            <td>${sol.centro || '-'}</td>
+            <td>${sol.sector || '-'}</td>
+            <td>${sol.id_usuario || '-'}</td>
+            <td>$${(sol.total_monto || 0).toFixed ? sol.total_monto.toFixed(2) : sol.total_monto}</td>
+            <td>${sol.criticidad || '-'}</td>
+            <td class="actions">
+              <button class="btn btn-sm btn-secondary" data-id="${sol.id}" data-action="ver">Ver</button>
+              <button class="btn btn-sm btn-primary" data-id="${sol.id}" data-action="aprobar">Aprobar</button>
+              <button class="btn btn-sm btn-danger" data-id="${sol.id}" data-action="rechazar">Rechazar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+        tbody.querySelectorAll('button[data-action]').forEach(btn => {
+          const id = btn.dataset.id;
+          const action = btn.dataset.action;
+          if (action === 'ver') btn.onclick = () => showApprovalDetail(id);
+          if (action === 'aprobar') btn.onclick = () => approve(id);
+          if (action === 'rechazar') btn.onclick = () => rejectSolicitud(id);
+        });
+      } catch (err) {
+        console.error(err);
+        alert('No se pudieron cargar las aprobaciones: ' + err.message);
+      }
+    }
+
+    async function showApprovalDetail(id) {
+      try {
+        const res = await fetch(`/api/solicitudes/${id}`, {
+          headers: { 'Accept': 'application/json', ...headersAuth },
+          credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Error obteniendo detalle');
+        const data = await res.json();
+        const sol = data.solicitud || data;
+        const container = document.getElementById('modalContenido');
+        const items = sol.items || [];
+        const itemsRows = items.map(i => `
+          <tr>
+            <td>${i.codigo || ''}</td>
+            <td>${i.descripcion || ''}</td>
+            <td>${i.unidad || ''}</td>
+            <td>${i.cantidad || 0}</td>
+            <td>$${i.precio_unitario || 0}</td>
+            <td>$${i.subtotal || (i.cantidad * i.precio_unitario || 0)}</td>
+          </tr>
+        `).join('');
+        container.innerHTML = `
+          <p><strong>Centro:</strong> ${sol.centro || '-'}</p>
+          <p><strong>Sector:</strong> ${sol.sector || '-'}</p>
+          <p><strong>Solicitante:</strong> ${sol.id_usuario || '-'}</p>
+          <p><strong>Criticidad:</strong> ${sol.criticidad || '-'}</p>
+          <p><strong>Total:</strong> $${sol.total_monto || 0}</p>
+          <p><strong>Justificación:</strong><br>${(sol.justificacion || '').replace(/\\n/g, '<br>')}</p>
+          <div class="modal-items">
+            <h4>Ítems</h4>
+            <table>
+              <thead>
+                <tr><th>Código</th><th>Descripción</th><th>Unidad</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr>
+              </thead>
+              <tbody>${itemsRows || '<tr><td colspan="6">Sin ítems</td></tr>'}</tbody>
+            </table>
+          </div>
+        `;
+        document.getElementById('modalTitulo').textContent = `Solicitud #${id}`;
+        document.getElementById('modalDetalle').style.display = 'flex';
+      } catch (err) {
+        console.error(err);
+        alert('No se pudo cargar el detalle: ' + err.message);
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalDetalle').style.display = 'none';
+    }
+
+    async function decideSolicitud(id, accion, comentario) {
+      try {
+        const res = await fetch(`/api/solicitudes/${id}/decidir`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', ...headersAuth },
+          credentials: 'include',
+          body: JSON.stringify({ accion, comentario })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${res.status}`);
+        }
+        alert(`Solicitud #${id} ${accion === 'aprobar' ? 'aprobada' : 'rechazada'} correctamente`);
+        cerrarModal();
+        loadPendingApprovals();
+      } catch (err) {
+        console.error(err);
+        alert('No se pudo procesar la decisión: ' + err.message);
+      }
+    }
+
+    function approve(id) {
+      if (!confirm(`¿Aprobar la solicitud #${id}?`)) return;
+      decideSolicitud(id, 'aprobar', null);
+    }
+
+    function rejectSolicitud(id) {
+      const motivo = prompt('Motivo de rechazo (opcional):', '');
+      if (motivo === null) return; // cancel
+      decideSolicitud(id, 'rechazar', motivo || null);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPendingApprovals();
+    });
+  </script>
+</body>
+</html>

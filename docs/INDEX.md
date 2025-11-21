@@ -24,7 +24,7 @@ Ver carpeta [api/](api/) para documentación de endpoints y autenticación.
 
 La carpeta [archive/](archive/) contiene documentación histórica de sesiones, análisis y pruebas:
 
-- Sessions y auditorías
+- Sesiones y auditorías
 - Análisis de base de datos
 - Reportes de estado
 - Notas de desarrollo pasadas
@@ -36,3 +36,4 @@ La carpeta [archive/](archive/) contiene documentación histórica de sesiones, 
 ## Estructura del Proyecto
 
 - [STRUCTURE](STRUCTURE.md) - Arquitectura técnica detallada
+- [DOCUMENTATION_INDEX](DOCUMENTATION_INDEX.md) - Índice vivo y rutas de referencia

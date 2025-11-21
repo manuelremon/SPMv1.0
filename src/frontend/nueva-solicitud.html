@@ -206,7 +206,7 @@
             <button type="button" class="btn btn-secondary" id="draftBtn" style="display: none;">
               📁 Guardar como Borrador
             </button>
-            <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+            <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;" onclick="submitSolicitud()">
               ✓ Enviar Solicitud
             </button>
           </div>
@@ -891,35 +891,48 @@
 
     async function submitSolicitud() {
       saveStepData();
-      
+
+      // Construir FormData con los nombres que el backend mapea (_get_payload_from_request)
       const formDataObj = new FormData();
-      Object.keys(formData).forEach(key => {
-        formDataObj.append(key, formData[key]);
-      });
+      formDataObj.append('centro', formData.centro || '');
+      formDataObj.append('sector', formData.sector || '');
+      formDataObj.append('justificacion', formData.justificacion || '');
+      formDataObj.append('centro_costos', formData.centro_costos || formData.centroCostos || '');
+      formDataObj.append('almacen_virtual', formData.almacen_virtual || formData.almacen || '');
+      formDataObj.append('criticidad', formData.criticidad || '');
+      formDataObj.append('fecha_necesidad', formData.fecha_necesaria || formData.fechaNecesaria || '');
+      if (formData.observaciones) {
+        formDataObj.append('observaciones', formData.observaciones);
+      }
       selectedFiles.forEach(file => {
         formDataObj.append('archivos', file);
       });
 
       try {
-        const response = await fetch('/api/solicitudes', {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/solicitudes', {
           method: 'POST',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
           body: formDataObj,
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+          credentials: 'include'
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          showNotification('Solicitud creada exitosamente. Redirigiendo a selección de materiales...', 'success');
-          // Redirect to Add Materials page with the new ID
-          setTimeout(() => window.location.href = `/agregar-materiales.html?id=${data.id}`, 1500);
-        } else {
-          showNotification('Error al crear solicitud', 'error');
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error?.message || `Error HTTP ${res.status}`);
         }
-      } catch (error) {
-        console.error('Error submitting solicitud:', error);
-        showNotification('Error al crear solicitud', 'error');
+
+        const data = await res.json();
+        const solicitudId = data.id || data.solicitud?.id;
+
+        if (!solicitudId) {
+          throw new Error('La API no devolvio id de solicitud');
+        }
+
+        window.location.href = `/agregar-materiales.html?id=${solicitudId}`;
+      } catch (e) {
+        console.error(e);
+        alert('Error creando solicitud: ' + e.message);
       }
     }
 

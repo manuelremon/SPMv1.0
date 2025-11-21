@@ -859,10 +859,7 @@ def actualizar_borrador(sol_id: int):
     if not user_id:
         return _json_error("NOAUTH", "No autenticado", status=401)
 
-    if not request.is_json:
-        return _json_error("BAD_REQUEST", "Se esperaba JSON", status=400)
-
-    incoming = request.get_json(silent=False) or {}
+    incoming = _get_payload_from_request()
 
     with get_connection() as con:
         con.row_factory = lambda cur, row: {col[0]: row[idx] for idx, col in enumerate(cur.description)}
@@ -1045,10 +1042,7 @@ def finalizar_solicitud(sol_id: int):
     if not user_id:
         return _json_error("NOAUTH", "No autenticado", status=401)
 
-    if not request.is_json:
-        return _json_error("BAD_REQUEST", "Se esperaba JSON", status=400)
-
-    incoming = request.get_json(silent=False) or {}
+    incoming = _get_payload_from_request()
 
     with get_connection() as con:
         con.row_factory = lambda cur, row: {col[0]: row[idx] for idx, col in enumerate(cur.description)}
@@ -1133,12 +1127,7 @@ def finalizar_solicitud(sol_id: int):
         serialized = _serialize_row(updated, detailed=True)
 
         if approver_id:
-            _create_notification(
-                con,
-                destinatario_id=approver_id,
-                solicitud_id=sol_id,
-                mensaje=f"Nueva solicitud #{sol_id} pendiente de aprobación",
-            )
+            _create_notification(con, approver_id, sol_id, f"Nueva solicitud #{sol_id} pendiente de aprobación")
             con.commit()
 
     return _json_ok({"solicitud": serialized})
@@ -1154,89 +1143,31 @@ def crear_solicitud():
     if not user_id:
         return _json_error("NOAUTH", "No autenticado", status=401)
 
-    # 1) Payload inicial de borrador
-    try:
-        draft_raw = _build_initial_payload_from_request(user_id)
-        draft = _parse_draft_payload(user_id, draft_raw)
-    except Exception as exc:
-        return _json_error("BAD_REQUEST", str(exc), status=400)
+    payload = _get_payload_from_request()
 
     with get_connection() as con:
         con.row_factory = lambda cur, row: {col[0]: row[idx] for idx, col in enumerate(cur.description)}
+        try:
+            final_data = _parse_full_payload(user_id, payload, expect_items=True, con=con)
+        except ValueError as exc:
+            return _json_error("BAD_REQUEST", str(exc), 400)
+        except Exception as exc:
+            return _json_error("BAD_REQUEST", str(exc), 400)
 
+        dummy_row = {
+            "id": None,
+            "data_json": json.dumps({}, ensure_ascii=False),
+            "planner_id": None,
+        }
+        final_data["id_usuario"] = user_id.lower()
         user = _fetch_user(con, user_id)
-        if not user:
-            return _json_error("USER_NOT_FOUND", "Usuario no encontrado", status=404)
-
-        # Construimos payload completo de la solicitud todavía sin ítems
-        payload = dict(draft)
-        payload["items"] = []
-        payload["total_monto"] = 0.0
-
-        centro, sector, justificacion, centro_costos, almacen_virtual, criticidad, fecha_necesidad = _sync_columns_from_payload(payload)
-
-        approver_id = _resolve_approver(con, user, payload["total_monto"])
-        approver_id = _ensure_user_exists(con, approver_id) if approver_id else None
-
-        planner_id = _assign_planner_automatically(
-            con,
-            centro or payload.get("centro"),
-            sector or payload.get("sector"),
-            almacen_virtual or payload.get("almacen_virtual"),
-        )
-
-        payload["aprobador_id"] = approver_id
-        payload["planner_id"] = planner_id
-
-        data_json = json.dumps(payload, ensure_ascii=False)
-
-        columns = (
-            "id_usuario",
-            "centro",
-            "sector",
-            "justificacion",
-            "centro_costos",
-            "almacen_virtual",
-            "criticidad",
-            "fecha_necesidad",
-            "data_json",
-            "status",
-            "aprobador_id",
-            "planner_id",
-            "total_monto",
-        )
-        values = [
-            user_id,
-            centro,
-            sector,
-            justificacion,
-            centro_costos,
-            almacen_virtual,
-            criticidad,
-            fecha_necesidad.isoformat() if hasattr(fecha_necesidad, "isoformat") else fecha_necesidad,
-            data_json,
-            STATUS_DRAFT,
-            approver_id,
-            planner_id,
-            payload["total_monto"],
-        ]
-        placeholders = ", ".join("?" for _ in columns)
-        sql = f"INSERT INTO solicitudes ({', '.join(columns)}) VALUES ({placeholders})"
-        cur = con.execute(sql, values)
-        solicitud_id = cur.lastrowid
-        con.commit()
-
-        row = _load_solicitud(con, solicitud_id)
-        serialized = _serialize_row(row, detailed=True)
-
-    return _json_ok(
-        {
-            "id": solicitud_id,
-            "solicitud": serialized,
-            "status": STATUS_DRAFT,
-        },
-        status=201,
-    )
+        try:
+            solicitud_id, final_payload = _finalizar_solicitud(con, dummy_row, final_data, user, is_new=True)
+            con.commit()
+        except Exception as exc:
+            con.rollback()
+            return _json_error("DB_ERROR", f"No se pudo crear la solicitud: {exc}", 500)
+    return {"ok": True, "id": solicitud_id, "status": STATUS_PENDING, "total_monto": final_payload.get("total_monto")}
 
 
 def _handle_direct_cancel(con, row: dict[str, Any], reason: str | None) -> dict[str, Any]:
