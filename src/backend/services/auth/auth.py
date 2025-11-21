@@ -1,3 +1,13 @@
+from backend_v2.services.auth_service import authenticate_user as authenticate_user_v2
+from werkzeug.security import check_password_hash
+
+def authenticate_user(username, password):
+    return authenticate_user_v2(username, password)
+
+def verify_password(hashval, password):
+    return check_password_hash(hashval, password)
+
+__all__ = ["authenticate_user", "verify_password"]
 from __future__ import annotations
 
 import time

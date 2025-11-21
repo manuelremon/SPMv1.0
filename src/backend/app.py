@@ -1,3 +1,16 @@
+"""
+Compatibility shim for legacy tests that import `src.backend.app`.
+It re-exports the `version 2` backend app and create_app factory.
+"""
+from version_2.backend_v2.app import create_app as create_app_v2  # noqa: E402
+
+
+def create_app():
+    return create_app_v2()
+
+
+# Provide a module-level `app` for tests that import `app` directly.
+app = create_app()
 from __future__ import annotations
 
 from logging.handlers import RotatingFileHandler

@@ -1,3 +1,9 @@
+from backend_v2.core.config import Settings as SettingsV2  # noqa: E402
+
+
+class Settings(SettingsV2):
+    """Compatibility Settings: reuse Settings from `backend_v2.core.config`."""
+    pass
 
 from __future__ import annotations
 

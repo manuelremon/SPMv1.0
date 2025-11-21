@@ -1,3 +1,16 @@
+from backend_v2.services.planner_adapter import (
+    get_planner_dashboard,
+    get_planner_queue,
+    get_planner_solicitud,
+    optimize_solicitud,
+)
+
+__all__ = [
+    "get_planner_dashboard",
+    "get_planner_queue",
+    "get_planner_solicitud",
+    "optimize_solicitud",
+]
 """
 Supply Chain Planning Engine (SCPE)
 Motor de optimización de abastecimiento con:
